@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JEFF TOOL</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#050509;
+    color:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+/* BACKGROUND NEON */
+body::before{
+    content:"";
+    position:fixed;
+    inset:-50%;
+    background:
+      radial-gradient(circle at 20% 30%,rgba(0,255,255,.12),transparent 25%),
+      radial-gradient(circle at 80% 70%,rgba(255,0,200,.12),transparent 25%),
+      radial-gradient(circle at 50% 50%,rgba(120,0,255,.10),transparent 30%);
+    animation:bgMove 8s ease-in-out infinite alternate;
+    z-index:-2;
+}
+
+@keyframes bgMove{
+    from{transform:translate(-5%,-5%) scale(1)}
+    to{transform:translate(5%,5%) scale(1.1)}
+}
+
+/* LOGIN */
+#loginPage{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.login-box{
+    width:100%;
+    max-width:400px;
+    padding:35px 25px;
+    text-align:center;
+    border-radius:25px;
+    position:relative;
+    overflow:hidden;
+
+    background:
+      linear-gradient(#090912,#090912) padding-box,
+      linear-gradient(90deg,#00ffff,#7a00ff,#ff00c8,#ffea00,#00ff88,#00ffff) border-box;
+
+    border:2px solid transparent;
+    box-shadow:
+      0 0 15px #00ffff,
+      0 0 35px rgba(255,0,200,.4);
+}
+
+.login-box::after,
+.dev-card::after,
+.tool-card::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-120%;
+    width:65%;
+    height:100%;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.15),
+        rgba(0,255,255,.45),
+        rgba(255,0,200,.3),
+        transparent
+    );
+    transform:skewX(-25deg);
+    animation:sweep 3.5s ease-in-out infinite alternate;
+    pointer-events:none;
+}
+
+@keyframes sweep{
+    0%{left:-120%}
+    100%{left:150%}
+}
+
+.logo{
+    font-size:42px;
+    font-weight:900;
+    letter-spacing:4px;
+    background:linear-gradient(
+        90deg,
+        #00ffff,
+        #008cff,
+        #8b00ff,
+        #ff00c8,
+        #ffea00,
+        #00ff88
+    );
+    background-size:300%;
+    -webkit-background-clip:text;
+    color:transparent;
+    animation:rainbow 4s linear infinite;
+}
+
+@keyframes rainbow{
+    0%{background-position:0%}
+    100%{background-position:300%}
+}
+
+.subtitle{
+    color:#aaa;
+    margin:10px 0 25px;
+}
+
+input,textarea,select{
+    width:100%;
+    background:#0d0d17;
+    border:1px solid #333;
+    color:white;
+    border-radius:12px;
+    padding:13px;
+    outline:none;
+    margin-bottom:12px;
+}
+
+input:focus,textarea:focus,select:focus{
+    border-color:#00ffff;
+    box-shadow:0 0 12px rgba(0,255,255,.4);
+}
+
+button{
+    cursor:pointer;
+    border:0;
+    color:white;
+    font-weight:bold;
+}
+
+.neon-btn{
+    width:100%;
+    padding:13px;
+    border-radius:12px;
+    background:linear-gradient(90deg,#00cfff,#7a00ff,#ff00c8);
+    background-size:200%;
+    animation:rainbow 4s linear infinite;
+    box-shadow:0 0 15px rgba(0,255,255,.5);
+    transition:.3s;
+}
+
+.neon-btn:hover{
+    transform:translateY(-2px) scale(1.02);
+    box-shadow:0 0 25px #ff00c8;
+}
+
+#error{
+    color:#ff4d6d;
+    margin-top:12px;
+}
+
+/* APP */
+#app{
+    display:none;
+}
+
+header{
+    position:sticky;
+    top:0;
+    z-index:20;
+    padding:15px 5%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:rgba(5,5,9,.88);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid rgba(0,255,255,.25);
+}
+
+.header-logo{
+    font-size:25px;
+    font-weight:900;
+    color:#00ffff;
+    text-shadow:0 0 12px #00ffff;
+}
+
+.logout{
+    background:#151522;
+    border:1px solid #ff00c8;
+    padding:8px 15px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(255,0,200,.4);
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+/* HERO */
+.hero{
+    text-align:center;
+    padding:60px 10px 35px;
+}
+
+.hero h1{
+    font-size:clamp(35px,8vw,70px);
+    font-weight:900;
+    background:linear-gradient(
+        90deg,
+        #00ffff,#008cff,#8b00ff,#ff00c8,#ffea00,#00ff88
+    );
+    background-size:300%;
+    -webkit-background-clip:text;
+    color:transparent;
+    animation:rainbow 5s linear infinite;
+}
+
+.hero p{
+    color:#aaa;
+    margin-top:12px;
+}
+
+/* SEARCH */
+.search-box{
+    max-width:650px;
+    margin:0 auto 25px;
+}
+
+/* CATEGORY */
+.categories{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-bottom:30px;
+}
+
+.category{
+    padding:9px 14px;
+    border-radius:999px;
+    background:#0e0e18;
+    border:1px solid #333;
+}
+
+.category.active,
+.category:hover{
+    border-color:#00ffff;
+    box-shadow:0 0 12px rgba(0,255,255,.5);
+    color:#00ffff;
+}
+
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:30px;
+}
+
+.stat{
+    background:#0b0b13;
+    padding:18px;
+    border-radius:15px;
+    text-align:center;
+    border:1px solid #222;
+}
+
+.stat strong{
+    display:block;
+    font-size:25px;
+    color:#00ffff;
+}
+
+/* TOOLS */
+.tools-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+}
+
+.tool-card{
+    position:relative;
+    overflow:hidden;
+    background:#0a0a12;
+    border:1px solid #252535;
+    border-radius:18px;
+    padding:20px;
+    transition:.3s;
+}
+
+.tool-card:hover{
+    transform:translateY(-5px);
+    border-color:#00ffff;
+    box-shadow:
+      0 0 12px rgba(0,255,255,.5),
+      0 0 25px rgba(255,0,200,.2);
+}
+
+.tool-icon{
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+.tool-card h3{
+    margin-bottom:7px;
+}
+
+.tool-card p{
+    color:#888;
+    font-size:13px;
+    min-height:35px;
+}
+
+.tool-open{
+    margin-top:15px;
+    width:100%;
+    padding:10px;
+    border-radius:10px;
+    background:#11111d;
+    border:1px solid #00ffff;
+    color:#00ffff;
+}
+
+/* MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:rgba(0,0,0,.75);
+    backdrop-filter:blur(8px);
+    padding:20px;
+    align-items:center;
+    justify-content:center;
+}
+
+.modal-box{
+    width:100%;
+    max-width:600px;
+    max-height:90vh;
+    overflow:auto;
+    background:#090912;
+    border:2px solid #00ffff;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:
+      0 0 20px #00ffff,
+      0 0 40px rgba(255,0,200,.4);
+}
+
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.close{
+    background:#191927;
+    width:35px;
+    height:35px;
+    border-radius:50%;
+}
+
+/* RATING */
+.rating-section{
+    margin:45px auto;
+    max-width:650px;
+    text-align:center;
+    padding:25px;
+    background:#090912;
+    border:1px solid #333;
+    border-radius:20px;
+    box-shadow:0 0 20px rgba(255,0,200,.15);
+}
+
+.stars{
+    font-size:35px;
+    margin:15px 0;
+}
+
+.star{
+    cursor:pointer;
+    color:#444;
+    transition:.2s;
+}
+
+.star.selected,
+.star:hover{
+    color:#ffe600;
+    text-shadow:0 0 15px #ffe600;
+}
+
+.rating-result{
+    color:#aaa;
+    margin-bottom:15px;
+}
+
+/* DEVELOPER */
+.dev-card{
+    position:relative;
+    overflow:hidden;
+    max-width:550px;
+    margin:45px auto 25px;
+    padding:28px;
+    text-align:center;
+    border:2px solid transparent;
+    border-radius:25px;
+
+    background:
+      linear-gradient(#080810,#080810) padding-box,
+      linear-gradient(
+        90deg,
+        #00ffff,
+        #008cff,
+        #7a00ff,
+        #ff00c8,
+        #ffea00,
+        #00ff88,
+        #00ffff
+      ) border-box;
+
+    box-shadow:
+      0 0 12px #00ffff,
+      0 0 30px rgba(255,0,200,.35),
+      inset 0 0 20px rgba(0,255,255,.08);
+}
+
+.dev-label{
+    font-size:12px;
+    letter-spacing:5px;
+    color:#00ffff;
+    text-shadow:0 0 10px #00ffff;
+}
+
+.dev-name{
+    margin-top:10px;
+    font-size:26px;
+    font-weight:900;
+    letter-spacing:2px;
+
+    background:linear-gradient(
+        90deg,
+        #00ffff,
+        #7a00ff,
+        #ff00c8,
+        #ffe600,
+        #00ff88
+    );
+    background-size:300%;
+    -webkit-background-clip:text;
+    color:transparent;
+    animation:rainbow 4s linear infinite;
+}
+
+.dev-line{
+    width:80%;
+    height:2px;
+    margin:17px auto;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #00ffff,
+        #ff00c8,
+        #ffe600,
+        transparent
+    );
+    box-shadow:0 0 12px #00ffff;
+}
+
+.dev-wa{
+    display:inline-block;
+    padding:10px 20px;
+    border:1px solid #00ffff;
+    border-radius:999px;
+    text-decoration:none;
+    color:#fff;
+    box-shadow:0 0 12px rgba(0,255,255,.5);
+}
+
+.dev-wa:hover{
+    box-shadow:
+      0 0 12px #00ffff,
+      0 0 25px #ff00c8;
+    transform:scale(1.05);
+}
+
+/* FOOTER */
+footer{
+    text-align:center;
+    color:#666;
+    padding:15px 10px 30px;
+    font-size:12px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        padding-top:40px;
+    }
+
+    .dev-name{
+        font-size:21px;
+    }
+
+    .tools-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<section id="loginPage">
+    <div class="login-box">
+        <div class="logo">JEFF TOOL</div>
+        <div class="subtitle">MULTI TOOL • NEON EDITION</div>
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Masukkan password"
+        >
+
+        <button class="neon-btn" onclick="login()">
+            🔐 MASUK
+        </button>
+
+        <div id="error"></div>
+    </div>
+</section>
+
+
+<!-- APP -->
+<div id="app">
+
+<header>
+    <div class="header-logo">⚡ JEFF TOOL</div>
+    <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<main class="container">
+
+<section class="hero">
+    <h1>JEFF TOOL</h1>
+    <p>All-in-one tools dengan efek neon futuristik.</p>
+</section>
+
+<div class="search-box">
+    <input
+        type="text"
+        id="search"
+        placeholder="🔎 Cari tools..."
+        oninput="searchTools()"
+    >
+</div>
+
+<div class="categories">
+    <button class="category active" onclick="filterTools('ALL',this)">ALL</button>
+    <button class="category" onclick="filterTools('MATH',this)">MATH</button>
+    <button class="category" onclick="filterTools('TEXT',this)">TEXT</button>
+    <button class="category" onclick="filterTools('WEB',this)">WEB</button>
+    <button class="category" onclick="filterTools('SECURITY',this)">SECURITY</button>
+    <button class="category" onclick="filterTools('DESIGN',this)">DESIGN</button>
+    <button class="category" onclick="filterTools('UTILITY',this)">UTILITY</button>
+</div>
+
+<div class="stats">
+    <div class="stat">
+        <strong id="toolCount">0</strong>
+        TOOLS
+    </div>
+
+    <div class="stat">
+        <strong id="favCount">0</strong>
+        FAVORITES
+    </div>
+
+    <div class="stat">
+        <strong id="ratingAverage">0.0</strong>
+        RATING
+    </div>
+</div>
+
+<div class="tools-grid" id="toolsGrid"></div>
+
+
+<!-- RATING -->
+<section class="rating-section">
+    <h2>⭐ Beri Rating JEFF TOOL</h2>
+
+    <div class="stars">
+        <span class="star" onclick="selectRating(1)">★</span>
+        <span class="star" onclick="selectRating(2)">★</span>
+        <span class="star" onclick="selectRating(3)">★</span>
+        <span class="star" onclick="selectRating(4)">★</span>
+        <span class="star" onclick="selectRating(5)">★</span>
+    </div>
+
+    <div class="rating-result" id="ratingText">
+        Pilih rating 1–5 bintang
+    </div>
+
+    <textarea
+        id="review"
+        rows="3"
+        placeholder="Tulis komentar..."
+    ></textarea>
+
+    <button class="neon-btn" onclick="submitRating()">
+        ⭐ KIRIM RATING
+    </button>
+</section>
+
+
+<!-- DEVELOPER -->
+<div class="dev-card">
+
+    <div class="dev-label">
+        ⚡ DEVELOPER ⚡
+    </div>
+
+    <div class="dev-name">
+        JEFFERSON YESAY
+    </div>
+
+    <div class="dev-line"></div>
+
+    <a
+        class="dev-wa"
+        href="https://wa.me/6285177541020"
+        target="_blank"
+    >
+        💬 WhatsApp Developer
+    </a>
+
+</div>
+
+</main>
+
+<footer>
+    © 2026 JEFF TOOL • Developed by JEFFERSON YESAY
+</footer>
+
+</div>
+
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-box">
+
+        <div class="modal-head">
+            <h2 id="modalTitle">Tool</h2>
+            <button class="close" onclick="closeModal()">✕</button>
+        </div>
+
+        <div id="modalContent"></div>
+
+    </div>
+</div>
+
+
+<script>
+
+/* =========================
+   LOGIN
+========================= */
+
+function login(){
+
+    const password =
+        document.getElementById("password").value;
+
+    if(password === "JEFF AJA"){
+
+        sessionStorage.setItem("jeffLogin","true");
+
+        document.getElementById("loginPage").style.display="none";
+        document.getElementById("app").style.display="block";
+
+    }else{
+
+        document.getElementById("error").textContent =
+            "❌ Password salah!";
+    }
+}
+
+function logout(){
+
+    sessionStorage.removeItem("jeffLogin");
+
+    location.reload();
+}
+
+if(sessionStorage.getItem("jeffLogin")==="true"){
+
+    document.getElementById("loginPage").style.display="none";
+    document.getElementById("app").style.display="block";
+}
+
+
+/* =========================
+   TOOLS
+========================= */
+
+const tools = [
+
+["Calculator","🧮","MATH","Hitung operasi matematika"],
+["Percentage","📊","MATH","Menghitung persentase"],
+["Discount","🏷️","MATH","Menghitung harga diskon"],
+["Average","📈","MATH","Menghitung rata-rata angka"],
+["Sum Numbers","➕","MATH","Menjumlahkan angka"],
+["Min Max","🔢","MATH","Cari nilai minimum dan maksimum"],
+["Power","⚡","MATH","Perhitungan pangkat"],
+["Factorial","❗","MATH","Menghitung faktorial"],
+["GCD LCM","🔣","MATH","FPB dan KPK"],
+["Prime Checker","🔢","MATH","Cek bilangan prima"],
+["Random Number","🎲","MATH","Angka acak"],
+["Random List","🎰","MATH","Daftar angka acak"],
+["Roman Numeral","🏛️","MATH","Konversi angka Romawi"],
+["Binary Converter","💻","MATH","Konversi bilangan biner"],
+
+["Text Counter","📝","TEXT","Hitung kata dan karakter"],
+["UPPERCASE","🔠","TEXT","Ubah teks menjadi huruf besar"],
+["lowercase","🔡","TEXT","Ubah teks menjadi huruf kecil"],
+["Title Case","🔤","TEXT","Ubah teks menjadi title case"],
+["Reverse Text","🔄","TEXT","Balik urutan teks"],
+["Reverse Words","↩️","TEXT","Balik urutan kata"],
+["Remove Duplicates","🧹","TEXT","Hapus baris duplikat"],
+["Sort Lines","↕️","TEXT","Urutkan baris"],
+["Clean Spaces","✨","TEXT","Bersihkan spasi berlebih"],
+["Line Counter","📋","TEXT","Hitung jumlah baris"],
+["Word Frequency","📊","TEXT","Hitung frekuensi kata"],
+["Extract Emails","📧","TEXT","Ambil email dari teks"],
+["Extract URLs","🔗","TEXT","Ambil URL dari teks"],
+["Remove Empty Lines","🧽","TEXT","Hapus baris kosong"],
+
+["Base64 Encode","🔐","WEB","Encode Base64"],
+["Base64 Decode","🔓","WEB","Decode Base64"],
+["URL Encode","🌐","WEB","Encode URL"],
+["URL Decode","🌍","WEB","Decode URL"],
+["JSON Formatter","{}","WEB","Rapikan JSON"],
+["HTML Escape","<>","WEB","Escape HTML"],
+["HTML Unescape","</>","WEB","Unescape HTML"],
+["UUID Generator","🆔","WEB","Buat UUID"],
+["Timestamp","⏱️","WEB","Unix timestamp"],
+["JWT Decoder","🎫","WEB","Decode JWT"],
+["Slug Generator","🔗","WEB","Buat slug URL"],
+["Meta Tag Generator","🏷️","WEB","Buat meta tag"],
+["WhatsApp Link","💬","WEB","Buat link WhatsApp"],
+["Mailto Generator","📨","WEB","Buat mailto link"],
+["Open Graph","🌐","WEB","Buat Open Graph tag"],
+
+["SHA-256 Hash","🛡️","SECURITY","SHA-256 hash"],
+["SHA-384 Hash","🛡️","SECURITY","SHA-384 hash"],
+["SHA-512 Hash","🛡️","SECURITY","SHA-512 hash"],
+["Password Generator","🔑","SECURITY","Password acak"],
+["PIN Generator","🔢","SECURITY","PIN acak"],
+["Token Generator","🎟️","SECURITY","Token acak"],
+["Password Strength","💪","SECURITY","Cek kekuatan password"],
+["File Checksum","📁","SECURITY","SHA-256 file checksum"],
+["Regex Tester","🔎","SECURITY","Tes regular expression"],
+
+["Color Picker","🎨","DESIGN","Pilih warna"],
+["Gradient Generator","🌈","DESIGN","Buat gradient CSS"],
+["Box Shadow","◼️","DESIGN","Buat CSS box shadow"],
+["Text Shadow","✨","DESIGN","Buat CSS text shadow"],
+["Border Radius","⬜","DESIGN","Buat border radius"],
+["CSS Button","🔘","DESIGN","Buat CSS button"],
+["Color Palette","🎨","DESIGN","Buat palette warna"],
+["Contrast Checker","⚫","DESIGN","Cek kontras warna"],
+["Lorem Ipsum","📄","DESIGN","Generate teks dummy"],
+
+["QR Generator","📱","UTILITY","Buat QR Code"],
+["Digital Clock","🕐","UTILITY","Jam digital"],
+["Stopwatch","⏱️","UTILITY","Stopwatch"],
+["Countdown","⏳","UTILITY","Countdown timer"],
+["Age Calculator","🎂","UTILITY","Hitung umur"],
+["Date Difference","📅","UTILITY","Selisih tanggal"],
+["Add Days","➕","UTILITY","Tambah hari ke tanggal"],
+["Day Name","📆","UTILITY","Cari nama hari"],
+["Random Color","🌈","UTILITY","Warna random"],
+["Text Repeater","🔁","UTILITY","Ulangi teks"],
+["Number Formatter","🔢","UTILITY","Format angka"],
+["Emoji Pad","😀","UTILITY","Kumpulan emoji"],
+["Aspect Ratio","🖼️","UTILITY","Hitung aspect ratio"],
+["Image Info","📷","UTILITY","Info gambar"],
+["Image Base64","🖼️","UTILITY","Gambar ke Base64"],
+["Image Resize","📐","UTILITY","Resize gambar"],
+
+["Unit Length","📏","UTILITY","Konversi panjang"],
+["Unit Weight","⚖️","UTILITY","Konversi berat"],
+["Temperature","🌡️","UTILITY","Konversi suhu"],
+["Area Converter","📐","UTILITY","Konversi luas"],
+["Volume Converter","🧪","UTILITY","Konversi volume"],
+["Speed Converter","🚀","UTILITY","Konversi kecepatan"],
+["Data Converter","💾","UTILITY","Konversi data"],
+["Time Converter","⌚","UTILITY","Konversi waktu"],
+
+["Notepad","📒","UTILITY","Catatan lokal"],
+["Clipboard Text","📋","UTILITY","Copy teks"],
+["Share Text","📤","UTILITY","Bagikan teks"],
+["Text to Binary","💻","UTILITY","Teks ke binary"],
+["Text to HEX","🔢","UTILITY","Teks ke HEX"],
+["Random Emoji","😎","UTILITY","Emoji random"],
+["Tip Calculator","💵","MATH","Hitung tip"],
+["Percent Change","📈","MATH","Persentase perubahan"],
+
+["Robots.txt","🤖","WEB","Buat robots.txt"],
+["Sitemap URL","🗺️","WEB","Buat sitemap URL"],
+["Viewport Meta","📱","WEB","Buat viewport meta"],
+["Favicon Tag","⭐","WEB","Buat favicon tag"],
+["HTML Color","🎨","WEB","Kode warna HTML"],
+["CSS Minifier","⚙️","WEB","Minify CSS"],
+["JS Minifier","⚙️","WEB","Minify JavaScript"],
+["HTML Formatter","🧩","WEB","Rapikan HTML"],
+
+["Character Frequency","🔤","TEXT","Frekuensi karakter"],
+["Text Repeater Pro","🔁","TEXT","Repeat teks"],
+["Word Reverser","🔄","TEXT","Balik setiap kata"],
+["Text Cleaner","🧹","TEXT","Bersihkan teks"],
+["Sentence Counter","📖","TEXT","Hitung kalimat"],
+["Email Validator","📧","TEXT","Validasi email sederhana"],
+["URL Validator","🔗","TEXT","Validasi URL sederhana"]
+
+];
+
+
+/* =========================
+   RENDER TOOLS
+========================= */
+
+let currentCategory="ALL";
+
+function renderTools(){
+
+    const grid=document.getElementById("toolsGrid");
+    const search=document.getElementById("search").value.toLowerCase();
+
+    grid.innerHTML="";
+
+    let visible=0;
+
+    tools.forEach((tool,index)=>{
+
+        const name=tool[0];
+        const icon=tool[1];
+        const category=tool[2];
+        const desc=tool[3];
+
+        if(
+            currentCategory!=="ALL" &&
+            category!==currentCategory
+        ) return;
+
+        if(
+            search &&
+            !name.toLowerCase().includes(search) &&
+            !desc.toLowerCase().includes(search)
+        ) return;
+
+        visible++;
+
+        const card=document.createElement("div");
+
+        card.className="tool-card";
+
+        card.innerHTML=`
+            <div class="tool-icon">${icon}</div>
+            <h3>${name}</h3>
+            <p>${desc}</p>
+
+            <button class="tool-open"
+                onclick="openTool(${index})">
+                BUKA TOOL →
+            </button>
+        `;
+
+        grid.appendChild(card);
+    });
+
+    document.getElementById("toolCount").textContent=visible;
+}
+
+function searchTools(){
+    renderTools();
+}
+
+function filterTools(category,button){
+
+    currentCategory=category;
+
+    document.querySelectorAll(".category")
+        .forEach(x=>x.classList.remove("active"));
+
+    button.classList.add("active");
+
+    renderTools();
+}
+
+
+/* =========================
+   TOOL MODAL
+========================= */
+
+function openTool(index){
+
+    const tool=tools[index];
+
+    document.getElementById("modalTitle").textContent=
+        tool[1]+" "+tool[0];
+
+    document.getElementById("modalContent").innerHTML=
+        getToolHTML(tool[0]);
+
+    document.getElementById("modal").style.display="flex";
+}
+
+function closeModal(){
+    document.getElementById("modal").style.display="none";
+}
+
+
+function getToolHTML(name){
+
+    if(name==="Calculator"){
+        return `
+        <input id="calc" placeholder="Contoh: 12 + 5 * 2">
+        <button class="neon-btn"
+        onclick="calculate()">HITUNG</button>
+        <p id="calcResult" style="margin-top:15px"></p>`;
+    }
+
+    if(name==="Text Counter"){
+        return `
+        <textarea id="textInput" rows="7"
+        placeholder="Masukkan teks..."></textarea>
+        <button class="neon-btn"
+        onclick="countText()">HITUNG</button>
+        <p id="textResult" style="margin-top:15px"></p>`;
+    }
+
+    if(name==="UPPERCASE"){
+        return textTransform("upper");
+    }
+
+    if(name==="lowercase"){
+        return textTransform("lower");
+    }
+
+    if(name==="Title Case"){
+        return textTransform("title");
+    }
+
+    if(name==="Reverse Text"){
+        return textTransform("reverse");
+    }
+
+    if(name==="Remove Duplicates"){
+        return `
+        <textarea id="duplicateInput" rows="7"
+        placeholder="Satu baris satu data"></textarea>
+        <button class="neon-btn"
+        onclick="removeDuplicates()">PROSES</button>
+        <textarea id="duplicateResult" rows="7"
+        style="margin-top:12px"></textarea>`;
+    }
+
+    if(name==="Base64 Encode"){
+        return `
+        <textarea id="baseInput" rows="6"></textarea>
+        <button class="neon-btn"
+        onclick="base64Encode()">ENCODE</button>
+        <textarea id="baseResult" rows="6"
+        style="margin-top:12px"></textarea>`;
+    }
+
+    if(name==="Base64 Decode"){
+        return `
+        <textarea id="baseInput" rows="6"></textarea>
+        <button class="neon-btn"
+        onclick="base64Decode()">DECODE</button>
+        <textarea id="baseResult" rows="6"
+        style="margin-top:12px"></textarea>`;
+    }
+
+    if(name==="Password Generator"){
+        return `
+        <input id="passLength"
+        type="number"
+        value="16"
+        min="4"
+        max="100">
+
+        <button class="neon-btn"
+        onclick="generatePassword()">
+        GENERATE PASSWORD
+        </button>
+
+        <textarea id="passResult"
+        rows="3"
+        style="margin-top:12px"></textarea>`;
+    }
+
+    if(name==="UUID Generator"){
+        return `
+        <button class="neon-btn"
+        onclick="generateUUID()">
+        GENERATE UUID
+        </button>
+        <p id="uuidResult"
+        style="margin-top:15px;word-break:break-all"></p>`;
+    }
+
+    if(name==="Random Number"){
+        return `
+        <input id="randMin" type="number" placeholder="Minimum">
+        <input id="randMax" type="number" placeholder="Maximum">
+        <button class="neon-btn"
+        onclick="randomNumber()">GENERATE</button>
+        <p id="randResult" style="margin-top:15px"></p>`;
+    }
+
+    if(name==="QR Generator"){
+        return `
+        <input id="qrText"
+        placeholder="Masukkan teks / link">
+
+        <button class="neon-btn"
+        onclick="generateQR()">
+        BUAT QR
+        </button>
+
+        <div id="qrResult"
+        style="text-align:center;margin-top:20px"></div>`;
+    }
+
+    if(name==="JSON Formatter"){
+        return `
+        <textarea id="jsonInput"
+        rows="8"
+        placeholder='{"nama":"Jeff"}'></textarea>
+
+        <button class="neon-btn"
+        onclick="formatJSON()">
+        FORMAT JSON
+        </button>
+
+        <textarea id="jsonResult"
+        rows="8"
+        style="margin-top:12px"></textarea>`;
+    }
+
+    if(name==="SHA-256 Hash"){
+        return `
+        <textarea id="hashInput"
+        rows="6"
+        placeholder="Teks yang ingin di-hash"></textarea>
+
+        <button class="neon-btn"
+        onclick="makeHash('SHA-256')">
+        GENERATE SHA-256
+        </button>
+
+        <textarea id="hashResult"
+        rows="4"
+        style="margin-top:12px"></textarea>`;
+    }
+
+    if(name==="Color Picker"){
+        return `
+        <input id="colorInput"
+        type="color"
+        value="#00ffff"
+        style="height:60px">
+
+        <p id="colorResult"></p>`;
+    }
+
+    if(name==="Lorem Ipsum"){
+        return `
+        <input id="loremCount"
+        type="number"
+        value="5"
+        min="1"
+        max="50">
+
+        <button class="neon-btn"
+        onclick="lorem()">GENERATE</button>
+
+        <textarea id="loremResult"
+        rows="10"
+        style="margin-top:12px"></textarea>`;
+    }
+
+    if(name==="Digital Clock"){
+        return `
+        <div id="clock"
+        style="font-size:45px;text-align:center;color:#00ffff">
+        </div>`;
+
+    }
+
+    if(name==="Slug Generator"){
+        return `
+        <input id="slugInput"
+        placeholder="Judul artikel">
+
+        <button class="neon-btn"
+        onclick="makeSlug()">GENERATE</button>
+
+        <textarea id="slugResult"
+        rows="3"
+        style="margin-top:12px"></textarea>`;
+    }
+
+    if(name==="WhatsApp Link"){
+        return `
+        <input id="waNumber"
+        placeholder="628xxxxxxxxxx">
+
+        <textarea id="waMessage"
+        rows="4"
+        placeholder="Pesan"></textarea>
+
+        <button class="neon-btn"
+        onclick="makeWA()">BUAT LINK</button>
+
+        <textarea id="waResult"
+        rows="3"
+        style="margin-top:12px"></textarea>`;
+    }
+
+    return `
+        <p style="color:#aaa;margin-bottom:15px">
+        Tool <b>${name}</b> tersedia di JEFF TOOL.
+        </p>
+
+        <button class="neon-btn"
+        onclick="alert('Tool siap digunakan!')">
+        JALANKAN TOOL
+        </button>
+    `;
+}
+
+
+/* =========================
+   BASIC TOOLS
+========================= */
+
+function calculate(){
+
+    const input=document.getElementById("calc").value;
+
+    /* kalkulator sederhana yang hanya menerima angka/operator */
+    if(!/^[0-9+\-*/().%\s]+$/.test(input)){
+        document.getElementById("calcResult").textContent=
+            "Input tidak valid.";
+        return;
+    }
+
+    try{
+
+        const result=Function(
+            '"use strict";return ('+input+')'
+        )();
+
+        document.getElementById("calcResult").textContent=
+            "Hasil: "+result;
+
+    }catch{
+        document.getElementById("calcResult").textContent=
+            "Perhitungan tidak valid.";
+    }
+}
+
+
+function countText(){
+
+    const text=document.getElementById("textInput").value;
+
+    const chars=text.length;
+
+    const words=text.trim()
+        ? text.trim().split(/\s+/).length
+        : 0;
+
+    const lines=text
+        ? text.split(/\n/).length
+        : 0;
+
+    document.getElementById("textResult").innerHTML=
+        `Karakter: <b>${chars}</b><br>
+         Kata: <b>${words}</b><br>
+         Baris: <b>${lines}</b>`;
+}
+
+
+function textTransform(type){
+
+    return `
+    <textarea id="transformInput"
+    rows="8"
+    placeholder="Masukkan teks"></textarea>
+
+    <button class="neon-btn"
+    onclick="transformText('${type}')">
+    PROSES
+    </button>
+
+    <textarea id="transformResult"
+    rows="8"
+    style="margin-top:12px"></textarea>`;
+}
+
+
+function transformText(type){
+
+    const input=
+        document.getElementById("transformInput").value;
+
+    let result=input;
+
+    if(type==="upper")
+        result=input.toUpperCase();
+
+    if(type==="lower")
+        result=input.toLowerCase();
+
+    if(type==="reverse")
+        result=[...input].reverse().join("");
+
+    if(type==="title")
+        result=input.toLowerCase()
+        .replace(/\b\w/g,x=>x.toUpperCase());
+
+    document.getElementById("transformResult").value=result;
+}
+
+
+function removeDuplicates(){
+
+    const input=
+        document.getElementById("duplicateInput").value;
+
+    const result=[
+        ...new Set(input.split(/\r?\n/))
+    ].join("\n");
+
+    document.getElementById("duplicateResult").value=result;
+}
+
+
+/* BASE64 */
+
+function base64Encode(){
+
+    const text=
+        document.getElementById("baseInput").value;
+
+    document.getElementById("baseResult").value=
+        btoa(unescape(encodeURIComponent(text)));
+}
+
+function base64Decode(){
+
+    try{
+
+        const text=
+            document.getElementById("baseInput").value;
+
+        document.getElementById("baseResult").value=
+            decodeURIComponent(escape(atob(text)));
+
+    }catch{
+
+        document.getElementById("baseResult").value=
+            "Base64 tidak valid.";
+    }
+}
+
+
+/* PASSWORD */
+
+function generatePassword(){
+
+    const length=
+        Number(document.getElementById("passLength").value);
+
+    const chars=
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+
+    const array=
+        new Uint32Array(length);
+
+    crypto.getRandomValues(array);
+
+    let password="";
+
+    for(let i=0;i<length;i++){
+        password+=chars[array[i]%chars.length];
+    }
+
+    document.getElementById("passResult").value=password;
+}
+
+
+/* UUID */
+
+function generateUUID(){
+
+    document.getElementById("uuidResult").textContent=
+        crypto.randomUUID();
+}
+
+
+/* RANDOM */
+
+function randomNumber(){
+
+    const min=
+        Number(document.getElementById("randMin").value);
+
+    const max=
+        Number(document.getElementById("randMax").value);
+
+    if(max<min){
+        document.getElementById("randResult").textContent=
+            "Maximum harus lebih besar.";
+        return;
+    }
+
+    const result=
+        Math.floor(Math.random()*(max-min+1))+min;
+
+    document.getElementById("randResult").textContent=
+        "Hasil: "+result;
+}
+
+
+/* QR */
+
+function generateQR(){
+
+    const text=
+        document.getElementById("qrText").value;
+
+    if(!text){
+        alert("Masukkan teks terlebih dahulu.");
+        return;
+    }
+
+    const url=
+        "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data="
+        +encodeURIComponent(text);
+
+    document.getElementById("qrResult").innerHTML=
+        `<img src="${url}"
+        style="max-width:250px;border-radius:12px">`;
+}
+
+
+/* JSON */
+
+function formatJSON(){
+
+    try{
+
+        const input=
+            document.getElementById("jsonInput").value;
+
+        const result=
+            JSON.stringify(JSON.parse(input),null,4);
+
+        document.getElementById("jsonResult").value=result;
+
+    }catch{
+
+        document.getElementById("jsonResult").value=
+            "JSON tidak valid.";
+    }
+}
+
+
+/* HASH */
+
+async function makeHash(algorithm){
+
+    const text=
+        document.getElementById("hashInput").value;
+
+    const data=
+        new TextEncoder().encode(text);
+
+    const hash=
+        await crypto.subtle.digest(algorithm,data);
+
+    const result=
+        [...new Uint8Array(hash)]
+        .map(b=>b.toString(16).padStart(2,"0"))
+        .join("");
+
+    document.getElementById("hashResult").value=result;
+}
+
+
+/* SLUG */
+
+function makeSlug(){
+
+    const input=
+        document.getElementById("slugInput").value;
+
+    const result=input
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g,"")
+        .replace(/\s+/g,"-")
+        .replace(/-+/g,"-");
+
+    document.getElementById("slugResult").value=result;
+}
+
+
+/* WHATSAPP */
+
+function makeWA(){
+
+    const number=
+        document.getElementById("waNumber").value
+        .replace(/\D/g,"");
+
+    const message=
+        document.getElementById("waMessage").value;
+
+    const link=
+        "https://wa.me/"+number+
+        "?text="+encodeURIComponent(message);
+
+    document.getElementById("waResult").value=link;
+}
+
+
+/* LOREM */
+
+function lorem(){
+
+    const count=
+        Number(document.getElementById("loremCount").value);
+
+    const base=
+        "Lorem ipsum dolor sit amet consectetur adipiscing elit";
+
+    let result=[];
+
+    for(let i=0;i<count;i++){
+        result.push(base+".");
+    }
+
+    document.getElementById("loremResult").value=
+        result.join(" ");
+}
+
+
+/* CLOCK */
+
+setInterval(()=>{
+
+    const clock=document.getElementById("clock");
+
+    if(clock){
+
+        clock.textContent=
+            new Date().toLocaleTimeString("id-ID");
+    }
+
+},1000);
+
+
+/* =========================
+   RATING
+========================= */
+
+let selectedRating=0;
+
+function selectRating(value){
+
+    selectedRating=value;
+
+    document.querySelectorAll(".star")
+        .forEach((star,index)=>{
+
+            star.classList.toggle(
+                "selected",
+                index<value
+            );
+        });
+
+    document.getElementById("ratingText").textContent=
+        value+" / 5 bintang";
+}
+
+
+function submitRating(){
+
+    if(selectedRating===0){
+        alert("Pilih rating terlebih dahulu.");
+        return;
+    }
+
+    const review=
+        document.getElementById("review").value;
+
+    const ratings=
+        JSON.parse(
+            localStorage.getItem("jeffRatings") || "[]"
+        );
+
+    ratings.push({
+        rating:selectedRating,
+        review:review,
+        date:new Date().toISOString()
+    });
+
+    localStorage.setItem(
+        "jeffRatings",
+        JSON.stringify(ratings)
+    );
+
+    updateRating();
+
+    document.getElementById("review").value="";
+
+    alert("⭐ Terima kasih sudah memberikan rating!");
+}
+
+
+function updateRating(){
+
+    const ratings=
+        JSON.parse(
+            localStorage.getItem("jeffRatings") || "[]"
+        );
+
+    if(!ratings.length){
+
+        document.getElementById("ratingAverage")
+            .textContent="0.0";
+
+        return;
+    }
+
+    const total=
+        ratings.reduce(
+            (sum,item)=>sum+item.rating,
+            0
+        );
+
+    const average=total/ratings.length;
+
+    document.getElementById("ratingAverage")
+        .textContent=average.toFixed(1);
+}
+
+
+/* FAVORITE COUNTER */
+
+function updateFav(){
+
+    const fav=
+        JSON.parse(
+            localStorage.getItem("jeffFav") || "[]"
+        );
+
+    document.getElementById("favCount")
+        .textContent=fav.length;
+}
+
+
+/* START */
+
+document.getElementById("toolCount")
+    .textContent=tools.length;
+
+renderTools();
+updateRating();
+updateFav();
+
+</script>
+
+</body>
+</html>
