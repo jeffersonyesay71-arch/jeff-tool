@@ -2,1605 +2,4765 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>JEFF TOOL</title>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
+
+/* =====================================================
+   GLOBAL
+===================================================== */
+
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+    --cyan:#00eaff;
+    --blue:#008cff;
+    --green:#00ff9d;
+    --purple:#8b5cff;
+    --bg:#020711;
+    --panel:rgba(4,15,29,.78);
+    --border:rgba(0,234,255,.25);
+    --text:#f5fbff;
+    --muted:#7895a1;
+}
+
+html{
+    scroll-behavior:smooth;
 }
 
 body{
-    font-family:Arial,sans-serif;
-    background:#050509;
-    color:#fff;
+    font-family:"Inter",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
     min-height:100vh;
     overflow-x:hidden;
 }
 
-/* BACKGROUND NEON */
+/* =====================================================
+   MOVING BACKGROUND
+===================================================== */
+
 body::before{
     content:"";
     position:fixed;
-    inset:-50%;
+    inset:-25%;
+    z-index:-10;
+
     background:
-      radial-gradient(circle at 20% 30%,rgba(0,255,255,.12),transparent 25%),
-      radial-gradient(circle at 80% 70%,rgba(255,0,200,.12),transparent 25%),
-      radial-gradient(circle at 50% 50%,rgba(120,0,255,.10),transparent 30%);
-    animation:bgMove 8s ease-in-out infinite alternate;
-    z-index:-2;
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(0,234,255,.15),
+            transparent 23%
+        ),
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(0,140,255,.13),
+            transparent 24%
+        ),
+        radial-gradient(
+            circle at 65% 80%,
+            rgba(0,255,157,.10),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 30% 85%,
+            rgba(139,92,255,.10),
+            transparent 22%
+        );
+
+    filter:blur(35px);
+
+    animation:
+        glowMove 12s ease-in-out infinite alternate;
 }
 
-@keyframes bgMove{
-    from{transform:translate(-5%,-5%) scale(1)}
-    to{transform:translate(5%,5%) scale(1.1)}
+@keyframes glowMove{
+
+    0%{
+        transform:
+            translate(-3%,-2%)
+            scale(1);
+    }
+
+    50%{
+        transform:
+            translate(4%,3%)
+            scale(1.08);
+    }
+
+    100%{
+        transform:
+            translate(-2%,5%)
+            scale(1.15);
+    }
 }
 
-/* LOGIN */
-#loginPage{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
+/* grid background */
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-9;
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            rgba(0,234,255,.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0,234,255,.035) 1px,
+            transparent 1px
+        );
+
+    background-size:38px 38px;
+
+    animation:gridMove 14s linear infinite;
 }
 
-.login-box{
+@keyframes gridMove{
+
+    from{
+        background-position:0 0;
+    }
+
+    to{
+        background-position:38px 38px;
+    }
+}
+
+/* =====================================================
+   SCANLINES
+   Scan berada di background
+===================================================== */
+
+.scan-background{
+    position:fixed;
+    inset:0;
+    z-index:-7;
+    pointer-events:none;
+    overflow:hidden;
+    opacity:.45;
+}
+
+.scan-background::before,
+.scan-background::after{
+    content:"";
+    position:absolute;
+    left:0;
     width:100%;
-    max-width:400px;
-    padding:35px 25px;
-    text-align:center;
-    border-radius:25px;
-    position:relative;
+    height:1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(0,234,255,.15),
+            rgba(0,234,255,.9),
+            rgba(255,255,255,.5),
+            rgba(0,234,255,.9),
+            rgba(0,234,255,.15),
+            transparent
+        );
+
+    box-shadow:
+        0 0 10px rgba(0,234,255,.8),
+        0 0 25px rgba(0,234,255,.35);
+}
+
+.scan-background::before{
+    animation:scanOne 5s linear infinite;
+}
+
+.scan-background::after{
+    animation:scanTwo 8s linear infinite;
+    opacity:.45;
+}
+
+@keyframes scanOne{
+
+    0%{
+        top:-5%;
+    }
+
+    100%{
+        top:105%;
+    }
+}
+
+@keyframes scanTwo{
+
+    0%{
+        top:105%;
+    }
+
+    100%{
+        top:-5%;
+    }
+}
+
+/* =====================================================
+   EXTRA LIGHT
+===================================================== */
+
+.light-orb{
+    position:fixed;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:-8;
+    filter:blur(70px);
+    opacity:.18;
+    background:var(--cyan);
+    animation:orbMove 15s ease-in-out infinite alternate;
+}
+
+.light-orb.one{
+    left:-80px;
+    top:25%;
+}
+
+.light-orb.two{
+    right:-80px;
+    bottom:10%;
+    background:var(--blue);
+    animation-delay:3s;
+}
+
+@keyframes orbMove{
+
+    0%{
+        transform:translate(0,0);
+    }
+
+    50%{
+        transform:translate(100px,-70px);
+    }
+
+    100%{
+        transform:translate(-30px,100px);
+    }
+}
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+#login{
+    position:fixed;
+    inset:0;
+    z-index:4000;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
     overflow:hidden;
 
     background:
-      linear-gradient(#090912,#090912) padding-box,
-      linear-gradient(90deg,#00ffff,#7a00ff,#ff00c8,#ffea00,#00ff88,#00ffff) border-box;
-
-    border:2px solid transparent;
-    box-shadow:
-      0 0 15px #00ffff,
-      0 0 35px rgba(255,0,200,.4);
+        radial-gradient(
+            circle at center,
+            rgba(0,234,255,.10),
+            transparent 40%
+        ),
+        #01050c;
 }
 
-.login-box::after,
-.dev-card::after,
-.tool-card::after{
+.login-grid{
+    position:absolute;
+    inset:0;
+
+    background:
+        linear-gradient(
+            rgba(0,234,255,.045) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0,234,255,.045) 1px,
+            transparent 1px
+        );
+
+    background-size:32px 32px;
+
+    animation:gridMove 8s linear infinite;
+}
+
+/* login scan background */
+
+.login-scan{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+}
+
+.login-scan::after{
     content:"";
     position:absolute;
-    top:0;
-    left:-120%;
-    width:65%;
-    height:100%;
+    left:0;
+    width:100%;
+    height:2px;
+
     background:linear-gradient(
         90deg,
         transparent,
-        rgba(255,255,255,.15),
-        rgba(0,255,255,.45),
-        rgba(255,0,200,.3),
+        var(--cyan),
+        white,
+        var(--cyan),
         transparent
     );
-    transform:skewX(-25deg);
-    animation:sweep 3.5s ease-in-out infinite alternate;
-    pointer-events:none;
+
+    box-shadow:
+        0 0 15px var(--cyan),
+        0 0 35px var(--cyan);
+
+    opacity:.45;
+
+    animation:loginScan 4s linear infinite;
 }
 
-@keyframes sweep{
-    0%{left:-120%}
-    100%{left:150%}
+@keyframes loginScan{
+
+    0%{
+        top:-5%;
+    }
+
+    100%{
+        top:105%;
+    }
 }
 
-.logo{
-    font-size:42px;
-    font-weight:900;
-    letter-spacing:4px;
-    background:linear-gradient(
-        90deg,
-        #00ffff,
-        #008cff,
-        #8b00ff,
-        #ff00c8,
-        #ffea00,
-        #00ff88
-    );
-    background-size:300%;
-    -webkit-background-clip:text;
-    color:transparent;
-    animation:rainbow 4s linear infinite;
-}
-
-@keyframes rainbow{
-    0%{background-position:0%}
-    100%{background-position:300%}
-}
-
-.subtitle{
-    color:#aaa;
-    margin:10px 0 25px;
-}
-
-input,textarea,select{
-    width:100%;
-    background:#0d0d17;
-    border:1px solid #333;
-    color:white;
-    border-radius:12px;
-    padding:13px;
-    outline:none;
-    margin-bottom:12px;
-}
-
-input:focus,textarea:focus,select:focus{
-    border-color:#00ffff;
-    box-shadow:0 0 12px rgba(0,255,255,.4);
-}
-
-button{
-    cursor:pointer;
-    border:0;
-    color:white;
-    font-weight:bold;
-}
-
-.neon-btn{
-    width:100%;
-    padding:13px;
-    border-radius:12px;
-    background:linear-gradient(90deg,#00cfff,#7a00ff,#ff00c8);
-    background-size:200%;
-    animation:rainbow 4s linear infinite;
-    box-shadow:0 0 15px rgba(0,255,255,.5);
-    transition:.3s;
-}
-
-.neon-btn:hover{
-    transform:translateY(-2px) scale(1.02);
-    box-shadow:0 0 25px #ff00c8;
-}
-
-#error{
-    color:#ff4d6d;
-    margin-top:12px;
-}
-
-/* APP */
-#app{
-    display:none;
-}
-
-header{
-    position:sticky;
-    top:0;
-    z-index:20;
-    padding:15px 5%;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    background:rgba(5,5,9,.88);
-    backdrop-filter:blur(15px);
-    border-bottom:1px solid rgba(0,255,255,.25);
-}
-
-.header-logo{
-    font-size:25px;
-    font-weight:900;
-    color:#00ffff;
-    text-shadow:0 0 12px #00ffff;
-}
-
-.logout{
-    background:#151522;
-    border:1px solid #ff00c8;
-    padding:8px 15px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(255,0,200,.4);
-}
-
-.container{
-    width:90%;
-    max-width:1200px;
-    margin:auto;
-}
-
-/* HERO */
-.hero{
-    text-align:center;
-    padding:60px 10px 35px;
-}
-
-.hero h1{
-    font-size:clamp(35px,8vw,70px);
-    font-weight:900;
-    background:linear-gradient(
-        90deg,
-        #00ffff,#008cff,#8b00ff,#ff00c8,#ffea00,#00ff88
-    );
-    background-size:300%;
-    -webkit-background-clip:text;
-    color:transparent;
-    animation:rainbow 5s linear infinite;
-}
-
-.hero p{
-    color:#aaa;
-    margin-top:12px;
-}
-
-/* SEARCH */
-.search-box{
-    max-width:650px;
-    margin:0 auto 25px;
-}
-
-/* CATEGORY */
-.categories{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    justify-content:center;
-    margin-bottom:30px;
-}
-
-.category{
-    padding:9px 14px;
-    border-radius:999px;
-    background:#0e0e18;
-    border:1px solid #333;
-}
-
-.category.active,
-.category:hover{
-    border-color:#00ffff;
-    box-shadow:0 0 12px rgba(0,255,255,.5);
-    color:#00ffff;
-}
-
-/* STATS */
-.stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:12px;
-    margin-bottom:30px;
-}
-
-.stat{
-    background:#0b0b13;
-    padding:18px;
-    border-radius:15px;
-    text-align:center;
-    border:1px solid #222;
-}
-
-.stat strong{
-    display:block;
-    font-size:25px;
-    color:#00ffff;
-}
-
-/* TOOLS */
-.tools-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
-}
-
-.tool-card{
+.login-card{
     position:relative;
-    overflow:hidden;
-    background:#0a0a12;
-    border:1px solid #252535;
-    border-radius:18px;
-    padding:20px;
-    transition:.3s;
-}
+    width:min(430px,100%);
+    padding:38px 26px;
 
-.tool-card:hover{
-    transform:translateY(-5px);
-    border-color:#00ffff;
+    background:rgba(2,12,24,.88);
+
+    border:1px solid rgba(0,234,255,.45);
+
     box-shadow:
-      0 0 12px rgba(0,255,255,.5),
-      0 0 25px rgba(255,0,200,.2);
+        0 0 45px rgba(0,234,255,.12),
+        inset 0 0 35px rgba(0,234,255,.035);
+
+    backdrop-filter:blur(18px);
 }
 
-.tool-icon{
-    font-size:30px;
-    margin-bottom:10px;
+.corner{
+    position:absolute;
+    width:28px;
+    height:28px;
+    border-color:var(--cyan);
+    border-style:solid;
 }
 
-.tool-card h3{
-    margin-bottom:7px;
+.corner.tl{
+    top:-1px;
+    left:-1px;
+    border-width:2px 0 0 2px;
 }
 
-.tool-card p{
-    color:#888;
-    font-size:13px;
-    min-height:35px;
+.corner.tr{
+    top:-1px;
+    right:-1px;
+    border-width:2px 2px 0 0;
 }
 
-.tool-open{
-    margin-top:15px;
-    width:100%;
-    padding:10px;
-    border-radius:10px;
-    background:#11111d;
-    border:1px solid #00ffff;
-    color:#00ffff;
+.corner.bl{
+    bottom:-1px;
+    left:-1px;
+    border-width:0 0 2px 2px;
 }
 
-/* MODAL */
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:100;
-    background:rgba(0,0,0,.75);
-    backdrop-filter:blur(8px);
-    padding:20px;
-    align-items:center;
-    justify-content:center;
+.corner.br{
+    bottom:-1px;
+    right:-1px;
+    border-width:0 2px 2px 0;
 }
 
-.modal-box{
-    width:100%;
-    max-width:600px;
-    max-height:90vh;
-    overflow:auto;
-    background:#090912;
-    border:2px solid #00ffff;
-    border-radius:20px;
-    padding:25px;
-    box-shadow:
-      0 0 20px #00ffff,
-      0 0 40px rgba(255,0,200,.4);
-}
-
-.modal-head{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:20px;
-}
-
-.close{
-    background:#191927;
-    width:35px;
-    height:35px;
-    border-radius:50%;
-}
-
-/* RATING */
-.rating-section{
-    margin:45px auto;
-    max-width:650px;
+.login-title{
     text-align:center;
-    padding:25px;
-    background:#090912;
-    border:1px solid #333;
-    border-radius:20px;
-    box-shadow:0 0 20px rgba(255,0,200,.15);
+    font-family:"Space Grotesk",sans-serif;
+    font-size:34px;
+    font-weight:700;
+    letter-spacing:5px;
+
+    text-shadow:
+        0 0 10px var(--cyan),
+        0 0 25px rgba(0,234,255,.7);
 }
 
-.stars{
-    font-size:35px;
-    margin:15px 0;
+.login-sub{
+    margin-top:9px;
+    text-align:center;
+    color:#6fa8b4;
+    font-size:9px;
+    letter-spacing:3px;
 }
 
-.star{
-    cursor:pointer;
-    color:#444;
-    transition:.2s;
+.login-line{
+    width:65px;
+    height:2px;
+    margin:18px auto 30px;
+
+    background:var(--cyan);
+
+    box-shadow:
+        0 0 10px var(--cyan),
+        0 0 20px var(--cyan);
 }
 
-.star.selected,
-.star:hover{
-    color:#ffe600;
-    text-shadow:0 0 15px #ffe600;
-}
-
-.rating-result{
-    color:#aaa;
+.input-group{
     margin-bottom:15px;
 }
 
-/* DEVELOPER */
-.dev-card{
-    position:relative;
-    overflow:hidden;
-    max-width:550px;
-    margin:45px auto 25px;
-    padding:28px;
-    text-align:center;
-    border:2px solid transparent;
-    border-radius:25px;
+.input-group label{
+    display:block;
+    margin-bottom:8px;
 
-    background:
-      linear-gradient(#080810,#080810) padding-box,
-      linear-gradient(
-        90deg,
-        #00ffff,
-        #008cff,
-        #7a00ff,
-        #ff00c8,
-        #ffea00,
-        #00ff88,
-        #00ffff
-      ) border-box;
-
-    box-shadow:
-      0 0 12px #00ffff,
-      0 0 30px rgba(255,0,200,.35),
-      inset 0 0 20px rgba(0,255,255,.08);
+    color:#78dbe7;
+    font-size:9px;
+    letter-spacing:2px;
 }
 
-.dev-label{
+.input-group input{
+    width:100%;
+    padding:14px;
+
+    background:#020a14;
+
+    border:1px solid rgba(0,234,255,.25);
+
+    outline:none;
+    color:white;
+
+    font-family:"Inter",sans-serif;
+    font-size:14px;
+
+    transition:.25s;
+}
+
+.input-group input:focus{
+    border-color:var(--cyan);
+
+    box-shadow:
+        0 0 15px rgba(0,234,255,.2),
+        inset 0 0 10px rgba(0,234,255,.03);
+}
+
+.login-btn{
+    width:100%;
+    padding:14px;
+
+    border:1px solid var(--cyan);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,140,255,.08),
+            rgba(0,234,255,.12)
+        );
+
+    color:white;
+
+    font-family:"Space Grotesk",sans-serif;
+    font-weight:600;
+    letter-spacing:2px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.login-btn:hover{
+    box-shadow:
+        0 0 18px rgba(0,234,255,.3),
+        inset 0 0 15px rgba(0,234,255,.08);
+
+    transform:translateY(-2px);
+}
+
+.login-btn:active{
+    transform:scale(.98);
+}
+
+.login-error{
+    min-height:18px;
+    margin-top:12px;
+
+    color:#ff5570;
+    text-align:center;
+
+    font-size:9px;
+}
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+#loading{
+    position:fixed;
+    inset:0;
+    z-index:5000;
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0,234,255,.12),
+            transparent 45%
+        ),
+        #01050c;
+
+    overflow:hidden;
+}
+
+.loading-grid{
+    position:absolute;
+    inset:0;
+
+    background:
+        linear-gradient(
+            rgba(0,234,255,.05) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0,234,255,.05) 1px,
+            transparent 1px
+        );
+
+    background-size:30px 30px;
+
+    animation:gridMove 8s linear infinite;
+}
+
+.loading-scan{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+}
+
+.loading-scan::after{
+    content:"";
+    position:absolute;
+    left:0;
+    width:100%;
+    height:2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--cyan),
+            white,
+            var(--cyan),
+            transparent
+        );
+
+    box-shadow:
+        0 0 15px var(--cyan),
+        0 0 35px var(--cyan);
+
+    opacity:.45;
+
+    animation:loadingScan 3s linear infinite;
+}
+
+@keyframes loadingScan{
+
+    0%{
+        top:-5%;
+    }
+
+    100%{
+        top:105%;
+    }
+}
+
+.loading-box{
+    position:relative;
+    width:min(440px,85%);
+    padding:38px 25px;
+
+    text-align:center;
+
+    background:rgba(1,12,24,.82);
+
+    border:1px solid rgba(0,234,255,.4);
+
+    box-shadow:
+        0 0 40px rgba(0,234,255,.1),
+        inset 0 0 30px rgba(0,234,255,.035);
+
+    backdrop-filter:blur(15px);
+}
+
+.loading-title{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:clamp(30px,8vw,48px);
+    font-weight:700;
+    letter-spacing:6px;
+
+    text-shadow:
+        0 0 12px var(--cyan),
+        0 0 30px rgba(0,234,255,.65);
+}
+
+.loading-sub{
+    margin-top:10px;
+    color:#6daab5;
+    font-size:9px;
+    letter-spacing:3px;
+}
+
+.loading-status{
+    margin-top:30px;
+
+    color:#7da1ac;
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+.loading-track{
+    width:100%;
+    height:4px;
+    margin-top:14px;
+
+    background:#071522;
+
+    border:1px solid rgba(0,234,255,.18);
+    overflow:hidden;
+}
+
+.loading-progress{
+    width:0;
+    height:100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--blue),
+            var(--cyan),
+            white
+        );
+
+    box-shadow:
+        0 0 12px var(--cyan);
+
+    animation:load 3s linear forwards;
+}
+
+@keyframes load{
+    to{
+        width:100%;
+    }
+}
+
+/* =====================================================
+   APP
+===================================================== */
+
+#app{
+    display:none;
+    min-height:100vh;
+}
+
+/* =====================================================
+   TOPBAR
+===================================================== */
+
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    min-height:68px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:10px 15px;
+
+    background:rgba(2,8,17,.82);
+
+    border-bottom:1px solid rgba(0,234,255,.2);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+        0 5px 30px rgba(0,0,0,.3);
+}
+
+.brand{
+    font-family:"Space Grotesk",sans-serif;
+    font-size:21px;
+    font-weight:700;
+    letter-spacing:3px;
+
+    white-space:nowrap;
+
+    text-shadow:
+        0 0 10px var(--cyan),
+        0 0 20px rgba(0,234,255,.4);
+}
+
+.system-info{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    font-size:9px;
+}
+
+.clock-box{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:2px;
+}
+
+#clock{
+    color:white;
+    font-weight:600;
+}
+
+#date{
+    color:#6f9ca6;
+    font-size:8px;
+}
+
+.battery{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
+
+.battery-icon{
+    width:26px;
+    height:12px;
+
+    border:1px solid var(--cyan);
+
+    padding:2px;
+
+    position:relative;
+}
+
+.battery-icon::after{
+    content:"";
+
+    position:absolute;
+    right:-4px;
+    top:3px;
+
+    width:3px;
+    height:5px;
+
+    background:var(--cyan);
+}
+
+#batteryFill{
+    width:70%;
+    height:100%;
+
+    background:var(--green);
+
+    box-shadow:0 0 7px var(--green);
+}
+
+/* =====================================================
+   TOOL COUNTER
+===================================================== */
+
+.tool-counter{
+    width:100%;
+
+    padding:13px 15px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:8px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0,234,255,.035),
+            rgba(0,140,255,.08),
+            rgba(0,234,255,.035)
+        );
+
+    border-bottom:1px solid rgba(0,234,255,.12);
+
+    color:#76a8b3;
+
+    font-size:9px;
+    letter-spacing:2px;
+}
+
+#toolCount{
+    color:var(--cyan);
+
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:16px;
+    font-weight:700;
+
+    text-shadow:0 0 10px var(--cyan);
+}
+
+/* =====================================================
+   NAV
+===================================================== */
+
+.nav{
+    display:flex;
+    gap:8px;
+
+    overflow-x:auto;
+
+    padding:12px 15px;
+
+    scrollbar-width:none;
+
+    background:rgba(1,7,14,.7);
+
+    border-bottom:1px solid rgba(0,234,255,.12);
+
+    backdrop-filter:blur(12px);
+}
+
+.nav::-webkit-scrollbar{
+    display:none;
+}
+
+.nav button{
+    flex:none;
+
+    padding:10px 15px;
+
+    border:1px solid rgba(0,234,255,.2);
+
+    background:#06111d;
+
+    color:#82aab4;
+
+    font-family:"Inter",sans-serif;
+    font-size:9px;
+    font-weight:600;
+    letter-spacing:1px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.nav button:hover,
+.nav button.active{
+    color:white;
+
+    border-color:var(--cyan);
+
+    background:rgba(0,234,255,.09);
+
+    box-shadow:
+        0 0 15px rgba(0,234,255,.2);
+}
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+main{
+    width:min(1100px,100%);
+    margin:auto;
+
+    padding:26px 15px 50px;
+}
+
+.category{
+    display:none;
+
+    animation:categoryIn .35s ease;
+}
+
+.category.active{
+    display:block;
+}
+
+@keyframes categoryIn{
+
+    from{
+        opacity:0;
+        transform:translateY(8px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.section-title{
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:24px;
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    margin-bottom:7px;
+
+    text-shadow:
+        0 0 12px var(--cyan);
+}
+
+.section-desc{
+    color:#718e98;
+
+    font-size:10px;
+    line-height:1.8;
+
+    margin-bottom:20px;
+}
+
+/* =====================================================
+   PANELS
+===================================================== */
+
+.panel{
+    margin-bottom:12px;
+
+    border:1px solid rgba(0,234,255,.18);
+
+    background:var(--panel);
+
+    box-shadow:
+        0 0 25px rgba(0,0,0,.18);
+
+    overflow:hidden;
+
+    backdrop-filter:blur(10px);
+
+    transition:.25s;
+}
+
+.panel:hover{
+    border-color:rgba(0,234,255,.28);
+}
+
+.panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding:16px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.panel-head:hover{
+    background:rgba(0,234,255,.045);
+}
+
+.panel-name{
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.7px;
+}
+
+.panel-icon{
+    color:var(--cyan);
+    font-size:17px;
+
+    transition:.25s;
+}
+
+.panel.open .panel-icon{
+    transform:rotate(45deg);
+}
+
+.panel-body{
+    display:none;
+
+    padding:0 16px 18px;
+
+    border-top:1px solid rgba(0,234,255,.08);
+}
+
+.panel.open .panel-body{
+    display:block;
+}
+
+.panel-text{
+    color:#9ab5bd;
+
+    font-size:13px;
+    line-height:1.8;
+
+    padding-top:15px;
+}
+
+.panel-text strong{
+    color:white;
+}
+
+/* =====================================================
+   CONTROLS
+===================================================== */
+
+input,
+textarea,
+select{
+    width:100%;
+
+    padding:12px;
+
+    margin:7px 0;
+
+    background:#020912;
+
+    border:1px solid rgba(0,234,255,.22);
+
+    color:white;
+
+    outline:none;
+
+    font-family:"Inter",sans-serif;
+
+    border-radius:2px;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:var(--cyan);
+
+    box-shadow:
+        0 0 12px rgba(0,234,255,.15);
+}
+
+textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+button.tool-btn{
+    padding:11px 14px;
+
+    border:1px solid var(--cyan);
+
+    background:rgba(0,234,255,.06);
+
+    color:white;
+
+    font-family:"Inter",sans-serif;
+
+    font-size:9px;
+    font-weight:600;
+
+    letter-spacing:1px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    margin-top:6px;
+}
+
+button.tool-btn:hover{
+    background:rgba(0,234,255,.16);
+
+    box-shadow:
+        0 0 15px rgba(0,234,255,.22);
+
+    transform:translateY(-1px);
+}
+
+button.tool-btn:active{
+    transform:scale(.97);
+}
+
+.result{
+    margin-top:12px;
+
+    padding:12px;
+
+    min-height:20px;
+
+    border-left:2px solid var(--cyan);
+
+    background:rgba(0,234,255,.035);
+
+    color:#a8d2d9;
+
     font-size:12px;
-    letter-spacing:5px;
-    color:#00ffff;
-    text-shadow:0 0 10px #00ffff;
+
+    line-height:1.7;
+}
+
+/* =====================================================
+   DEVELOPER
+===================================================== */
+
+.developer-card{
+    text-align:center;
+    padding:25px 18px;
 }
 
 .dev-name{
-    margin-top:10px;
-    font-size:26px;
-    font-weight:900;
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:19px;
+    font-weight:700;
+
+    letter-spacing:2px;
+}
+
+.verified{
+    display:inline-flex;
+
+    width:17px;
+    height:17px;
+
+    align-items:center;
+    justify-content:center;
+
+    margin-left:5px;
+
+    border-radius:50%;
+
+    background:#1688ff;
+
+    color:white;
+
+    font-family:Arial,sans-serif;
+
+    font-size:11px;
+    font-weight:bold;
+
+    vertical-align:middle;
+
+    box-shadow:
+        0 0 10px rgba(22,136,255,.6);
+}
+
+.dev-label{
+    margin-top:9px;
+
+    color:#63b7c3;
+
+    font-size:8px;
+    letter-spacing:2px;
+}
+
+.dev-note{
+    margin:12px auto 0;
+
+    max-width:600px;
+
+    color:#668893;
+
+    font-size:11px;
+
+    line-height:1.6;
+}
+
+/* =====================================================
+   DONATION
+===================================================== */
+
+.donation{
+    position:relative;
+
+    margin-top:15px;
+
+    padding:22px;
+
+    border:1px solid rgba(0,255,157,.3);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,255,157,.07),
+            rgba(0,234,255,.035)
+        );
+
+    box-shadow:
+        0 0 25px rgba(0,255,157,.06),
+        inset 0 0 25px rgba(0,255,157,.025);
+}
+
+.donation::before{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    width:3px;
+    height:100%;
+
+    background:var(--green);
+
+    box-shadow:0 0 12px var(--green);
+}
+
+.donation h3{
+    color:var(--green);
+
+    font-size:13px;
+
     letter-spacing:2px;
 
-    background:linear-gradient(
-        90deg,
-        #00ffff,
-        #7a00ff,
-        #ff00c8,
-        #ffe600,
-        #00ff88
-    );
-    background-size:300%;
-    -webkit-background-clip:text;
-    color:transparent;
-    animation:rainbow 4s linear infinite;
+    margin-bottom:10px;
 }
 
-.dev-line{
-    width:80%;
-    height:2px;
-    margin:17px auto;
-    background:linear-gradient(
-        90deg,
-        transparent,
-        #00ffff,
-        #ff00c8,
-        #ffe600,
-        transparent
-    );
-    box-shadow:0 0 12px #00ffff;
-}
+.donation p{
+    color:#87a8ae;
 
-.dev-wa{
-    display:inline-block;
-    padding:10px 20px;
-    border:1px solid #00ffff;
-    border-radius:999px;
-    text-decoration:none;
-    color:#fff;
-    box-shadow:0 0 12px rgba(0,255,255,.5);
-}
-
-.dev-wa:hover{
-    box-shadow:
-      0 0 12px #00ffff,
-      0 0 25px #ff00c8;
-    transform:scale(1.05);
-}
-
-/* FOOTER */
-footer{
-    text-align:center;
-    color:#666;
-    padding:15px 10px 30px;
     font-size:12px;
+
+    line-height:1.7;
 }
 
-/* MOBILE */
+.payment-box{
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.payment-item{
+    padding:14px;
+
+    background:rgba(0,0,0,.25);
+
+    border:1px solid rgba(0,255,157,.18);
+}
+
+.payment-label{
+    color:#6e9199;
+
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+.payment-value{
+    margin-top:6px;
+
+    color:white;
+
+    font-size:14px;
+
+    font-weight:700;
+}
+
+/* =====================================================
+   SOCIAL
+===================================================== */
+
+.social-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(160px,1fr));
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.social-btn{
+    display:block;
+
+    padding:16px;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    color:white;
+
+    border:1px solid rgba(0,234,255,.2);
+
+    background:#030d18;
+
+    font-size:9px;
+    font-weight:600;
+
+    transition:.25s;
+}
+
+.social-btn:hover{
+    border-color:var(--cyan);
+
+    box-shadow:
+        0 0 18px rgba(0,234,255,.2);
+
+    transform:translateY(-2px);
+}
+
+/* =====================================================
+   GAMES
+===================================================== */
+
+.game-area{
+    text-align:center;
+    padding-top:15px;
+}
+
+.big-number{
+    font-family:"Space Grotesk",sans-serif;
+
+    font-size:40px;
+    font-weight:700;
+
+    color:var(--cyan);
+
+    text-shadow:
+        0 0 15px var(--cyan);
+
+    margin:15px 0;
+}
+
+.choice-row{
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    justify-content:center;
+}
+
+.question{
+    color:#b8dce2;
+
+    font-size:13px;
+
+    line-height:1.7;
+
+    margin:12px 0;
+}
+
+.ttt{
+    width:210px;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:5px;
+
+    margin:15px auto;
+}
+
+.ttt button{
+    height:65px;
+
+    font-size:22px;
+
+    margin:0;
+}
+
+/* =====================================================
+   CALCULATION
+===================================================== */
+
+.calc-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(220px,1fr));
+
+    gap:12px;
+}
+
+.calc-card{
+    padding:17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,234,255,.035),
+            rgba(0,0,0,.12)
+        );
+
+    border:1px solid rgba(0,234,255,.16);
+}
+
+.calc-card h3{
+    font-size:11px;
+
+    margin-bottom:8px;
+}
+
+.calc-card p{
+    color:#76939d;
+
+    font-size:10px;
+
+    line-height:1.6;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+    padding:25px 15px;
+
+    text-align:center;
+
+    border-top:1px solid rgba(0,234,255,.12);
+
+    color:#45636c;
+
+    font-size:8px;
+
+    letter-spacing:2px;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
 @media(max-width:600px){
-    .stats{
+
+    .brand{
+        font-size:16px;
+    }
+
+    .system-info{
+        gap:7px;
+    }
+
+    .topbar{
+        align-items:flex-start;
+    }
+
+    .section-title{
+        font-size:20px;
+    }
+
+    .payment-box{
         grid-template-columns:1fr;
     }
 
-    .hero{
-        padding-top:40px;
-    }
-
-    .dev-name{
-        font-size:21px;
-    }
-
-    .tools-grid{
+    .calc-grid{
         grid-template-columns:1fr;
     }
+
 }
+
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<section id="loginPage">
-    <div class="login-box">
-        <div class="logo">JEFF TOOL</div>
-        <div class="subtitle">MULTI TOOL • NEON EDITION</div>
+<!-- BACKGROUND EFFECTS -->
 
-        <input
-            type="password"
-            id="password"
-            placeholder="Masukkan password"
+<div class="scan-background"></div>
+
+<div class="light-orb one"></div>
+<div class="light-orb two"></div>
+
+
+<!-- =====================================================
+     LOGIN
+===================================================== -->
+
+<div id="login">
+
+    <div class="login-grid"></div>
+    <div class="login-scan"></div>
+
+    <div class="login-card">
+
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+
+        <div class="login-title">
+            JEFF TOOL
+        </div>
+
+        <div class="login-sub">
+            SECURE SYSTEM ACCESS
+        </div>
+
+        <div class="login-line"></div>
+
+        <div class="input-group">
+
+            <label>
+                ACCESS PASSWORD
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Masukkan password"
+                autocomplete="off"
+            >
+
+        </div>
+
+        <button
+            class="login-btn"
+            onclick="login()"
         >
-
-        <button class="neon-btn" onclick="login()">
-            🔐 MASUK
+            AKSES SISTEM
         </button>
 
-        <div id="error"></div>
+        <div
+            class="login-error"
+            id="loginError"
+        ></div>
+
     </div>
-</section>
+
+</div>
 
 
-<!-- APP -->
+<!-- =====================================================
+     LOADING
+===================================================== -->
+
+<div id="loading">
+
+    <div class="loading-grid"></div>
+    <div class="loading-scan"></div>
+
+    <div class="loading-box">
+
+        <div class="loading-title">
+            JEFF TOOL
+        </div>
+
+        <div class="loading-sub">
+            SYSTEM INITIALIZING
+        </div>
+
+        <div
+            class="loading-status"
+            id="loadingStatus"
+        >
+            MENYIAPKAN SISTEM...
+        </div>
+
+        <div class="loading-track">
+
+            <div
+                class="loading-progress"
+                id="loadingProgress"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     APP
+===================================================== -->
+
 <div id="app">
 
-<header>
-    <div class="header-logo">⚡ JEFF TOOL</div>
-    <button class="logout" onclick="logout()">Logout</button>
+<header class="topbar">
+
+    <div class="brand">
+        JEFF TOOL
+    </div>
+
+    <div class="system-info">
+
+        <div class="clock-box">
+
+            <div id="clock">
+                00:00:00
+            </div>
+
+            <div id="date">
+                00/00/0000
+            </div>
+
+        </div>
+
+        <div class="battery">
+
+            <div class="battery-icon">
+
+                <div id="batteryFill"></div>
+
+            </div>
+
+            <span id="batteryText">
+                --%
+            </span>
+
+        </div>
+
+    </div>
+
 </header>
 
-<main class="container">
 
-<section class="hero">
-    <h1>JEFF TOOL</h1>
-    <p>All-in-one tools dengan efek neon futuristik.</p>
-</section>
+<!-- TOOL COUNT -->
 
-<div class="search-box">
-    <input
-        type="text"
-        id="search"
-        placeholder="🔎 Cari tools..."
-        oninput="searchTools()"
+<div class="tool-counter">
+
+    <span>
+        TOTAL TOOLS
+    </span>
+
+    <span id="toolCount">
+        0
+    </span>
+
+</div>
+
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav class="nav">
+
+    <button
+        class="active"
+        onclick="showCategory('beranda',this)"
     >
-</div>
-
-<div class="categories">
-    <button class="category active" onclick="filterTools('ALL',this)">ALL</button>
-    <button class="category" onclick="filterTools('MATH',this)">MATH</button>
-    <button class="category" onclick="filterTools('TEXT',this)">TEXT</button>
-    <button class="category" onclick="filterTools('WEB',this)">WEB</button>
-    <button class="category" onclick="filterTools('SECURITY',this)">SECURITY</button>
-    <button class="category" onclick="filterTools('DESIGN',this)">DESIGN</button>
-    <button class="category" onclick="filterTools('UTILITY',this)">UTILITY</button>
-</div>
-
-<div class="stats">
-    <div class="stat">
-        <strong id="toolCount">0</strong>
-        TOOLS
-    </div>
-
-    <div class="stat">
-        <strong id="favCount">0</strong>
-        FAVORITES
-    </div>
-
-    <div class="stat">
-        <strong id="ratingAverage">0.0</strong>
-        RATING
-    </div>
-</div>
-
-<div class="tools-grid" id="toolsGrid"></div>
-
-
-<!-- RATING -->
-<section class="rating-section">
-    <h2>⭐ Beri Rating JEFF TOOL</h2>
-
-    <div class="stars">
-        <span class="star" onclick="selectRating(1)">★</span>
-        <span class="star" onclick="selectRating(2)">★</span>
-        <span class="star" onclick="selectRating(3)">★</span>
-        <span class="star" onclick="selectRating(4)">★</span>
-        <span class="star" onclick="selectRating(5)">★</span>
-    </div>
-
-    <div class="rating-result" id="ratingText">
-        Pilih rating 1–5 bintang
-    </div>
-
-    <textarea
-        id="review"
-        rows="3"
-        placeholder="Tulis komentar..."
-    ></textarea>
-
-    <button class="neon-btn" onclick="submitRating()">
-        ⭐ KIRIM RATING
+        BERANDA
     </button>
+
+    <button
+        onclick="showCategory('perhitungan',this)"
+    >
+        PERHITUNGAN
+    </button>
+
+    <button
+        onclick="showCategory('games',this)"
+    >
+        GAMES
+    </button>
+
+    <button
+        onclick="showCategory('edukasi',this)"
+    >
+        EDUKASI
+    </button>
+
+    <button
+        onclick="showCategory('ai',this)"
+    >
+        AI
+    </button>
+
+    <button
+        onclick="showCategory('sosmed',this)"
+    >
+        SOSIAL MEDIA
+    </button>
+
+    <button
+        onclick="showCategory('media',this)"
+    >
+        MEDIA
+    </button>
+
+    <button
+        onclick="showCategory('cuaca',this)"
+    >
+        CUACA
+    </button>
+
+</nav>
+
+
+<main>
+
+
+<!-- =====================================================
+     BERANDA
+===================================================== -->
+
+<section
+    id="beranda"
+    class="category active"
+>
+
+    <div class="section-title">
+        BERANDA
+    </div>
+
+    <div class="section-desc">
+        Pusat utama JEFF TOOL yang berisi informasi,
+        developer, tujuan aplikasi, fungsi sistem,
+        serta dukungan pengembangan.
+    </div>
+
+
+    <!-- HISTORY -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                SEJARAH JEFF TOOL
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="panel-text">
+
+                JEFF TOOL dibuat sebagai sebuah dashboard
+                digital yang menggabungkan berbagai alat
+                sederhana dalam satu sistem.
+
+                <br><br>
+
+                Konsep ini dibuat agar pengguna dapat
+                menggunakan berbagai fungsi tanpa perlu
+                berpindah-pindah halaman.
+
+                <br><br>
+
+                Pengembangan JEFF TOOL dilakukan secara
+                bertahap dengan menambahkan permainan,
+                perhitungan, edukasi, alat teks, media,
+                sosial media, serta informasi cuaca.
+
+                <br><br>
+
+                Tampilan dibuat dengan konsep futuristik
+                modern menggunakan efek cahaya, grid,
+                scanline, glass panel, dan animasi
+                background.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FUNCTION -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                FUNGSI JEFF TOOL
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="panel-text">
+
+                JEFF TOOL berfungsi sebagai pusat berbagai
+                utilitas digital.
+
+                <br><br>
+
+                Pengguna dapat melakukan perhitungan,
+                memainkan game sederhana, menerjemahkan
+                teks, mengolah tulisan, mencari ide,
+                mengakses sosial media, memeriksa file,
+                memperbesar gambar, serta melihat informasi
+                cuaca.
+
+                <br><br>
+
+                Sistem dibuat modular sehingga setiap
+                fitur dapat dibuka hanya ketika dibutuhkan.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PURPOSE -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                TUJUAN PEMBUATAN
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="panel-text">
+
+                Tujuan JEFF TOOL adalah membuat sebuah
+                dashboard digital yang praktis, modern,
+                sederhana, dan dapat dikembangkan.
+
+                <br><br>
+
+                Setiap fitur dapat terus diperbarui
+                sehingga sistem dapat berkembang sesuai
+                kebutuhan pengguna.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DEVELOPER -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                DEVELOPER
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="developer-card">
+
+                <div class="dev-name">
+
+                    JEFFERSON YESAY
+
+                    <span
+                        class="verified"
+                        title="Custom developer badge"
+                    >
+                        ✓
+                    </span>
+
+                </div>
+
+                <div class="dev-label">
+                    DEVELOPER JEFF TOOL
+                </div>
+
+                <div class="dev-note">
+
+                    Tanda centang merupakan tanda
+                    Meta Verified resmi dari Meta. 
+                    untuk developer yang profesional. 
+
+                </div>
+
+
+                <div class="social-grid">
+
+                    <a
+                        class="social-btn"
+                        href="https://instagram.com/personnnil"
+                        target="_blank"
+                    >
+                        INSTAGRAM<br>
+                        @personnnil
+                    </a>
+
+                    <a
+                        class="social-btn"
+                        href="https://t.me/jeff_developer"
+                        target="_blank"
+                    >
+                        TELEGRAM<br>
+                        @jeff_developer
+                    </a>
+
+                    <a
+                        class="social-btn"
+                        href="https://wa.me/6285177541020"
+                        target="_blank"
+                    >
+                        WHATSAPP<br>
+                        085177541020
+                    </a>
+
+                    <div class="social-btn">
+                        TIKTOK<br>
+                        COMING SOON
+                    </div>
+
+                </div>
+
+
+                <!-- DONATION -->
+
+                <div class="donation">
+
+                    <h3>
+                        DONASI KE DEVELOPER
+                    </h3>
+
+                    <p>
+
+                        Jika kamu ingin mendukung
+                        pengembangan JEFF TOOL,
+                        kamu dapat memberikan donasi
+                        secara sukarela melalui DANA.
+
+                    </p>
+
+
+                    <div class="payment-box">
+
+                        <div class="payment-item">
+
+                            <div class="payment-label">
+                                PAYMENT DANA
+                            </div>
+
+                            <div class="payment-value">
+                                085194427487
+                            </div>
+
+                        </div>
+
+                        <div class="payment-item">
+
+                            <div class="payment-label">
+                                ATAS NAMA
+                            </div>
+
+                            <div class="payment-value">
+                                ERNxxx
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="tool-btn"
+                        onclick="copyDonation()"
+                    >
+                        SALIN NOMOR DANA
+                    </button>
+
+
+                    <div
+                        class="result"
+                        id="donationResult"
+                        style="display:none"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </section>
 
 
-<!-- DEVELOPER -->
-<div class="dev-card">
+<!-- =====================================================
+     PERHITUNGAN
+===================================================== -->
 
-    <div class="dev-label">
-        ⚡ DEVELOPER ⚡
+<section
+    id="perhitungan"
+    class="category"
+>
+
+    <div class="section-title">
+        PERHITUNGAN
     </div>
 
-    <div class="dev-name">
-        JEFFERSON YESAY
+    <div class="section-desc">
+        Lima alat perhitungan sederhana untuk kebutuhan
+        sehari-hari.
     </div>
 
-    <div class="dev-line"></div>
 
-    <a
-        class="dev-wa"
-        href="https://wa.me/6285177541020"
-        target="_blank"
-    >
-        💬 WhatsApp Developer
-    </a>
+    <div class="calc-grid">
 
-</div>
+
+        <!-- 1 -->
+
+        <div class="calc-card">
+
+            <h3>
+                KALKULATOR
+            </h3>
+
+            <p>
+                Perhitungan angka menggunakan operator dasar.
+            </p>
+
+            <input
+                id="calcInput"
+                placeholder="Contoh: 100+25*2"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="calculate()"
+            >
+                HITUNG
+            </button>
+
+            <div
+                class="result"
+                id="calcResult"
+            >
+                Masukkan perhitungan.
+            </div>
+
+        </div>
+
+
+        <!-- 2 DISKON -->
+
+        <div class="calc-card">
+
+            <h3>
+                KALKULATOR DISKON
+            </h3>
+
+            <p>
+                Hitung harga setelah mendapatkan diskon.
+            </p>
+
+            <input
+                id="priceInput"
+                type="number"
+                placeholder="Harga awal"
+            >
+
+            <input
+                id="discountInput"
+                type="number"
+                placeholder="Diskon (%)"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="calculateDiscount()"
+            >
+                HITUNG DISKON
+            </button>
+
+            <div
+                class="result"
+                id="discountResult"
+            ></div>
+
+        </div>
+
+
+        <!-- 3 RATA RATA -->
+
+        <div class="calc-card">
+
+            <h3>
+                RATA-RATA
+            </h3>
+
+            <p>
+                Masukkan beberapa angka yang dipisahkan koma.
+            </p>
+
+            <input
+                id="averageInput"
+                placeholder="Contoh: 80,90,75,85"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="calculateAverage()"
+            >
+                HITUNG RATA-RATA
+            </button>
+
+            <div
+                class="result"
+                id="averageResult"
+            ></div>
+
+        </div>
+
+
+        <!-- 4 LUAS -->
+
+        <div class="calc-card">
+
+            <h3>
+                LUAS PERSEGI PANJANG
+            </h3>
+
+            <p>
+                Hitung luas berdasarkan panjang dan lebar.
+            </p>
+
+            <input
+                id="lengthInput"
+                type="number"
+                placeholder="Panjang"
+            >
+
+            <input
+                id="widthInput"
+                type="number"
+                placeholder="Lebar"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="calculateArea()"
+            >
+                HITUNG LUAS
+            </button>
+
+            <div
+                class="result"
+                id="areaResult"
+            ></div>
+
+        </div>
+
+
+        <!-- 5 SUHU -->
+
+        <div class="calc-card">
+
+            <h3>
+                KONVERSI SUHU
+            </h3>
+
+            <p>
+                Konversi Celsius, Fahrenheit, dan Kelvin.
+            </p>
+
+            <input
+                id="temperatureInput"
+                type="number"
+                placeholder="Masukkan suhu Celsius"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="convertTemperature()"
+            >
+                KONVERSI
+            </button>
+
+            <div
+                class="result"
+                id="temperatureResult"
+            ></div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     GAMES
+===================================================== -->
+
+<section
+    id="games"
+    class="category"
+>
+
+    <div class="section-title">
+        GAMES
+    </div>
+
+    <div class="section-desc">
+        Permainan sederhana yang dapat dimainkan
+        langsung di JEFF TOOL.
+    </div>
+
+
+    <!-- TEBAK ANGKA -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                TEBAK ANGKA
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="question">
+                Tebak angka dari 1 sampai 100.
+            </div>
+
+            <input
+                id="guessInput"
+                type="number"
+                min="1"
+                max="100"
+                placeholder="Masukkan angka"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="guessNumber()"
+            >
+                TEBAK
+            </button>
+
+            <button
+                class="tool-btn"
+                onclick="newGuessGame()"
+            >
+                GAME BARU
+            </button>
+
+            <div
+                class="result"
+                id="guessResult"
+            >
+                Game siap dimainkan.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RPS -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                BATU GUNTING KERTAS
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="choice-row">
+
+                <button
+                    class="tool-btn"
+                    onclick="rps('batu')"
+                >
+                    BATU
+                </button>
+
+                <button
+                    class="tool-btn"
+                    onclick="rps('gunting')"
+                >
+                    GUNTING
+                </button>
+
+                <button
+                    class="tool-btn"
+                    onclick="rps('kertas')"
+                >
+                    KERTAS
+                </button>
+
+            </div>
+
+            <div
+                class="result"
+                id="rpsResult"
+            >
+                Pilih permainan.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TIC TAC TOE -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                TIC TAC TOE
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div
+                class="question"
+                id="tttStatus"
+            >
+                Giliran X
+            </div>
+
+            <div
+                class="ttt"
+                id="tttBoard"
+            ></div>
+
+            <button
+                class="tool-btn"
+                onclick="resetTTT()"
+            >
+                RESET
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- HEWAN -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                TEBAK HEWAN
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="question">
+
+                Hewan apakah yang memiliki belalai
+                panjang dan tubuh besar?
+
+            </div>
+
+            <input
+                id="animalInput"
+                placeholder="Jawaban"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="checkAnimal()"
+            >
+                JAWAB
+            </button>
+
+            <div
+                class="result"
+                id="animalResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- BUNGA -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                TEBAK BUNGA
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="question">
+
+                Aku dikenal memiliki duri dan sering
+                diasosiasikan dengan bunga cinta.
+                Bunga apakah aku?
+
+            </div>
+
+            <input
+                id="flowerInput"
+                placeholder="Jawaban"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="checkFlower()"
+            >
+                JAWAB
+            </button>
+
+            <div
+                class="result"
+                id="flowerResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- DADU -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                DADU ACAK
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="game-area">
+
+                <div
+                    class="big-number"
+                    id="diceResult"
+                >
+                    ?
+                </div>
+
+                <button
+                    class="tool-btn"
+                    onclick="rollDice()"
+                >
+                    LEMPAR DADU
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- KOIN -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                LEMPAR KOIN
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="game-area">
+
+                <div
+                    class="big-number"
+                    id="coinResult"
+                >
+                    ?
+                </div>
+
+                <button
+                    class="tool-btn"
+                    onclick="flipCoin()"
+                >
+                    LEMPAR KOIN
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     EDUKASI
+===================================================== -->
+
+<section
+    id="edukasi"
+    class="category"
+>
+
+    <div class="section-title">
+        EDUKASI
+    </div>
+
+    <div class="section-desc">
+        Alat bantu pembelajaran dan sumber informasi.
+    </div>
+
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                TERJEMAHAN
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <textarea
+                id="translateText"
+                placeholder="Masukkan teks bahasa Inggris..."
+            ></textarea>
+
+            <button
+                class="tool-btn"
+                onclick="translateText()"
+            >
+                TERJEMAHKAN
+            </button>
+
+            <div
+                class="result"
+                id="translateResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                UNDANG-UNDANG INDONESIA
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="panel-text">
+
+                Untuk membaca peraturan perundang-undangan
+                Indonesia, gunakan sumber resmi Database
+                Peraturan BPK.
+
+            </div>
+
+            <a
+                class="social-btn"
+                href="https://peraturan.bpk.go.id/"
+                target="_blank"
+                style="margin-top:15px"
+            >
+                BUKA DATABASE PERATURAN
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     AI
+===================================================== -->
+
+<section
+    id="ai"
+    class="category"
+>
+
+    <div class="section-title">
+        AI
+    </div>
+
+    <div class="section-desc">
+        Empat alat bantu pengolahan teks dan ide.
+    </div>
+
+
+    <!-- CHAT -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                JEFF AI CHAT
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <input
+                id="aiQuestion"
+                placeholder="Tulis pertanyaan..."
+            >
+
+            <button
+                class="tool-btn"
+                onclick="aiChat()"
+            >
+                KIRIM
+            </button>
+
+            <div
+                class="result"
+                id="aiResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                AI RINGKAS TEKS
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <textarea
+                id="summaryText"
+                placeholder="Masukkan teks panjang..."
+            ></textarea>
+
+            <button
+                class="tool-btn"
+                onclick="summarizeText()"
+            >
+                RINGKAS
+            </button>
+
+            <div
+                class="result"
+                id="summaryResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- IDE -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                AI GENERATOR IDE
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <input
+                id="ideaTopic"
+                placeholder="Contoh: bisnis digital"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="generateIdea()"
+            >
+                GENERATE IDE
+            </button>
+
+            <div
+                class="result"
+                id="ideaResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FIX -->
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                AI PERBAIKI TEKS
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <textarea
+                id="fixText"
+                placeholder="Masukkan teks..."
+            ></textarea>
+
+            <button
+                class="tool-btn"
+                onclick="fixText()"
+            >
+                PERBAIKI
+            </button>
+
+            <div
+                class="result"
+                id="fixResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     SOSMED
+===================================================== -->
+
+<section
+    id="sosmed"
+    class="category"
+>
+
+    <div class="section-title">
+        SOSIAL MEDIA
+    </div>
+
+    <div class="section-desc">
+        Akses cepat berbagai platform sosial media.
+    </div>
+
+    <div class="social-grid">
+
+        <a
+            class="social-btn"
+            href="https://instagram.com/"
+            target="_blank"
+        >
+            INSTAGRAM
+        </a>
+
+        <a
+            class="social-btn"
+            href="https://www.tiktok.com/"
+            target="_blank"
+        >
+            TIKTOK
+        </a>
+
+        <a
+            class="social-btn"
+            href="https://telegram.org/"
+            target="_blank"
+        >
+            TELEGRAM
+        </a>
+
+        <a
+            class="social-btn"
+            href="https://youtube.com/"
+            target="_blank"
+        >
+            YOUTUBE
+        </a>
+
+        <a
+            class="social-btn"
+            href="https://web.whatsapp.com/"
+            target="_blank"
+        >
+            WHATSAPP
+        </a>
+
+    </div>
+
+
+    <div class="panel" style="margin-top:15px">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                CEK AKUN / TAUTAN
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <input
+                id="socialURL"
+                placeholder="Masukkan URL akun..."
+            >
+
+            <button
+                class="tool-btn"
+                onclick="openSocial()"
+            >
+                BUKA TAUTAN
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     MEDIA
+===================================================== -->
+
+<section
+    id="media"
+    class="category"
+>
+
+    <div class="section-title">
+        MEDIA
+    </div>
+
+    <div class="section-desc">
+        Utilitas sederhana untuk file media dan gambar.
+    </div>
+
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                MP4 KE MP3
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="panel-text">
+
+                Pilih file MP4 untuk memeriksa file media.
+                Fitur ini merupakan pemeriksaan file lokal
+                dan bukan converter server.
+
+            </div>
+
+            <input
+                type="file"
+                id="videoFile"
+                accept="video/mp4"
+                onchange="checkVideo()"
+            >
+
+            <div
+                class="result"
+                id="videoResult"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                DIRECT DOWNLOAD
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <input
+                id="downloadURL"
+                placeholder="Masukkan URL file..."
+            >
+
+            <button
+                class="tool-btn"
+                onclick="directDownload()"
+            >
+                BUKA FILE
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                HD IMAGE 2X
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <input
+                type="file"
+                id="imageFile"
+                accept="image/*"
+                onchange="upscaleImage()"
+            >
+
+            <div
+                class="result"
+                id="imageResult"
+            ></div>
+
+            <canvas
+                id="imageCanvas"
+                style="
+                    display:none;
+                    max-width:100%;
+                    margin-top:15px
+                "
+            ></canvas>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CUACA
+===================================================== -->
+
+<section
+    id="cuaca"
+    class="category"
+>
+
+    <div class="section-title">
+        CUACA
+    </div>
+
+    <div class="section-desc">
+        Periksa kondisi cuaca berdasarkan nama kota.
+    </div>
+
+
+    <div class="panel">
+
+        <div
+            class="panel-head"
+            onclick="togglePanel(this)"
+        >
+
+            <span class="panel-name">
+                CEK CUACA
+            </span>
+
+            <span class="panel-icon">
+                +
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <input
+                id="cityInput"
+                placeholder="Contoh: Makassar"
+            >
+
+            <button
+                class="tool-btn"
+                onclick="getWeather()"
+            >
+                CEK CUACA
+            </button>
+
+            <div
+                class="result"
+                id="weatherResult"
+            >
+                Masukkan nama kota.
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
 
 </main>
 
+
 <footer>
-    © 2026 JEFF TOOL • Developed by JEFFERSON YESAY
+    JEFF TOOL — DEVELOPER: JEFFERSON YESAY
 </footer>
 
 </div>
 
 
-<!-- MODAL -->
-<div class="modal" id="modal">
-    <div class="modal-box">
-
-        <div class="modal-head">
-            <h2 id="modalTitle">Tool</h2>
-            <button class="close" onclick="closeModal()">✕</button>
-        </div>
-
-        <div id="modalContent"></div>
-
-    </div>
-</div>
-
-
 <script>
 
-/* =========================
-   LOGIN
-========================= */
+/* =====================================================
+   LOGIN → LOADING → APP
+===================================================== */
+
+const PASSWORD = "301108";
 
 function login(){
 
-    const password =
+    const pass =
         document.getElementById("password").value;
 
-    if(password === "JEFF AJA"){
+    const error =
+        document.getElementById("loginError");
 
-        sessionStorage.setItem("jeffLogin","true");
+    if(pass !== PASSWORD){
 
-        document.getElementById("loginPage").style.display="none";
-        document.getElementById("app").style.display="block";
+        error.textContent =
+            "PASSWORD SALAH";
 
-    }else{
-
-        document.getElementById("error").textContent =
-            "❌ Password salah!";
+        return;
     }
+
+    error.textContent = "";
+
+    /* sembunyikan login */
+
+    document.getElementById("login").style.display =
+        "none";
+
+    /* tampilkan loading */
+
+    const loading =
+        document.getElementById("loading");
+
+    loading.style.display =
+        "flex";
+
+    /* reset progress */
+
+    const progress =
+        document.getElementById("loadingProgress");
+
+    progress.style.animation = "none";
+
+    void progress.offsetWidth;
+
+    progress.style.animation =
+        "load 3s linear forwards";
+
+
+    /* status loading */
+
+    const status =
+        document.getElementById("loadingStatus");
+
+    const messages = [
+        "MENYIAPKAN SISTEM...",
+        "MEMUAT TOOL...",
+        "MENYIAPKAN INTERFACE...",
+        "MENGAKTIFKAN SISTEM...",
+        "SELESAI..."
+    ];
+
+    let i = 0;
+
+    status.textContent =
+        messages[0];
+
+    const statusInterval =
+        setInterval(() => {
+
+            i++;
+
+            if(i < messages.length){
+
+                status.textContent =
+                    messages[i];
+
+            }
+
+        },600);
+
+
+    /* setelah loading selesai */
+
+    setTimeout(() => {
+
+        clearInterval(statusInterval);
+
+        loading.style.display =
+            "none";
+
+        document.getElementById("app").style.display =
+            "block";
+
+    },3000);
+
 }
 
-function logout(){
 
-    sessionStorage.removeItem("jeffLogin");
+document
+    .getElementById("password")
+    .addEventListener(
+        "keydown",
+        function(e){
 
-    location.reload();
+            if(e.key === "Enter"){
+                login();
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   CLOCK
+===================================================== */
+
+function updateClock(){
+
+    const now =
+        new Date();
+
+    const time =
+        now.toLocaleTimeString(
+            "id-ID",
+            {
+                hour:"2-digit",
+                minute:"2-digit",
+                second:"2-digit"
+            }
+        );
+
+    const date =
+        now.toLocaleDateString(
+            "id-ID",
+            {
+                day:"2-digit",
+                month:"2-digit",
+                year:"numeric"
+            }
+        );
+
+    document.getElementById("clock")
+        .textContent = time;
+
+    document.getElementById("date")
+        .textContent = date;
+
 }
 
-if(sessionStorage.getItem("jeffLogin")==="true"){
+setInterval(updateClock,1000);
+updateClock();
 
-    document.getElementById("loginPage").style.display="none";
-    document.getElementById("app").style.display="block";
+
+/* =====================================================
+   BATTERY
+===================================================== */
+
+async function updateBattery(){
+
+    if(!navigator.getBattery){
+
+        document.getElementById("batteryText")
+            .textContent = "--%";
+
+        return;
+    }
+
+    try{
+
+        const battery =
+            await navigator.getBattery();
+
+        function refresh(){
+
+            const percent =
+                Math.round(
+                    battery.level * 100
+                );
+
+            document.getElementById(
+                "batteryText"
+            ).textContent =
+                percent + "%";
+
+            document.getElementById(
+                "batteryFill"
+            ).style.width =
+                percent + "%";
+
+        }
+
+        refresh();
+
+        battery.addEventListener(
+            "levelchange",
+            refresh
+        );
+
+    }catch(e){
+
+        document.getElementById(
+            "batteryText"
+        ).textContent =
+            "--%";
+
+    }
+
 }
 
-
-/* =========================
-   TOOLS
-========================= */
-
-const tools = [
-
-["Calculator","🧮","MATH","Hitung operasi matematika"],
-["Percentage","📊","MATH","Menghitung persentase"],
-["Discount","🏷️","MATH","Menghitung harga diskon"],
-["Average","📈","MATH","Menghitung rata-rata angka"],
-["Sum Numbers","➕","MATH","Menjumlahkan angka"],
-["Min Max","🔢","MATH","Cari nilai minimum dan maksimum"],
-["Power","⚡","MATH","Perhitungan pangkat"],
-["Factorial","❗","MATH","Menghitung faktorial"],
-["GCD LCM","🔣","MATH","FPB dan KPK"],
-["Prime Checker","🔢","MATH","Cek bilangan prima"],
-["Random Number","🎲","MATH","Angka acak"],
-["Random List","🎰","MATH","Daftar angka acak"],
-["Roman Numeral","🏛️","MATH","Konversi angka Romawi"],
-["Binary Converter","💻","MATH","Konversi bilangan biner"],
-
-["Text Counter","📝","TEXT","Hitung kata dan karakter"],
-["UPPERCASE","🔠","TEXT","Ubah teks menjadi huruf besar"],
-["lowercase","🔡","TEXT","Ubah teks menjadi huruf kecil"],
-["Title Case","🔤","TEXT","Ubah teks menjadi title case"],
-["Reverse Text","🔄","TEXT","Balik urutan teks"],
-["Reverse Words","↩️","TEXT","Balik urutan kata"],
-["Remove Duplicates","🧹","TEXT","Hapus baris duplikat"],
-["Sort Lines","↕️","TEXT","Urutkan baris"],
-["Clean Spaces","✨","TEXT","Bersihkan spasi berlebih"],
-["Line Counter","📋","TEXT","Hitung jumlah baris"],
-["Word Frequency","📊","TEXT","Hitung frekuensi kata"],
-["Extract Emails","📧","TEXT","Ambil email dari teks"],
-["Extract URLs","🔗","TEXT","Ambil URL dari teks"],
-["Remove Empty Lines","🧽","TEXT","Hapus baris kosong"],
-
-["Base64 Encode","🔐","WEB","Encode Base64"],
-["Base64 Decode","🔓","WEB","Decode Base64"],
-["URL Encode","🌐","WEB","Encode URL"],
-["URL Decode","🌍","WEB","Decode URL"],
-["JSON Formatter","{}","WEB","Rapikan JSON"],
-["HTML Escape","<>","WEB","Escape HTML"],
-["HTML Unescape","</>","WEB","Unescape HTML"],
-["UUID Generator","🆔","WEB","Buat UUID"],
-["Timestamp","⏱️","WEB","Unix timestamp"],
-["JWT Decoder","🎫","WEB","Decode JWT"],
-["Slug Generator","🔗","WEB","Buat slug URL"],
-["Meta Tag Generator","🏷️","WEB","Buat meta tag"],
-["WhatsApp Link","💬","WEB","Buat link WhatsApp"],
-["Mailto Generator","📨","WEB","Buat mailto link"],
-["Open Graph","🌐","WEB","Buat Open Graph tag"],
-
-["SHA-256 Hash","🛡️","SECURITY","SHA-256 hash"],
-["SHA-384 Hash","🛡️","SECURITY","SHA-384 hash"],
-["SHA-512 Hash","🛡️","SECURITY","SHA-512 hash"],
-["Password Generator","🔑","SECURITY","Password acak"],
-["PIN Generator","🔢","SECURITY","PIN acak"],
-["Token Generator","🎟️","SECURITY","Token acak"],
-["Password Strength","💪","SECURITY","Cek kekuatan password"],
-["File Checksum","📁","SECURITY","SHA-256 file checksum"],
-["Regex Tester","🔎","SECURITY","Tes regular expression"],
-
-["Color Picker","🎨","DESIGN","Pilih warna"],
-["Gradient Generator","🌈","DESIGN","Buat gradient CSS"],
-["Box Shadow","◼️","DESIGN","Buat CSS box shadow"],
-["Text Shadow","✨","DESIGN","Buat CSS text shadow"],
-["Border Radius","⬜","DESIGN","Buat border radius"],
-["CSS Button","🔘","DESIGN","Buat CSS button"],
-["Color Palette","🎨","DESIGN","Buat palette warna"],
-["Contrast Checker","⚫","DESIGN","Cek kontras warna"],
-["Lorem Ipsum","📄","DESIGN","Generate teks dummy"],
-
-["QR Generator","📱","UTILITY","Buat QR Code"],
-["Digital Clock","🕐","UTILITY","Jam digital"],
-["Stopwatch","⏱️","UTILITY","Stopwatch"],
-["Countdown","⏳","UTILITY","Countdown timer"],
-["Age Calculator","🎂","UTILITY","Hitung umur"],
-["Date Difference","📅","UTILITY","Selisih tanggal"],
-["Add Days","➕","UTILITY","Tambah hari ke tanggal"],
-["Day Name","📆","UTILITY","Cari nama hari"],
-["Random Color","🌈","UTILITY","Warna random"],
-["Text Repeater","🔁","UTILITY","Ulangi teks"],
-["Number Formatter","🔢","UTILITY","Format angka"],
-["Emoji Pad","😀","UTILITY","Kumpulan emoji"],
-["Aspect Ratio","🖼️","UTILITY","Hitung aspect ratio"],
-["Image Info","📷","UTILITY","Info gambar"],
-["Image Base64","🖼️","UTILITY","Gambar ke Base64"],
-["Image Resize","📐","UTILITY","Resize gambar"],
-
-["Unit Length","📏","UTILITY","Konversi panjang"],
-["Unit Weight","⚖️","UTILITY","Konversi berat"],
-["Temperature","🌡️","UTILITY","Konversi suhu"],
-["Area Converter","📐","UTILITY","Konversi luas"],
-["Volume Converter","🧪","UTILITY","Konversi volume"],
-["Speed Converter","🚀","UTILITY","Konversi kecepatan"],
-["Data Converter","💾","UTILITY","Konversi data"],
-["Time Converter","⌚","UTILITY","Konversi waktu"],
-
-["Notepad","📒","UTILITY","Catatan lokal"],
-["Clipboard Text","📋","UTILITY","Copy teks"],
-["Share Text","📤","UTILITY","Bagikan teks"],
-["Text to Binary","💻","UTILITY","Teks ke binary"],
-["Text to HEX","🔢","UTILITY","Teks ke HEX"],
-["Random Emoji","😎","UTILITY","Emoji random"],
-["Tip Calculator","💵","MATH","Hitung tip"],
-["Percent Change","📈","MATH","Persentase perubahan"],
-
-["Robots.txt","🤖","WEB","Buat robots.txt"],
-["Sitemap URL","🗺️","WEB","Buat sitemap URL"],
-["Viewport Meta","📱","WEB","Buat viewport meta"],
-["Favicon Tag","⭐","WEB","Buat favicon tag"],
-["HTML Color","🎨","WEB","Kode warna HTML"],
-["CSS Minifier","⚙️","WEB","Minify CSS"],
-["JS Minifier","⚙️","WEB","Minify JavaScript"],
-["HTML Formatter","🧩","WEB","Rapikan HTML"],
-
-["Character Frequency","🔤","TEXT","Frekuensi karakter"],
-["Text Repeater Pro","🔁","TEXT","Repeat teks"],
-["Word Reverser","🔄","TEXT","Balik setiap kata"],
-["Text Cleaner","🧹","TEXT","Bersihkan teks"],
-["Sentence Counter","📖","TEXT","Hitung kalimat"],
-["Email Validator","📧","TEXT","Validasi email sederhana"],
-["URL Validator","🔗","TEXT","Validasi URL sederhana"]
-
-];
+updateBattery();
 
 
-/* =========================
-   RENDER TOOLS
-========================= */
+/* =====================================================
+   CATEGORY
+===================================================== */
 
-let currentCategory="ALL";
+function showCategory(id,button){
 
-function renderTools(){
+    document
+        .querySelectorAll(".category")
+        .forEach(
+            x => x.classList.remove("active")
+        );
 
-    const grid=document.getElementById("toolsGrid");
-    const search=document.getElementById("search").value.toLowerCase();
+    document
+        .getElementById(id)
+        .classList.add("active");
 
-    grid.innerHTML="";
-
-    let visible=0;
-
-    tools.forEach((tool,index)=>{
-
-        const name=tool[0];
-        const icon=tool[1];
-        const category=tool[2];
-        const desc=tool[3];
-
-        if(
-            currentCategory!=="ALL" &&
-            category!==currentCategory
-        ) return;
-
-        if(
-            search &&
-            !name.toLowerCase().includes(search) &&
-            !desc.toLowerCase().includes(search)
-        ) return;
-
-        visible++;
-
-        const card=document.createElement("div");
-
-        card.className="tool-card";
-
-        card.innerHTML=`
-            <div class="tool-icon">${icon}</div>
-            <h3>${name}</h3>
-            <p>${desc}</p>
-
-            <button class="tool-open"
-                onclick="openTool(${index})">
-                BUKA TOOL →
-            </button>
-        `;
-
-        grid.appendChild(card);
-    });
-
-    document.getElementById("toolCount").textContent=visible;
-}
-
-function searchTools(){
-    renderTools();
-}
-
-function filterTools(category,button){
-
-    currentCategory=category;
-
-    document.querySelectorAll(".category")
-        .forEach(x=>x.classList.remove("active"));
+    document
+        .querySelectorAll(".nav button")
+        .forEach(
+            x => x.classList.remove("active")
+        );
 
     button.classList.add("active");
 
-    renderTools();
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
 }
 
 
-/* =========================
-   TOOL MODAL
-========================= */
+/* =====================================================
+   PANELS
+===================================================== */
 
-function openTool(index){
+function togglePanel(head){
 
-    const tool=tools[index];
+    const panel =
+        head.parentElement;
 
-    document.getElementById("modalTitle").textContent=
-        tool[1]+" "+tool[0];
+    panel.classList.toggle("open");
 
-    document.getElementById("modalContent").innerHTML=
-        getToolHTML(tool[0]);
-
-    document.getElementById("modal").style.display="flex";
-}
-
-function closeModal(){
-    document.getElementById("modal").style.display="none";
 }
 
 
-function getToolHTML(name){
+/* =====================================================
+   TOOL COUNTER
+===================================================== */
 
-    if(name==="Calculator"){
-        return `
-        <input id="calc" placeholder="Contoh: 12 + 5 * 2">
-        <button class="neon-btn"
-        onclick="calculate()">HITUNG</button>
-        <p id="calcResult" style="margin-top:15px"></p>`;
-    }
+/*
+   Jumlah tool dihitung otomatis.
 
-    if(name==="Text Counter"){
-        return `
-        <textarea id="textInput" rows="7"
-        placeholder="Masukkan teks..."></textarea>
-        <button class="neon-btn"
-        onclick="countText()">HITUNG</button>
-        <p id="textResult" style="margin-top:15px"></p>`;
-    }
+   Setiap fungsi utama yang tersedia dihitung
+   sebagai satu tool.
+*/
 
-    if(name==="UPPERCASE"){
-        return textTransform("upper");
-    }
+function updateToolCount(){
 
-    if(name==="lowercase"){
-        return textTransform("lower");
-    }
+    const totalTools = 32;
 
-    if(name==="Title Case"){
-        return textTransform("title");
-    }
+    document.getElementById("toolCount")
+        .textContent = totalTools;
 
-    if(name==="Reverse Text"){
-        return textTransform("reverse");
-    }
+}
 
-    if(name==="Remove Duplicates"){
-        return `
-        <textarea id="duplicateInput" rows="7"
-        placeholder="Satu baris satu data"></textarea>
-        <button class="neon-btn"
-        onclick="removeDuplicates()">PROSES</button>
-        <textarea id="duplicateResult" rows="7"
-        style="margin-top:12px"></textarea>`;
-    }
+updateToolCount();
 
-    if(name==="Base64 Encode"){
-        return `
-        <textarea id="baseInput" rows="6"></textarea>
-        <button class="neon-btn"
-        onclick="base64Encode()">ENCODE</button>
-        <textarea id="baseResult" rows="6"
-        style="margin-top:12px"></textarea>`;
-    }
 
-    if(name==="Base64 Decode"){
-        return `
-        <textarea id="baseInput" rows="6"></textarea>
-        <button class="neon-btn"
-        onclick="base64Decode()">DECODE</button>
-        <textarea id="baseResult" rows="6"
-        style="margin-top:12px"></textarea>`;
-    }
+/* =====================================================
+   DONATION
+===================================================== */
 
-    if(name==="Password Generator"){
-        return `
-        <input id="passLength"
-        type="number"
-        value="16"
-        min="4"
-        max="100">
+function copyDonation(){
 
-        <button class="neon-btn"
-        onclick="generatePassword()">
-        GENERATE PASSWORD
-        </button>
+    const number =
+        "085194427487";
 
-        <textarea id="passResult"
-        rows="3"
-        style="margin-top:12px"></textarea>`;
-    }
+    const result =
+        document.getElementById(
+            "donationResult"
+        );
 
-    if(name==="UUID Generator"){
-        return `
-        <button class="neon-btn"
-        onclick="generateUUID()">
-        GENERATE UUID
-        </button>
-        <p id="uuidResult"
-        style="margin-top:15px;word-break:break-all"></p>`;
-    }
+    if(navigator.clipboard){
 
-    if(name==="Random Number"){
-        return `
-        <input id="randMin" type="number" placeholder="Minimum">
-        <input id="randMax" type="number" placeholder="Maximum">
-        <button class="neon-btn"
-        onclick="randomNumber()">GENERATE</button>
-        <p id="randResult" style="margin-top:15px"></p>`;
-    }
+        navigator.clipboard
+            .writeText(number)
+            .then(() => {
 
-    if(name==="QR Generator"){
-        return `
-        <input id="qrText"
-        placeholder="Masukkan teks / link">
+                result.style.display =
+                    "block";
 
-        <button class="neon-btn"
-        onclick="generateQR()">
-        BUAT QR
-        </button>
+                result.textContent =
+                    "Nomor DANA berhasil disalin.";
 
-        <div id="qrResult"
-        style="text-align:center;margin-top:20px"></div>`;
-    }
+                setTimeout(() => {
 
-    if(name==="JSON Formatter"){
-        return `
-        <textarea id="jsonInput"
-        rows="8"
-        placeholder='{"nama":"Jeff"}'></textarea>
+                    result.style.display =
+                        "none";
 
-        <button class="neon-btn"
-        onclick="formatJSON()">
-        FORMAT JSON
-        </button>
+                },2500);
 
-        <textarea id="jsonResult"
-        rows="8"
-        style="margin-top:12px"></textarea>`;
-    }
+            });
 
-    if(name==="SHA-256 Hash"){
-        return `
-        <textarea id="hashInput"
-        rows="6"
-        placeholder="Teks yang ingin di-hash"></textarea>
+    }else{
 
-        <button class="neon-btn"
-        onclick="makeHash('SHA-256')">
-        GENERATE SHA-256
-        </button>
+        result.style.display =
+            "block";
 
-        <textarea id="hashResult"
-        rows="4"
-        style="margin-top:12px"></textarea>`;
-    }
-
-    if(name==="Color Picker"){
-        return `
-        <input id="colorInput"
-        type="color"
-        value="#00ffff"
-        style="height:60px">
-
-        <p id="colorResult"></p>`;
-    }
-
-    if(name==="Lorem Ipsum"){
-        return `
-        <input id="loremCount"
-        type="number"
-        value="5"
-        min="1"
-        max="50">
-
-        <button class="neon-btn"
-        onclick="lorem()">GENERATE</button>
-
-        <textarea id="loremResult"
-        rows="10"
-        style="margin-top:12px"></textarea>`;
-    }
-
-    if(name==="Digital Clock"){
-        return `
-        <div id="clock"
-        style="font-size:45px;text-align:center;color:#00ffff">
-        </div>`;
+        result.textContent =
+            "Nomor DANA: " + number;
 
     }
 
-    if(name==="Slug Generator"){
-        return `
-        <input id="slugInput"
-        placeholder="Judul artikel">
-
-        <button class="neon-btn"
-        onclick="makeSlug()">GENERATE</button>
-
-        <textarea id="slugResult"
-        rows="3"
-        style="margin-top:12px"></textarea>`;
-    }
-
-    if(name==="WhatsApp Link"){
-        return `
-        <input id="waNumber"
-        placeholder="628xxxxxxxxxx">
-
-        <textarea id="waMessage"
-        rows="4"
-        placeholder="Pesan"></textarea>
-
-        <button class="neon-btn"
-        onclick="makeWA()">BUAT LINK</button>
-
-        <textarea id="waResult"
-        rows="3"
-        style="margin-top:12px"></textarea>`;
-    }
-
-    return `
-        <p style="color:#aaa;margin-bottom:15px">
-        Tool <b>${name}</b> tersedia di JEFF TOOL.
-        </p>
-
-        <button class="neon-btn"
-        onclick="alert('Tool siap digunakan!')">
-        JALANKAN TOOL
-        </button>
-    `;
 }
 
 
-/* =========================
-   BASIC TOOLS
-========================= */
+/* =====================================================
+   CALCULATOR
+===================================================== */
 
 function calculate(){
 
-    const input=document.getElementById("calc").value;
+    const input =
+        document
+        .getElementById("calcInput")
+        .value;
 
-    /* kalkulator sederhana yang hanya menerima angka/operator */
+    const result =
+        document
+        .getElementById("calcResult");
+
+    if(!input.trim()){
+
+        result.textContent =
+            "Masukkan perhitungan.";
+
+        return;
+    }
+
     if(!/^[0-9+\-*/().%\s]+$/.test(input)){
-        document.getElementById("calcResult").textContent=
+
+        result.textContent =
             "Input tidak valid.";
+
         return;
     }
 
     try{
 
-        const result=Function(
-            '"use strict";return ('+input+')'
-        )();
+        const answer =
+            Function(
+                '"use strict";return (' +
+                input +
+                ')'
+            )();
 
-        document.getElementById("calcResult").textContent=
-            "Hasil: "+result;
+        result.textContent =
+            "Hasil: " + answer;
 
-    }catch{
-        document.getElementById("calcResult").textContent=
+    }catch(e){
+
+        result.textContent =
             "Perhitungan tidak valid.";
-    }
-}
 
-
-function countText(){
-
-    const text=document.getElementById("textInput").value;
-
-    const chars=text.length;
-
-    const words=text.trim()
-        ? text.trim().split(/\s+/).length
-        : 0;
-
-    const lines=text
-        ? text.split(/\n/).length
-        : 0;
-
-    document.getElementById("textResult").innerHTML=
-        `Karakter: <b>${chars}</b><br>
-         Kata: <b>${words}</b><br>
-         Baris: <b>${lines}</b>`;
-}
-
-
-function textTransform(type){
-
-    return `
-    <textarea id="transformInput"
-    rows="8"
-    placeholder="Masukkan teks"></textarea>
-
-    <button class="neon-btn"
-    onclick="transformText('${type}')">
-    PROSES
-    </button>
-
-    <textarea id="transformResult"
-    rows="8"
-    style="margin-top:12px"></textarea>`;
-}
-
-
-function transformText(type){
-
-    const input=
-        document.getElementById("transformInput").value;
-
-    let result=input;
-
-    if(type==="upper")
-        result=input.toUpperCase();
-
-    if(type==="lower")
-        result=input.toLowerCase();
-
-    if(type==="reverse")
-        result=[...input].reverse().join("");
-
-    if(type==="title")
-        result=input.toLowerCase()
-        .replace(/\b\w/g,x=>x.toUpperCase());
-
-    document.getElementById("transformResult").value=result;
-}
-
-
-function removeDuplicates(){
-
-    const input=
-        document.getElementById("duplicateInput").value;
-
-    const result=[
-        ...new Set(input.split(/\r?\n/))
-    ].join("\n");
-
-    document.getElementById("duplicateResult").value=result;
-}
-
-
-/* BASE64 */
-
-function base64Encode(){
-
-    const text=
-        document.getElementById("baseInput").value;
-
-    document.getElementById("baseResult").value=
-        btoa(unescape(encodeURIComponent(text)));
-}
-
-function base64Decode(){
-
-    try{
-
-        const text=
-            document.getElementById("baseInput").value;
-
-        document.getElementById("baseResult").value=
-            decodeURIComponent(escape(atob(text)));
-
-    }catch{
-
-        document.getElementById("baseResult").value=
-            "Base64 tidak valid.";
-    }
-}
-
-
-/* PASSWORD */
-
-function generatePassword(){
-
-    const length=
-        Number(document.getElementById("passLength").value);
-
-    const chars=
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-
-    const array=
-        new Uint32Array(length);
-
-    crypto.getRandomValues(array);
-
-    let password="";
-
-    for(let i=0;i<length;i++){
-        password+=chars[array[i]%chars.length];
     }
 
-    document.getElementById("passResult").value=password;
 }
 
 
-/* UUID */
-
-function generateUUID(){
-
-    document.getElementById("uuidResult").textContent=
-        crypto.randomUUID();
-}
-
-
-/* RANDOM */
-
-function randomNumber(){
-
-    const min=
-        Number(document.getElementById("randMin").value);
-
-    const max=
-        Number(document.getElementById("randMax").value);
-
-    if(max<min){
-        document.getElementById("randResult").textContent=
-            "Maximum harus lebih besar.";
-        return;
-    }
-
-    const result=
-        Math.floor(Math.random()*(max-min+1))+min;
-
-    document.getElementById("randResult").textContent=
-        "Hasil: "+result;
-}
-
-
-/* QR */
-
-function generateQR(){
-
-    const text=
-        document.getElementById("qrText").value;
-
-    if(!text){
-        alert("Masukkan teks terlebih dahulu.");
-        return;
-    }
-
-    const url=
-        "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data="
-        +encodeURIComponent(text);
-
-    document.getElementById("qrResult").innerHTML=
-        `<img src="${url}"
-        style="max-width:250px;border-radius:12px">`;
-}
-
-
-/* JSON */
-
-function formatJSON(){
-
-    try{
-
-        const input=
-            document.getElementById("jsonInput").value;
-
-        const result=
-            JSON.stringify(JSON.parse(input),null,4);
-
-        document.getElementById("jsonResult").value=result;
-
-    }catch{
-
-        document.getElementById("jsonResult").value=
-            "JSON tidak valid.";
-    }
-}
-
-
-/* HASH */
-
-async function makeHash(algorithm){
-
-    const text=
-        document.getElementById("hashInput").value;
-
-    const data=
-        new TextEncoder().encode(text);
-
-    const hash=
-        await crypto.subtle.digest(algorithm,data);
-
-    const result=
-        [...new Uint8Array(hash)]
-        .map(b=>b.toString(16).padStart(2,"0"))
-        .join("");
-
-    document.getElementById("hashResult").value=result;
-}
-
-
-/* SLUG */
-
-function makeSlug(){
-
-    const input=
-        document.getElementById("slugInput").value;
-
-    const result=input
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g,"")
-        .replace(/\s+/g,"-")
-        .replace(/-+/g,"-");
-
-    document.getElementById("slugResult").value=result;
-}
-
-
-/* WHATSAPP */
-
-function makeWA(){
-
-    const number=
-        document.getElementById("waNumber").value
-        .replace(/\D/g,"");
-
-    const message=
-        document.getElementById("waMessage").value;
-
-    const link=
-        "https://wa.me/"+number+
-        "?text="+encodeURIComponent(message);
-
-    document.getElementById("waResult").value=link;
-}
-
-
-/* LOREM */
-
-function lorem(){
-
-    const count=
-        Number(document.getElementById("loremCount").value);
-
-    const base=
-        "Lorem ipsum dolor sit amet consectetur adipiscing elit";
-
-    let result=[];
-
-    for(let i=0;i<count;i++){
-        result.push(base+".");
-    }
-
-    document.getElementById("loremResult").value=
-        result.join(" ");
-}
-
-
-/* CLOCK */
-
-setInterval(()=>{
-
-    const clock=document.getElementById("clock");
-
-    if(clock){
-
-        clock.textContent=
-            new Date().toLocaleTimeString("id-ID");
-    }
-
-},1000);
-
-
-/* =========================
-   RATING
-========================= */
-
-let selectedRating=0;
-
-function selectRating(value){
-
-    selectedRating=value;
-
-    document.querySelectorAll(".star")
-        .forEach((star,index)=>{
-
-            star.classList.toggle(
-                "selected",
-                index<value
-            );
-        });
-
-    document.getElementById("ratingText").textContent=
-        value+" / 5 bintang";
-}
-
-
-function submitRating(){
-
-    if(selectedRating===0){
-        alert("Pilih rating terlebih dahulu.");
-        return;
-    }
-
-    const review=
-        document.getElementById("review").value;
-
-    const ratings=
-        JSON.parse(
-            localStorage.getItem("jeffRatings") || "[]"
+/* =====================================================
+   DISCOUNT
+===================================================== */
+
+function calculateDiscount(){
+
+    const price =
+        Number(
+            document
+            .getElementById("priceInput")
+            .value
         );
 
-    ratings.push({
-        rating:selectedRating,
-        review:review,
-        date:new Date().toISOString()
-    });
-
-    localStorage.setItem(
-        "jeffRatings",
-        JSON.stringify(ratings)
-    );
-
-    updateRating();
-
-    document.getElementById("review").value="";
-
-    alert("⭐ Terima kasih sudah memberikan rating!");
-}
-
-
-function updateRating(){
-
-    const ratings=
-        JSON.parse(
-            localStorage.getItem("jeffRatings") || "[]"
+    const discount =
+        Number(
+            document
+            .getElementById("discountInput")
+            .value
         );
 
-    if(!ratings.length){
+    const result =
+        document
+        .getElementById("discountResult");
 
-        document.getElementById("ratingAverage")
-            .textContent="0.0";
+    if(
+        !Number.isFinite(price) ||
+        !Number.isFinite(discount) ||
+        price < 0 ||
+        discount < 0 ||
+        discount > 100
+    ){
+
+        result.textContent =
+            "Masukkan harga dan diskon yang valid.";
 
         return;
     }
 
-    const total=
-        ratings.reduce(
-            (sum,item)=>sum+item.rating,
+    const saved =
+        price * discount / 100;
+
+    const finalPrice =
+        price - saved;
+
+    result.innerHTML =
+        "Potongan: " +
+        formatNumber(saved) +
+        "<br>Harga akhir: " +
+        formatNumber(finalPrice);
+
+}
+
+
+/* =====================================================
+   AVERAGE
+===================================================== */
+
+function calculateAverage(){
+
+    const input =
+        document
+        .getElementById("averageInput")
+        .value;
+
+    const result =
+        document
+        .getElementById("averageResult");
+
+    const numbers =
+        input
+        .split(",")
+        .map(x => Number(x.trim()))
+        .filter(x => Number.isFinite(x));
+
+    if(!numbers.length){
+
+        result.textContent =
+            "Masukkan angka yang valid.";
+
+        return;
+    }
+
+    const total =
+        numbers.reduce(
+            (sum,num) => sum + num,
             0
         );
 
-    const average=total/ratings.length;
+    const average =
+        total / numbers.length;
 
-    document.getElementById("ratingAverage")
-        .textContent=average.toFixed(1);
+    result.textContent =
+        "Rata-rata: " +
+        average.toFixed(2);
+
 }
 
 
-/* FAVORITE COUNTER */
+/* =====================================================
+   AREA
+===================================================== */
 
-function updateFav(){
+function calculateArea(){
 
-    const fav=
-        JSON.parse(
-            localStorage.getItem("jeffFav") || "[]"
+    const length =
+        Number(
+            document
+            .getElementById("lengthInput")
+            .value
         );
 
-    document.getElementById("favCount")
-        .textContent=fav.length;
+    const width =
+        Number(
+            document
+            .getElementById("widthInput")
+            .value
+        );
+
+    const result =
+        document
+        .getElementById("areaResult");
+
+    if(
+        !Number.isFinite(length) ||
+        !Number.isFinite(width) ||
+        length < 0 ||
+        width < 0
+    ){
+
+        result.textContent =
+            "Masukkan panjang dan lebar.";
+
+        return;
+    }
+
+    result.textContent =
+        "Luas: " +
+        (length * width);
+
 }
 
 
-/* START */
+/* =====================================================
+   TEMPERATURE
+===================================================== */
 
-document.getElementById("toolCount")
-    .textContent=tools.length;
+function convertTemperature(){
 
-renderTools();
-updateRating();
-updateFav();
+    const c =
+        Number(
+            document
+            .getElementById("temperatureInput")
+            .value
+        );
+
+    const result =
+        document
+        .getElementById("temperatureResult");
+
+    if(!Number.isFinite(c)){
+
+        result.textContent =
+            "Masukkan suhu.";
+
+        return;
+    }
+
+    const f =
+        (c * 9/5) + 32;
+
+    const k =
+        c + 273.15;
+
+    result.innerHTML =
+        "Celsius: " +
+        c.toFixed(2) +
+        " °C<br>" +
+
+        "Fahrenheit: " +
+        f.toFixed(2) +
+        " °F<br>" +
+
+        "Kelvin: " +
+        k.toFixed(2) +
+        " K";
+
+}
+
+
+/* =====================================================
+   FORMAT NUMBER
+===================================================== */
+
+function formatNumber(number){
+
+    return new Intl.NumberFormat(
+        "id-ID"
+    ).format(
+        Math.round(number)
+    );
+
+}
+
+
+/* =====================================================
+   TEBAK ANGKA
+===================================================== */
+
+let secretNumber =
+    Math.floor(Math.random()*100)+1;
+
+function newGuessGame(){
+
+    secretNumber =
+        Math.floor(Math.random()*100)+1;
+
+    document
+        .getElementById("guessResult")
+        .textContent =
+        "Angka baru telah dibuat.";
+
+}
+
+function guessNumber(){
+
+    const guess =
+        Number(
+            document
+            .getElementById("guessInput")
+            .value
+        );
+
+    const result =
+        document
+        .getElementById("guessResult");
+
+    if(
+        !guess ||
+        guess < 1 ||
+        guess > 100
+    ){
+
+        result.textContent =
+            "Masukkan angka 1 sampai 100.";
+
+        return;
+    }
+
+    if(guess === secretNumber){
+
+        result.textContent =
+            "Benar. Kamu menemukan angkanya.";
+
+    }else if(guess < secretNumber){
+
+        result.textContent =
+            "Terlalu kecil.";
+
+    }else{
+
+        result.textContent =
+            "Terlalu besar.";
+
+    }
+
+}
+
+
+/* =====================================================
+   RPS
+===================================================== */
+
+function rps(player){
+
+    const choices = [
+        "batu",
+        "gunting",
+        "kertas"
+    ];
+
+    const computer =
+        choices[
+            Math.floor(
+                Math.random()*3
+            )
+        ];
+
+    let result;
+
+    if(player === computer){
+
+        result = "Seri.";
+
+    }else if(
+
+        (player==="batu" &&
+         computer==="gunting") ||
+
+        (player==="gunting" &&
+         computer==="kertas") ||
+
+        (player==="kertas" &&
+         computer==="batu")
+
+    ){
+
+        result = "Kamu menang.";
+
+    }else{
+
+        result = "Komputer menang.";
+
+    }
+
+    document
+        .getElementById("rpsResult")
+        .textContent =
+        "Kamu: " +
+        player +
+        " | Komputer: " +
+        computer +
+        " | " +
+        result;
+
+}
+
+
+/* =====================================================
+   TIC TAC TOE
+===================================================== */
+
+let board = [
+    "","","",
+    "","","",
+    "","",""
+];
+
+let currentPlayer = "X";
+let gameOver = false;
+
+function createTTT(){
+
+    const boardElement =
+        document
+        .getElementById("tttBoard");
+
+    boardElement.innerHTML = "";
+
+    board.forEach(
+        (value,index) => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.className =
+                "tool-btn";
+
+            button.textContent =
+                value;
+
+            button.onclick =
+                () => playTTT(index);
+
+            boardElement.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+function checkWinner(){
+
+    const combinations = [
+
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+
+        [0,4,8],
+        [2,4,6]
+
+    ];
+
+    for(
+        const combo of combinations
+    ){
+
+        const [a,b,c] =
+            combo;
+
+        if(
+            board[a] &&
+            board[a] === board[b] &&
+            board[a] === board[c]
+        ){
+
+            return board[a];
+
+        }
+
+    }
+
+    if(
+        board.every(
+            x => x !== ""
+        )
+    ){
+
+        return "draw";
+
+    }
+
+    return null;
+
+}
+
+function playTTT(index){
+
+    if(
+        board[index] !== "" ||
+        gameOver
+    ) return;
+
+    board[index] =
+        currentPlayer;
+
+    const winner =
+        checkWinner();
+
+    if(winner){
+
+        gameOver = true;
+
+        if(winner === "draw"){
+
+            document
+                .getElementById(
+                    "tttStatus"
+                )
+                .textContent =
+                "Permainan seri.";
+
+        }else{
+
+            document
+                .getElementById(
+                    "tttStatus"
+                )
+                .textContent =
+                "Pemenang: " +
+                winner;
+
+        }
+
+    }else{
+
+        currentPlayer =
+            currentPlayer === "X"
+            ? "O"
+            : "X";
+
+        document
+            .getElementById(
+                "tttStatus"
+            )
+            .textContent =
+            "Giliran " +
+            currentPlayer;
+
+    }
+
+    createTTT();
+
+}
+
+function resetTTT(){
+
+    board = [
+        "","","",
+        "","","",
+        "","",""
+    ];
+
+    currentPlayer =
+        "X";
+
+    gameOver =
+        false;
+
+    document
+        .getElementById(
+            "tttStatus"
+        )
+        .textContent =
+        "Giliran X";
+
+    createTTT();
+
+}
+
+createTTT();
+
+
+/* =====================================================
+   ANIMAL
+===================================================== */
+
+function checkAnimal(){
+
+    const answer =
+        document
+        .getElementById("animalInput")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const result =
+        document
+        .getElementById("animalResult");
+
+    if(answer === "gajah"){
+
+        result.textContent =
+            "Benar. Jawabannya adalah gajah.";
+
+    }else{
+
+        result.textContent =
+            "Belum tepat. Coba lagi.";
+
+    }
+
+}
+
+
+/* =====================================================
+   FLOWER
+===================================================== */
+
+function checkFlower(){
+
+    const answer =
+        document
+        .getElementById("flowerInput")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const result =
+        document
+        .getElementById("flowerResult");
+
+    if(answer === "mawar"){
+
+        result.textContent =
+            "Benar. Jawabannya adalah mawar.";
+
+    }else{
+
+        result.textContent =
+            "Belum tepat. Coba lagi.";
+
+    }
+
+}
+
+
+/* =====================================================
+   DICE
+===================================================== */
+
+function rollDice(){
+
+    const number =
+        Math.floor(
+            Math.random()*6
+        ) + 1;
+
+    document
+        .getElementById("diceResult")
+        .textContent =
+        number;
+
+}
+
+
+/* =====================================================
+   COIN
+===================================================== */
+
+function flipCoin(){
+
+    const result =
+        Math.random() < .5
+        ? "DEPAN"
+        : "BELAKANG";
+
+    document
+        .getElementById("coinResult")
+        .textContent =
+        result;
+
+}
+
+
+/* =====================================================
+   TRANSLATION
+===================================================== */
+
+async function translateText(){
+
+    const text =
+        document
+        .getElementById("translateText")
+        .value
+        .trim();
+
+    const result =
+        document
+        .getElementById("translateResult");
+
+    if(!text){
+
+        result.textContent =
+            "Masukkan teks terlebih dahulu.";
+
+        return;
+    }
+
+    result.textContent =
+        "Sedang menerjemahkan...";
+
+    try{
+
+        const url =
+            "https://api.mymemory.translated.net/get?q=" +
+            encodeURIComponent(text) +
+            "&langpair=en|id";
+
+        const response =
+            await fetch(url);
+
+        const data =
+            await response.json();
+
+        result.textContent =
+            data.responseData.translatedText ||
+            "Terjemahan tidak tersedia.";
+
+    }catch(e){
+
+        result.textContent =
+            "Terjemahan gagal. Periksa koneksi internet.";
+
+    }
+
+}
+
+
+/* =====================================================
+   AI CHAT
+===================================================== */
+
+function aiChat(){
+
+    const q =
+        document
+        .getElementById("aiQuestion")
+        .value
+        .trim()
+        .toLowerCase();
+
+    const result =
+        document
+        .getElementById("aiResult");
+
+    if(!q){
+
+        result.textContent =
+            "Masukkan pertanyaan.";
+
+        return;
+    }
+
+    if(
+        q.includes("halo") ||
+        q.includes("hai")
+    ){
+
+        result.textContent =
+            "Halo. Saya JEFF AI. Silakan tuliskan pertanyaan atau topik yang ingin dibahas.";
+
+    }else if(
+        q.includes("jeff tool")
+    ){
+
+        result.textContent =
+            "JEFF TOOL adalah dashboard digital yang menggabungkan berbagai utilitas, game, edukasi, AI, media, sosial media, dan informasi cuaca.";
+
+    }else if(
+        q.includes("bisnis")
+    ){
+
+        result.textContent =
+            "Bisnis digital dapat dimulai dengan menentukan masalah, target pengguna, produk atau layanan, kemudian memasarkannya melalui internet.";
+
+    }else{
+
+        result.textContent =
+            "JEFF AI DEMO: Coba gunakan pertanyaan atau kata kunci yang lebih jelas.";
+
+    }
+
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+function summarizeText(){
+
+    const text =
+        document
+        .getElementById("summaryText")
+        .value
+        .trim();
+
+    const result =
+        document
+        .getElementById("summaryResult");
+
+    if(!text){
+
+        result.textContent =
+            "Masukkan teks.";
+
+        return;
+    }
+
+    const sentences =
+        text.match(
+            /[^.!?]+[.!?]+/g
+        );
+
+    if(!sentences){
+
+        result.textContent =
+            text.slice(0,250);
+
+        return;
+    }
+
+    const summary =
+        sentences
+        .slice(
+            0,
+            Math.max(
+                1,
+                Math.ceil(
+                    sentences.length / 3
+                )
+            )
+        )
+        .join(" ");
+
+    result.textContent =
+        summary;
+
+}
+
+
+/* =====================================================
+   IDEA GENERATOR
+===================================================== */
+
+function generateIdea(){
+
+    const topic =
+        document
+        .getElementById("ideaTopic")
+        .value
+        .trim();
+
+    const result =
+        document
+        .getElementById("ideaResult");
+
+    if(!topic){
+
+        result.textContent =
+            "Masukkan topik.";
+
+        return;
+    }
+
+    const ideas = [
+
+        "Buat konten edukasi tentang " +
+        topic + ".",
+
+        "Buat produk digital sederhana bertema " +
+        topic + ".",
+
+        "Buat website informasi yang membahas " +
+        topic + ".",
+
+        "Buat seri video pendek dengan topik " +
+        topic + ".",
+
+        "Buat panduan pemula mengenai " +
+        topic + "."
+
+    ];
+
+    result.textContent =
+        ideas[
+            Math.floor(
+                Math.random()*ideas.length
+            )
+        ];
+
+}
+
+
+/* =====================================================
+   FIX TEXT
+===================================================== */
+
+function fixText(){
+
+    const text =
+        document
+        .getElementById("fixText")
+        .value
+        .trim();
+
+    const result =
+        document
+        .getElementById("fixResult");
+
+    if(!text){
+
+        result.textContent =
+            "Masukkan teks.";
+
+        return;
+    }
+
+    let fixed =
+        text
+        .replace(/\s+/g," ")
+        .trim();
+
+    fixed =
+        fixed.charAt(0).toUpperCase() +
+        fixed.slice(1);
+
+    result.textContent =
+        fixed;
+
+}
+
+
+/* =====================================================
+   SOCIAL URL
+===================================================== */
+
+function openSocial(){
+
+    const url =
+        document
+        .getElementById("socialURL")
+        .value
+        .trim();
+
+    if(!url) return;
+
+    let finalURL =
+        url;
+
+    if(
+        !/^https?:\/\//i.test(
+            finalURL
+        )
+    ){
+
+        finalURL =
+            "https://" +
+            finalURL;
+
+    }
+
+    window.open(
+        finalURL,
+        "_blank",
+        "noopener,noreferrer"
+    );
+
+}
+
+
+/* =====================================================
+   VIDEO
+===================================================== */
+
+function checkVideo(){
+
+    const file =
+        document
+        .getElementById("videoFile")
+        .files[0];
+
+    const result =
+        document
+        .getElementById("videoResult");
+
+    if(!file) return;
+
+    const size =
+        (
+            file.size /
+            1024 /
+            1024
+        ).toFixed(2);
+
+    result.textContent =
+        "File: " +
+        file.name +
+        " | Ukuran: " +
+        size +
+        " MB";
+
+}
+
+
+/* =====================================================
+   DOWNLOAD
+===================================================== */
+
+function directDownload(){
+
+    const url =
+        document
+        .getElementById("downloadURL")
+        .value
+        .trim();
+
+    if(!url) return;
+
+    let finalURL =
+        url;
+
+    if(
+        !/^https?:\/\//i.test(
+            finalURL
+        )
+    ){
+
+        finalURL =
+            "https://" +
+            finalURL;
+
+    }
+
+    window.open(
+        finalURL,
+        "_blank",
+        "noopener,noreferrer"
+    );
+
+}
+
+
+/* =====================================================
+   IMAGE 2X
+===================================================== */
+
+function upscaleImage(){
+
+    const file =
+        document
+        .getElementById("imageFile")
+        .files[0];
+
+    const result =
+        document
+        .getElementById("imageResult");
+
+    const canvas =
+        document
+        .getElementById("imageCanvas");
+
+    if(!file) return;
+
+    const img =
+        new Image();
+
+    img.onload =
+        function(){
+
+            canvas.width =
+                img.width * 2;
+
+            canvas.height =
+                img.height * 2;
+
+            const ctx =
+                canvas.getContext("2d");
+
+            ctx.imageSmoothingEnabled =
+                true;
+
+            ctx.imageSmoothingQuality =
+                "high";
+
+            ctx.drawImage(
+                img,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+            canvas.style.display =
+                "block";
+
+            result.textContent =
+                "Gambar diperbesar 2x.";
+
+        };
+
+    img.src =
+        URL.createObjectURL(file);
+
+}
+
+
+/* =====================================================
+   WEATHER
+===================================================== */
+
+async function getWeather(){
+
+    const city =
+        document
+        .getElementById("cityInput")
+        .value
+        .trim();
+
+    const result =
+        document
+        .getElementById("weatherResult");
+
+    if(!city){
+
+        result.textContent =
+            "Masukkan nama kota.";
+
+        return;
+    }
+
+    result.textContent =
+        "Mencari lokasi...";
+
+    try{
+
+        const geoURL =
+            "https://geocoding-api.open-meteo.com/v1/search?name=" +
+            encodeURIComponent(city) +
+            "&count=1&language=id&format=json";
+
+        const geoResponse =
+            await fetch(geoURL);
+
+        const geoData =
+            await geoResponse.json();
+
+        if(
+            !geoData.results ||
+            !geoData.results.length
+        ){
+
+            result.textContent =
+                "Kota tidak ditemukan.";
+
+            return;
+        }
+
+        const location =
+            geoData.results[0];
+
+        const weatherURL =
+            "https://api.open-meteo.com/v1/forecast?" +
+            "latitude=" +
+            location.latitude +
+            "&longitude=" +
+            location.longitude +
+            "&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
+
+        const weatherResponse =
+            await fetch(weatherURL);
+
+        const weather =
+            await weatherResponse.json();
+
+        const current =
+            weather.current;
+
+        result.innerHTML =
+
+            "<strong>" +
+            location.name +
+            "</strong><br><br>" +
+
+            "Suhu: " +
+            current.temperature_2m +
+            " °C<br>" +
+
+            "Kelembapan: " +
+            current.relative_humidity_2m +
+            " %<br>" +
+
+            "Kecepatan angin: " +
+            current.wind_speed_10m +
+            " km/jam";
+
+    }catch(e){
+
+        result.textContent =
+            "Gagal mengambil data cuaca. Periksa koneksi internet.";
+
+    }
+
+}
 
 </script>
 
 </body>
-</html>
+    </html>
