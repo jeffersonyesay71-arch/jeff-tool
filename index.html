@@ -2,4765 +2,1420 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>JEFF TOOL</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-
-/* =====================================================
-   GLOBAL
-===================================================== */
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    -webkit-tap-highlight-color:transparent;
-}
-
 :root{
-    --cyan:#00eaff;
-    --blue:#008cff;
-    --green:#00ff9d;
-    --purple:#8b5cff;
-    --bg:#020711;
-    --panel:rgba(4,15,29,.78);
-    --border:rgba(0,234,255,.25);
-    --text:#f5fbff;
-    --muted:#7895a1;
+  --bg:#000a04; --panel:rgba(255,255,255,0.04); --line:rgba(60,255,140,0.22);
+  --text:#EAFCEF; --muted:#7FAF8E; --cy:#00E676; --vi:#E8FFC2;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
-
-html{
-    scroll-behavior:smooth;
-}
-
+*{box-sizing:border-box; font-family:'Roboto',Arial,sans-serif;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+html,body{height:100%;}
 body{
-    font-family:"Inter",Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    min-height:100vh;
-    overflow-x:hidden;
-}
-
-/* =====================================================
-   MOVING BACKGROUND
-===================================================== */
-
-body::before{
-    content:"";
-    position:fixed;
-    inset:-25%;
-    z-index:-10;
-
-    background:
-        radial-gradient(
-            circle at 20% 30%,
-            rgba(0,234,255,.15),
-            transparent 23%
-        ),
-        radial-gradient(
-            circle at 80% 20%,
-            rgba(0,140,255,.13),
-            transparent 24%
-        ),
-        radial-gradient(
-            circle at 65% 80%,
-            rgba(0,255,157,.10),
-            transparent 25%
-        ),
-        radial-gradient(
-            circle at 30% 85%,
-            rgba(139,92,255,.10),
-            transparent 22%
-        );
-
-    filter:blur(35px);
-
-    animation:
-        glowMove 12s ease-in-out infinite alternate;
-}
-
-@keyframes glowMove{
-
-    0%{
-        transform:
-            translate(-3%,-2%)
-            scale(1);
-    }
-
-    50%{
-        transform:
-            translate(4%,3%)
-            scale(1.08);
-    }
-
-    100%{
-        transform:
-            translate(-2%,5%)
-            scale(1.15);
-    }
-}
-
-/* grid background */
-
-body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    z-index:-9;
-    pointer-events:none;
-
-    background:
-        linear-gradient(
-            rgba(0,234,255,.035) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(0,234,255,.035) 1px,
-            transparent 1px
-        );
-
-    background-size:38px 38px;
-
-    animation:gridMove 14s linear infinite;
-}
-
-@keyframes gridMove{
-
-    from{
-        background-position:0 0;
-    }
-
-    to{
-        background-position:38px 38px;
-    }
-}
-
-/* =====================================================
-   SCANLINES
-   Scan berada di background
-===================================================== */
-
-.scan-background{
-    position:fixed;
-    inset:0;
-    z-index:-7;
-    pointer-events:none;
-    overflow:hidden;
-    opacity:.45;
-}
-
-.scan-background::before,
-.scan-background::after{
-    content:"";
-    position:absolute;
-    left:0;
-    width:100%;
-    height:1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(0,234,255,.15),
-            rgba(0,234,255,.9),
-            rgba(255,255,255,.5),
-            rgba(0,234,255,.9),
-            rgba(0,234,255,.15),
-            transparent
-        );
-
-    box-shadow:
-        0 0 10px rgba(0,234,255,.8),
-        0 0 25px rgba(0,234,255,.35);
-}
-
-.scan-background::before{
-    animation:scanOne 5s linear infinite;
-}
-
-.scan-background::after{
-    animation:scanTwo 8s linear infinite;
-    opacity:.45;
-}
-
-@keyframes scanOne{
-
-    0%{
-        top:-5%;
-    }
-
-    100%{
-        top:105%;
-    }
-}
-
-@keyframes scanTwo{
-
-    0%{
-        top:105%;
-    }
-
-    100%{
-        top:-5%;
-    }
-}
-
-/* =====================================================
-   EXTRA LIGHT
-===================================================== */
-
-.light-orb{
-    position:fixed;
-    width:220px;
-    height:220px;
-    border-radius:50%;
-    pointer-events:none;
-    z-index:-8;
-    filter:blur(70px);
-    opacity:.18;
-    background:var(--cyan);
-    animation:orbMove 15s ease-in-out infinite alternate;
-}
-
-.light-orb.one{
-    left:-80px;
-    top:25%;
-}
-
-.light-orb.two{
-    right:-80px;
-    bottom:10%;
-    background:var(--blue);
-    animation-delay:3s;
-}
-
-@keyframes orbMove{
-
-    0%{
-        transform:translate(0,0);
-    }
-
-    50%{
-        transform:translate(100px,-70px);
-    }
-
-    100%{
-        transform:translate(-30px,100px);
-    }
-}
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-#login{
-    position:fixed;
-    inset:0;
-    z-index:4000;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    padding:20px;
-    overflow:hidden;
-
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(0,234,255,.10),
-            transparent 40%
-        ),
-        #01050c;
-}
-
-.login-grid{
-    position:absolute;
-    inset:0;
-
-    background:
-        linear-gradient(
-            rgba(0,234,255,.045) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(0,234,255,.045) 1px,
-            transparent 1px
-        );
-
-    background-size:32px 32px;
-
-    animation:gridMove 8s linear infinite;
-}
-
-/* login scan background */
-
-.login-scan{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    overflow:hidden;
-}
-
-.login-scan::after{
-    content:"";
-    position:absolute;
-    left:0;
-    width:100%;
-    height:2px;
-
-    background:linear-gradient(
-        90deg,
-        transparent,
-        var(--cyan),
-        white,
-        var(--cyan),
-        transparent
-    );
-
-    box-shadow:
-        0 0 15px var(--cyan),
-        0 0 35px var(--cyan);
-
-    opacity:.45;
-
-    animation:loginScan 4s linear infinite;
-}
-
-@keyframes loginScan{
-
-    0%{
-        top:-5%;
-    }
-
-    100%{
-        top:105%;
-    }
-}
-
-.login-card{
-    position:relative;
-    width:min(430px,100%);
-    padding:38px 26px;
-
-    background:rgba(2,12,24,.88);
-
-    border:1px solid rgba(0,234,255,.45);
-
-    box-shadow:
-        0 0 45px rgba(0,234,255,.12),
-        inset 0 0 35px rgba(0,234,255,.035);
-
-    backdrop-filter:blur(18px);
-}
-
-.corner{
-    position:absolute;
-    width:28px;
-    height:28px;
-    border-color:var(--cyan);
-    border-style:solid;
-}
-
-.corner.tl{
-    top:-1px;
-    left:-1px;
-    border-width:2px 0 0 2px;
-}
-
-.corner.tr{
-    top:-1px;
-    right:-1px;
-    border-width:2px 2px 0 0;
-}
-
-.corner.bl{
-    bottom:-1px;
-    left:-1px;
-    border-width:0 0 2px 2px;
-}
-
-.corner.br{
-    bottom:-1px;
-    right:-1px;
-    border-width:0 2px 2px 0;
-}
-
-.login-title{
-    text-align:center;
-    font-family:"Space Grotesk",sans-serif;
-    font-size:34px;
-    font-weight:700;
-    letter-spacing:5px;
-
-    text-shadow:
-        0 0 10px var(--cyan),
-        0 0 25px rgba(0,234,255,.7);
-}
-
-.login-sub{
-    margin-top:9px;
-    text-align:center;
-    color:#6fa8b4;
-    font-size:9px;
-    letter-spacing:3px;
-}
-
-.login-line{
-    width:65px;
-    height:2px;
-    margin:18px auto 30px;
-
-    background:var(--cyan);
-
-    box-shadow:
-        0 0 10px var(--cyan),
-        0 0 20px var(--cyan);
-}
-
-.input-group{
-    margin-bottom:15px;
-}
-
-.input-group label{
-    display:block;
-    margin-bottom:8px;
-
-    color:#78dbe7;
-    font-size:9px;
-    letter-spacing:2px;
-}
-
-.input-group input{
-    width:100%;
-    padding:14px;
-
-    background:#020a14;
-
-    border:1px solid rgba(0,234,255,.25);
-
-    outline:none;
-    color:white;
-
-    font-family:"Inter",sans-serif;
-    font-size:14px;
-
-    transition:.25s;
-}
-
-.input-group input:focus{
-    border-color:var(--cyan);
-
-    box-shadow:
-        0 0 15px rgba(0,234,255,.2),
-        inset 0 0 10px rgba(0,234,255,.03);
-}
-
-.login-btn{
-    width:100%;
-    padding:14px;
-
-    border:1px solid var(--cyan);
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(0,140,255,.08),
-            rgba(0,234,255,.12)
-        );
-
-    color:white;
-
-    font-family:"Space Grotesk",sans-serif;
-    font-weight:600;
-    letter-spacing:2px;
-
-    cursor:pointer;
-
-    transition:.25s;
-}
-
-.login-btn:hover{
-    box-shadow:
-        0 0 18px rgba(0,234,255,.3),
-        inset 0 0 15px rgba(0,234,255,.08);
-
-    transform:translateY(-2px);
-}
-
-.login-btn:active{
-    transform:scale(.98);
-}
-
-.login-error{
-    min-height:18px;
-    margin-top:12px;
-
-    color:#ff5570;
-    text-align:center;
-
-    font-size:9px;
-}
-
-/* =====================================================
-   LOADING
-===================================================== */
-
-#loading{
-    position:fixed;
-    inset:0;
-    z-index:5000;
-
-    display:none;
-    align-items:center;
-    justify-content:center;
-
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(0,234,255,.12),
-            transparent 45%
-        ),
-        #01050c;
-
-    overflow:hidden;
-}
-
-.loading-grid{
-    position:absolute;
-    inset:0;
-
-    background:
-        linear-gradient(
-            rgba(0,234,255,.05) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(0,234,255,.05) 1px,
-            transparent 1px
-        );
-
-    background-size:30px 30px;
-
-    animation:gridMove 8s linear infinite;
-}
-
-.loading-scan{
-    position:absolute;
-    inset:0;
-    overflow:hidden;
-    pointer-events:none;
-}
-
-.loading-scan::after{
-    content:"";
-    position:absolute;
-    left:0;
-    width:100%;
-    height:2px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            var(--cyan),
-            white,
-            var(--cyan),
-            transparent
-        );
-
-    box-shadow:
-        0 0 15px var(--cyan),
-        0 0 35px var(--cyan);
-
-    opacity:.45;
-
-    animation:loadingScan 3s linear infinite;
-}
-
-@keyframes loadingScan{
-
-    0%{
-        top:-5%;
-    }
-
-    100%{
-        top:105%;
-    }
-}
-
-.loading-box{
-    position:relative;
-    width:min(440px,85%);
-    padding:38px 25px;
-
-    text-align:center;
-
-    background:rgba(1,12,24,.82);
-
-    border:1px solid rgba(0,234,255,.4);
-
-    box-shadow:
-        0 0 40px rgba(0,234,255,.1),
-        inset 0 0 30px rgba(0,234,255,.035);
-
-    backdrop-filter:blur(15px);
-}
-
-.loading-title{
-    font-family:"Space Grotesk",sans-serif;
-    font-size:clamp(30px,8vw,48px);
-    font-weight:700;
-    letter-spacing:6px;
-
-    text-shadow:
-        0 0 12px var(--cyan),
-        0 0 30px rgba(0,234,255,.65);
-}
-
-.loading-sub{
-    margin-top:10px;
-    color:#6daab5;
-    font-size:9px;
-    letter-spacing:3px;
-}
-
-.loading-status{
-    margin-top:30px;
-
-    color:#7da1ac;
-    font-size:9px;
-    letter-spacing:2px;
-}
-
-.loading-track{
-    width:100%;
-    height:4px;
-    margin-top:14px;
-
-    background:#071522;
-
-    border:1px solid rgba(0,234,255,.18);
-    overflow:hidden;
-}
-
-.loading-progress{
-    width:0;
-    height:100%;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--blue),
-            var(--cyan),
-            white
-        );
-
-    box-shadow:
-        0 0 12px var(--cyan);
-
-    animation:load 3s linear forwards;
-}
-
-@keyframes load{
-    to{
-        width:100%;
-    }
-}
-
-/* =====================================================
-   APP
-===================================================== */
-
-#app{
-    display:none;
-    min-height:100vh;
-}
-
-/* =====================================================
-   TOPBAR
-===================================================== */
-
-.topbar{
-    position:sticky;
-    top:0;
-    z-index:100;
-
-    min-height:68px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    gap:10px;
-
-    padding:10px 15px;
-
-    background:rgba(2,8,17,.82);
-
-    border-bottom:1px solid rgba(0,234,255,.2);
-
-    backdrop-filter:blur(18px);
-
-    box-shadow:
-        0 5px 30px rgba(0,0,0,.3);
-}
-
-.brand{
-    font-family:"Space Grotesk",sans-serif;
-    font-size:21px;
-    font-weight:700;
-    letter-spacing:3px;
-
-    white-space:nowrap;
-
-    text-shadow:
-        0 0 10px var(--cyan),
-        0 0 20px rgba(0,234,255,.4);
-}
-
-.system-info{
-    display:flex;
-    align-items:center;
-    justify-content:flex-end;
-
-    gap:12px;
-
-    flex-wrap:wrap;
-
-    font-size:9px;
-}
-
-.clock-box{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-end;
-    gap:2px;
-}
-
-#clock{
-    color:white;
-    font-weight:600;
-}
-
-#date{
-    color:#6f9ca6;
-    font-size:8px;
-}
-
-.battery{
-    display:flex;
-    align-items:center;
-    gap:5px;
-}
-
-.battery-icon{
-    width:26px;
-    height:12px;
-
-    border:1px solid var(--cyan);
-
-    padding:2px;
-
-    position:relative;
-}
-
-.battery-icon::after{
-    content:"";
-
-    position:absolute;
-    right:-4px;
-    top:3px;
-
-    width:3px;
-    height:5px;
-
-    background:var(--cyan);
-}
-
-#batteryFill{
-    width:70%;
-    height:100%;
-
-    background:var(--green);
-
-    box-shadow:0 0 7px var(--green);
-}
-
-/* =====================================================
-   TOOL COUNTER
-===================================================== */
-
-.tool-counter{
-    width:100%;
-
-    padding:13px 15px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    gap:8px;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(0,234,255,.035),
-            rgba(0,140,255,.08),
-            rgba(0,234,255,.035)
-        );
-
-    border-bottom:1px solid rgba(0,234,255,.12);
-
-    color:#76a8b3;
-
-    font-size:9px;
-    letter-spacing:2px;
-}
-
-#toolCount{
-    color:var(--cyan);
-
-    font-family:"Space Grotesk",sans-serif;
-
-    font-size:16px;
-    font-weight:700;
-
-    text-shadow:0 0 10px var(--cyan);
-}
-
-/* =====================================================
-   NAV
-===================================================== */
-
-.nav{
-    display:flex;
-    gap:8px;
-
-    overflow-x:auto;
-
-    padding:12px 15px;
-
-    scrollbar-width:none;
-
-    background:rgba(1,7,14,.7);
-
-    border-bottom:1px solid rgba(0,234,255,.12);
-
-    backdrop-filter:blur(12px);
-}
-
-.nav::-webkit-scrollbar{
-    display:none;
-}
-
-.nav button{
-    flex:none;
-
-    padding:10px 15px;
-
-    border:1px solid rgba(0,234,255,.2);
-
-    background:#06111d;
-
-    color:#82aab4;
-
-    font-family:"Inter",sans-serif;
-    font-size:9px;
-    font-weight:600;
-    letter-spacing:1px;
-
-    cursor:pointer;
-
-    transition:.25s;
-}
-
-.nav button:hover,
-.nav button.active{
-    color:white;
-
-    border-color:var(--cyan);
-
-    background:rgba(0,234,255,.09);
-
-    box-shadow:
-        0 0 15px rgba(0,234,255,.2);
-}
-
-/* =====================================================
-   MAIN
-===================================================== */
-
-main{
-    width:min(1100px,100%);
-    margin:auto;
-
-    padding:26px 15px 50px;
-}
-
-.category{
-    display:none;
-
-    animation:categoryIn .35s ease;
-}
-
-.category.active{
-    display:block;
-}
-
-@keyframes categoryIn{
-
-    from{
-        opacity:0;
-        transform:translateY(8px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-.section-title{
-    font-family:"Space Grotesk",sans-serif;
-
-    font-size:24px;
-    font-weight:700;
-
-    letter-spacing:2px;
-
-    margin-bottom:7px;
-
-    text-shadow:
-        0 0 12px var(--cyan);
-}
-
-.section-desc{
-    color:#718e98;
-
-    font-size:10px;
-    line-height:1.8;
-
-    margin-bottom:20px;
-}
-
-/* =====================================================
-   PANELS
-===================================================== */
-
-.panel{
-    margin-bottom:12px;
-
-    border:1px solid rgba(0,234,255,.18);
-
-    background:var(--panel);
-
-    box-shadow:
-        0 0 25px rgba(0,0,0,.18);
-
-    overflow:hidden;
-
-    backdrop-filter:blur(10px);
-
-    transition:.25s;
-}
-
-.panel:hover{
-    border-color:rgba(0,234,255,.28);
-}
-
-.panel-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    gap:10px;
-
-    padding:16px;
-
-    cursor:pointer;
-
-    transition:.25s;
-}
-
-.panel-head:hover{
-    background:rgba(0,234,255,.045);
-}
-
-.panel-name{
-    font-size:10px;
-    font-weight:600;
-    letter-spacing:.7px;
-}
-
-.panel-icon{
-    color:var(--cyan);
-    font-size:17px;
-
-    transition:.25s;
-}
-
-.panel.open .panel-icon{
-    transform:rotate(45deg);
-}
-
-.panel-body{
-    display:none;
-
-    padding:0 16px 18px;
-
-    border-top:1px solid rgba(0,234,255,.08);
-}
-
-.panel.open .panel-body{
-    display:block;
-}
-
-.panel-text{
-    color:#9ab5bd;
-
-    font-size:13px;
-    line-height:1.8;
-
-    padding-top:15px;
-}
-
-.panel-text strong{
-    color:white;
-}
-
-/* =====================================================
-   CONTROLS
-===================================================== */
-
-input,
-textarea,
-select{
-    width:100%;
-
-    padding:12px;
-
-    margin:7px 0;
-
-    background:#020912;
-
-    border:1px solid rgba(0,234,255,.22);
-
-    color:white;
-
-    outline:none;
-
-    font-family:"Inter",sans-serif;
-
-    border-radius:2px;
-}
-
-input:focus,
-textarea:focus,
-select:focus{
-    border-color:var(--cyan);
-
-    box-shadow:
-        0 0 12px rgba(0,234,255,.15);
-}
-
-textarea{
-    min-height:120px;
-    resize:vertical;
-}
-
-button.tool-btn{
-    padding:11px 14px;
-
-    border:1px solid var(--cyan);
-
-    background:rgba(0,234,255,.06);
-
-    color:white;
-
-    font-family:"Inter",sans-serif;
-
-    font-size:9px;
-    font-weight:600;
-
-    letter-spacing:1px;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-    margin-top:6px;
-}
-
-button.tool-btn:hover{
-    background:rgba(0,234,255,.16);
-
-    box-shadow:
-        0 0 15px rgba(0,234,255,.22);
-
-    transform:translateY(-1px);
-}
-
-button.tool-btn:active{
-    transform:scale(.97);
-}
-
-.result{
-    margin-top:12px;
-
-    padding:12px;
-
-    min-height:20px;
-
-    border-left:2px solid var(--cyan);
-
-    background:rgba(0,234,255,.035);
-
-    color:#a8d2d9;
-
-    font-size:12px;
-
-    line-height:1.7;
-}
-
-/* =====================================================
-   DEVELOPER
-===================================================== */
-
-.developer-card{
-    text-align:center;
-    padding:25px 18px;
-}
-
-.dev-name{
-    font-family:"Space Grotesk",sans-serif;
-
-    font-size:19px;
-    font-weight:700;
-
-    letter-spacing:2px;
-}
-
-.verified{
-    display:inline-flex;
-
-    width:17px;
-    height:17px;
-
-    align-items:center;
-    justify-content:center;
-
-    margin-left:5px;
-
-    border-radius:50%;
-
-    background:#1688ff;
-
-    color:white;
-
-    font-family:Arial,sans-serif;
-
-    font-size:11px;
-    font-weight:bold;
-
-    vertical-align:middle;
-
-    box-shadow:
-        0 0 10px rgba(22,136,255,.6);
-}
-
-.dev-label{
-    margin-top:9px;
-
-    color:#63b7c3;
-
-    font-size:8px;
-    letter-spacing:2px;
-}
-
-.dev-note{
-    margin:12px auto 0;
-
-    max-width:600px;
-
-    color:#668893;
-
-    font-size:11px;
-
-    line-height:1.6;
-}
-
-/* =====================================================
-   DONATION
-===================================================== */
-
-.donation{
-    position:relative;
-
-    margin-top:15px;
-
-    padding:22px;
-
-    border:1px solid rgba(0,255,157,.3);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(0,255,157,.07),
-            rgba(0,234,255,.035)
-        );
-
-    box-shadow:
-        0 0 25px rgba(0,255,157,.06),
-        inset 0 0 25px rgba(0,255,157,.025);
-}
-
-.donation::before{
-    content:"";
-
-    position:absolute;
-
-    left:0;
-    top:0;
-
-    width:3px;
-    height:100%;
-
-    background:var(--green);
-
-    box-shadow:0 0 12px var(--green);
-}
-
-.donation h3{
-    color:var(--green);
-
-    font-size:13px;
-
-    letter-spacing:2px;
-
-    margin-bottom:10px;
-}
-
-.donation p{
-    color:#87a8ae;
-
-    font-size:12px;
-
-    line-height:1.7;
-}
-
-.payment-box{
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:10px;
-
-    margin-top:15px;
-}
-
-.payment-item{
-    padding:14px;
-
-    background:rgba(0,0,0,.25);
-
-    border:1px solid rgba(0,255,157,.18);
-}
-
-.payment-label{
-    color:#6e9199;
-
-    font-size:8px;
-
-    letter-spacing:2px;
-}
-
-.payment-value{
-    margin-top:6px;
-
-    color:white;
-
-    font-size:14px;
-
-    font-weight:700;
-}
-
-/* =====================================================
-   SOCIAL
-===================================================== */
-
-.social-grid{
-    display:grid;
-
-    grid-template-columns:
-        repeat(auto-fit,minmax(160px,1fr));
-
-    gap:10px;
-
-    margin-top:15px;
-}
-
-.social-btn{
-    display:block;
-
-    padding:16px;
-
-    text-align:center;
-
-    text-decoration:none;
-
-    color:white;
-
-    border:1px solid rgba(0,234,255,.2);
-
-    background:#030d18;
-
-    font-size:9px;
-    font-weight:600;
-
-    transition:.25s;
-}
-
-.social-btn:hover{
-    border-color:var(--cyan);
-
-    box-shadow:
-        0 0 18px rgba(0,234,255,.2);
-
-    transform:translateY(-2px);
-}
-
-/* =====================================================
-   GAMES
-===================================================== */
-
-.game-area{
-    text-align:center;
-    padding-top:15px;
-}
-
-.big-number{
-    font-family:"Space Grotesk",sans-serif;
-
-    font-size:40px;
-    font-weight:700;
-
-    color:var(--cyan);
-
-    text-shadow:
-        0 0 15px var(--cyan);
-
-    margin:15px 0;
-}
-
-.choice-row{
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:8px;
-
-    justify-content:center;
-}
-
-.question{
-    color:#b8dce2;
-
-    font-size:13px;
-
-    line-height:1.7;
-
-    margin:12px 0;
-}
-
-.ttt{
-    width:210px;
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:5px;
-
-    margin:15px auto;
-}
-
-.ttt button{
-    height:65px;
-
-    font-size:22px;
-
-    margin:0;
-}
-
-/* =====================================================
-   CALCULATION
-===================================================== */
-
-.calc-grid{
-    display:grid;
-
-    grid-template-columns:
-        repeat(auto-fit,minmax(220px,1fr));
-
-    gap:12px;
-}
-
-.calc-card{
-    padding:17px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(0,234,255,.035),
-            rgba(0,0,0,.12)
-        );
-
-    border:1px solid rgba(0,234,255,.16);
-}
-
-.calc-card h3{
-    font-size:11px;
-
-    margin-bottom:8px;
-}
-
-.calc-card p{
-    color:#76939d;
-
-    font-size:10px;
-
-    line-height:1.6;
-}
-
-/* =====================================================
-   FOOTER
-===================================================== */
-
-footer{
-    padding:25px 15px;
-
-    text-align:center;
-
-    border-top:1px solid rgba(0,234,255,.12);
-
-    color:#45636c;
-
-    font-size:8px;
-
-    letter-spacing:2px;
-}
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media(max-width:600px){
-
-    .brand{
-        font-size:16px;
-    }
-
-    .system-info{
-        gap:7px;
-    }
-
-    .topbar{
-        align-items:flex-start;
-    }
-
-    .section-title{
-        font-size:20px;
-    }
-
-    .payment-box{
-        grid-template-columns:1fr;
-    }
-
-    .calc-grid{
-        grid-template-columns:1fr;
-    }
-
-}
-
+  margin:0; position:relative; overflow-x:hidden; min-height:100%;
+  background:
+    linear-gradient(rgba(40,255,140,0.05) 1px,transparent 1px) 0 0/38px 38px,
+    linear-gradient(90deg,rgba(40,255,140,0.05) 1px,transparent 1px) 0 0/38px 38px,
+    radial-gradient(circle at 20% 0%,#042a14,#000a04 55%);
+  color:var(--text); font-family:'Roboto',Arial,sans-serif !important; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.brand{font-family:'Roboto',Arial,sans-serif !important;}
+.mono{font-family:'Roboto Mono',monospace !important;}
+#particleCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+#matrixCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.22;}
+.flyRobot{position:fixed;top:12%;left:-80px;z-index:0;pointer-events:none;opacity:0.55;filter:drop-shadow(0 0 8px rgba(0,230,118,0.7));animation:flyAcross 22s linear infinite;}
+@keyframes flyAcross{
+  0%{transform:translate(-10vw,0) rotate(-4deg);}
+  50%{transform:translate(55vw,60px) rotate(3deg);}
+  100%{transform:translate(120vw,-20px) rotate(-4deg);}
+}
+.scanline{position:fixed;left:0;right:0;height:3px;top:0;
+  background:linear-gradient(90deg,transparent,rgba(0,230,118,0.55),transparent);
+  box-shadow:0 0 20px 4px rgba(0,230,118,0.35); z-index:0; pointer-events:none; filter:blur(1px);
+  animation:scan 4.5s linear infinite;}
+@keyframes scan{0%{top:0%}100%{top:100%}}
+.glowBlob{position:fixed;border-radius:50%;filter:blur(90px);opacity:0.4;z-index:0;pointer-events:none;}
+.glowBlob.b1{width:340px;height:340px;background:var(--cy);top:-90px;left:-90px;animation:floatA 14s ease-in-out infinite;}
+.glowBlob.b2{width:300px;height:300px;background:var(--vi);bottom:-70px;right:-70px;animation:floatB 16s ease-in-out infinite;}
+.glowBlob.b3{width:260px;height:260px;background:var(--cy);top:40%;left:50%;animation:floatA 20s ease-in-out infinite reverse;}
+@keyframes floatA{0%,100%{transform:translate(0,0);}50%{transform:translate(60px,80px);}}
+@keyframes floatB{0%,100%{transform:translate(0,0);}50%{transform:translate(-50px,-70px);}}
+@keyframes neonPulse{0%,100%{box-shadow:0 0 10px rgba(0,230,118,0.6),0 0 20px rgba(0,230,118,0.3);}50%{box-shadow:0 0 22px rgba(0,230,118,0.95),0 0 44px rgba(0,230,118,0.55);}}
+.spark{position:fixed;width:5px;height:5px;border-radius:50%;background:radial-gradient(circle,#FFD166,#FF2D46);pointer-events:none;z-index:50;animation:sparkFly .6s ease-out forwards;}
+@keyframes sparkFly{to{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0;}}
+
+.page{position:relative;z-index:1;}
+.screen{display:none;}
+.screen.active{display:block;}
+#loginScreen.active,#loadingScreen.active{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+
+/* Login */
+.loginCard{width:100%;max-width:340px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 22px;text-align:center;position:relative;z-index:1;}
+.loginCard .logo{margin:0 auto 14px;animation:neonPulse 2.5s ease-in-out infinite;}
+.loginCard h2{font-size:19px;margin:0;}
+.loginCard label{text-align:left;}
+
+/* Loading */
+.loadWrap{text-align:center;position:relative;z-index:1;}
+.welcomeText{font-family:'Roboto';font-size:20px;font-weight:700;margin:0 0 26px;background:linear-gradient(90deg,var(--vi),var(--cy),var(--vi));background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:btnMove 2.5s linear infinite;}
+.wLetter{display:inline-block;opacity:0;transform:translateY(14px) scale(.7);animation:letterIn .5s ease forwards;}
+@keyframes letterIn{to{opacity:1;transform:translateY(0) scale(1);}}
+.loadPercentRing{width:180px;height:180px;border-radius:50%;position:relative;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;}
+.loadPercentRing::before{content:"";position:absolute;inset:0;border-radius:50%;border:5px solid rgba(0,230,118,0.18);border-top-color:var(--cy);border-right-color:var(--vi);animation:ringspin 1.1s linear infinite;box-shadow:0 0 30px rgba(0,230,118,0.5);}
+@keyframes ringspin{to{transform:rotate(360deg);}}
+.loadPercent{font-family:'Roboto',sans-serif;font-weight:900;font-size:44px;margin:0;
+  background:linear-gradient(90deg,var(--vi),var(--cy),var(--vi));background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:btnMove 2.5s linear infinite;}
+.loadText{font-family:'Roboto';font-size:15px;margin-bottom:16px;}
+.dots span{animation:blink 1.4s infinite;}
+.dots span:nth-child(2){animation-delay:.2s;} .dots span:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,100%{opacity:0;}50%{opacity:1;}}
+.loadBarOuter{width:220px;height:8px;border-radius:6px;background:#04120a;border:1px solid var(--line);overflow:hidden;margin:0 auto;}
+.loadBarInner{height:100%;width:0%;background:linear-gradient(90deg,var(--cy),var(--vi));box-shadow:0 0 12px rgba(0,230,118,0.85);}
+
+/* Status bar */
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--line);flex-wrap:wrap;gap:6px;}
+.sbRight{display:flex;align-items:center;gap:10px;}
+.onlineDot{width:8px;height:8px;border-radius:50%;background:#2ecc71;display:inline-block;margin-right:4px;box-shadow:0 0 6px #2ecc71;}
+.onlineDot.off{background:#e74c3c;box-shadow:0 0 6px #e74c3c;}
+
+header{padding:22px 18px 16px; text-align:center;}
+.logo{
+  width:44px;height:44px;border-radius:12px;margin:0 auto 12px;
+  background:linear-gradient(135deg,var(--cy),var(--vi));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Roboto';font-weight:700;color:#01190c;font-size:20px;
+  animation:neonPulse 2.5s ease-in-out infinite;
+}
+.brand{font-size:24px;font-weight:700;letter-spacing:0.5px;}
+.tagline{color:var(--muted);font-size:13.5px;margin:8px auto 0;max-width:46ch;line-height:1.55;}
+
+/* Bingkai developer mewah bawah kategori */
+.devbox{position:relative;border-radius:16px;padding:2px;margin-top:6px;overflow:hidden;}
+.devbox::before{content:"";position:absolute;inset:-40%;
+  background:conic-gradient(from 0deg,var(--vi),var(--cy),#063a1e,var(--vi));}
+.devbox-inner{position:relative;z-index:1;background:linear-gradient(135deg,#04150c,#020a06);
+  border-radius:14px;padding:16px;}
+.devTop{display:flex;align-items:center;gap:12px;}
+.devbox .av2{width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--vi),var(--cy));display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#01190c;font-family:'Roboto';box-shadow:0 0 18px rgba(0,230,118,0.5);}
+.devbox .dn2{font-size:14px;font-weight:700;font-family:'Roboto';}
+.devbox .role2{font-size:11.5px;color:var(--muted);display:block;margin-top:1px;}
+.devContact{display:flex;flex-direction:column;gap:7px;margin-top:12px;}
+.devContact a{font-size:12px;color:var(--vi);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:rgba(255,255,255,0.03);display:block;}
+.homeWrap{max-width:660px;margin:0 auto;padding:0 16px;}
+.devbox-big .devbox-inner{padding:30px 22px;}
+.devbox-big .devTop{flex-direction:column;text-align:center;}
+.devbox-big .av2{width:64px;height:64px;font-size:20px;margin-bottom:4px;}
+.devbox-big .dn2{font-size:18px;}
+.devbox-big .role2{font-size:13px;}
+.devbox-big .devContact{align-items:center;max-width:260px;margin-left:auto;margin-right:auto;}
+
+.verif{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--cy);flex-shrink:0;}
+.verif svg{width:8px;height:8px;}
+
+nav{display:flex;gap:7px;padding:6px 14px 14px;overflow-x:auto;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;}
+nav button{font-family:'Roboto';font-size:13px;font-weight:500;padding:9px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer;white-space:nowrap;}
+nav button.active{background:linear-gradient(90deg,var(--cy),var(--vi),var(--cy));background-size:220% 100%;color:#01190c;border-color:transparent;animation:neonPulse 2.5s ease-in-out infinite, btnMove 3s linear infinite;}
+
+main{padding:16px 16px 10px;max-width:660px;margin:0 auto;}
+section{display:none;}
+section.active{display:grid;gap:12px;}
+.card{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;backdrop-filter:blur(6px);z-index:0;}
+.card::before{content:"";position:absolute;inset:-2px;border-radius:16px;z-index:-1;background:conic-gradient(from 0deg,var(--vi),var(--cy),transparent 40%,var(--cy),var(--vi));filter:blur(3px);opacity:.55;}
+.card h3{margin:0 0 3px;font-size:15px;}
+.card p.desc{color:var(--muted);font-size:12.5px;margin:0 0 12px;line-height:1.5;}
+label{display:block;font-size:11.5px;color:var(--muted);margin:9px 0 4px;}
+input,select,textarea{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:#04120a;color:var(--text);font-size:13.5px;font-family:inherit;}
+textarea{resize:vertical;min-height:70px;}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--cy);outline-offset:1px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+button.act{margin-top:12px;width:100%;padding:10px;border:none;border-radius:8px;background:linear-gradient(90deg,var(--cy),var(--vi),var(--cy));background-size:220% 100%;color:#01190c;font-weight:700;font-size:13.5px;cursor:pointer;font-family:'Roboto';animation:btnMove 3s linear infinite;}
+@keyframes btnMove{0%{background-position:0% 50%}100%{background-position:220% 50%}}
+button.ghost{background:transparent;border:1px solid var(--line);color:var(--text);}
+.btnrow{display:flex;gap:8px;}
+.btnrow button{flex:1;}
+.result{margin-top:11px;padding:11px 13px;border-radius:8px;background:#04120a;border:1px solid var(--line);font-size:13.5px;line-height:1.6;min-height:18px;}
+.result b{color:var(--vi);}
+.big{font-family:'Roboto Mono';font-size:38px;font-weight:600;text-align:center;margin:4px 0;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.wc-box{background:#04120a;border:1px solid var(--line);border-radius:9px;padding:10px 11px;}
+.wc-box .city{font-size:12px;color:var(--muted);}
+.wc-box .time{font-family:'Roboto Mono';font-size:17px;margin-top:2px;}
+#qrCanvasWrap{display:flex;justify-content:center;margin-top:10px;}
+canvas.card-canvas{max-width:100%;border-radius:8px;}
+footer{text-align:center;color:var(--muted);font-size:11.5px;padding:20px 16px 12px;}
+.betaBadge{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;
+  background:rgba(0,230,118,0.18);border:1px solid var(--cy);color:var(--vi);vertical-align:middle;margin-left:4px;letter-spacing:0.5px;}
+.copyright{text-align:center;color:var(--muted);font-size:10.5px;margin-top:10px;opacity:0.8;}
+.about{max-width:660px;margin:6px auto 6px;padding:0 20px;color:var(--muted);font-size:12.5px;line-height:1.75;text-align:left;}
+.about h4{color:var(--text);font-family:'Roboto';font-size:14px;margin:0 0 8px;}
+
+.tttGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:210px;margin:8px auto 0;}
+.tttCell{aspect-ratio:1;background:#04120a;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;font-family:'Roboto';color:var(--vi);cursor:pointer;}
+.snakeBoard{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;margin-top:10px;}
+.snakeCell{aspect-ratio:1;background:#04120a;border:1px solid var(--line);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted);position:relative;}
+.snakeCell.p1{box-shadow:inset 0 0 0 2px var(--cy);}
+.snakeCell.p2{box-shadow:inset 0 0 0 2px var(--vi);}
+.snakeCell.p1.p2{box-shadow:inset 0 0 0 2px var(--cy), inset 0 0 0 4px var(--vi);}
+.ludoTrack{display:flex;flex-wrap:wrap;gap:3px;margin-top:10px;}
+.ludoCell{width:24px;height:24px;background:#04120a;border:1px solid var(--line);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--muted);position:relative;}
+.ludoCell.p1{box-shadow:inset 0 0 0 2px var(--cy);}
+.ludoCell.p2{box-shadow:inset 0 0 0 2px var(--vi);}
+
+.jeffAiBtn{position:fixed;bottom:20px;right:20px;z-index:40;width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cy),var(--vi));display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;box-shadow:0 0 18px rgba(0,230,118,0.6);animation:neonPulse 2.2s ease-in-out infinite;color:#01190c;}
+.jeffAiBtn span{font-size:8px;font-family:'Roboto';font-weight:700;margin-top:1px;}
+.jeffAiPanel{position:fixed;bottom:92px;right:16px;z-index:41;width:min(310px,86vw);max-height:440px;
+  background:linear-gradient(160deg,#04150c,#020a06);border:1px solid var(--line);border-radius:16px;
+  display:none;flex-direction:column;overflow:hidden;box-shadow:0 0 30px rgba(0,230,118,0.35);}
+.jeffAiPanel.open{display:flex;}
+.jeffAiHeader{padding:12px 14px;font-family:'Roboto';font-weight:700;font-size:14px;
+  background:linear-gradient(90deg,rgba(0,230,118,0.22),rgba(0,180,90,0.22));display:flex;justify-content:space-between;align-items:center;}
+.jeffAiHeader span{cursor:pointer;color:var(--muted);font-weight:400;}
+.jeffAiMsgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;max-height:300px;}
+.jeffMsg{font-size:12.5px;line-height:1.5;padding:8px 10px;border-radius:10px;max-width:88%;}
+.jeffMsg.user{align-self:flex-end;background:linear-gradient(90deg,var(--cy),var(--vi));color:#01190c;}
+.jeffMsg.ai{align-self:flex-start;background:#04120a;border:1px solid var(--line);color:var(--text);}
+.jeffAiInputRow{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line);}
+.jeffAiInputRow input{flex:1;margin:0;}
+.jeffAiInputRow button{border:none;border-radius:8px;padding:0 14px;background:linear-gradient(90deg,var(--cy),var(--vi));color:#01190c;font-weight:700;cursor:pointer;font-family:'Roboto';font-size:12.5px;}
 </style>
 </head>
-
 <body>
+<canvas id="particleCanvas"></canvas>
+<canvas id="matrixCanvas"></canvas>
+<svg class="flyRobot" width="54" height="40" viewBox="0 0 54 40" xmlns="http://www.w3.org/2000/svg">
+  <rect x="14" y="12" width="26" height="18" rx="4" fill="none" stroke="#00E676" stroke-width="2"/>
+  <circle cx="22" cy="21" r="2.4" fill="#00E676"/>
+  <circle cx="32" cy="21" r="2.4" fill="#00E676"/>
+  <rect x="18" y="4" width="18" height="6" rx="2" fill="none" stroke="#00E676" stroke-width="2"/>
+  <line x1="27" y1="4" x2="27" y2="0" stroke="#00E676" stroke-width="2"/>
+  <circle cx="27" cy="0" r="1.8" fill="#00E676"/>
+  <line x1="6" y1="20" x2="14" y2="18" stroke="#00E676" stroke-width="2"/>
+  <line x1="48" y1="20" x2="40" y2="18" stroke="#00E676" stroke-width="2"/>
+  <rect x="18" y="30" width="6" height="7" rx="2" fill="none" stroke="#00E676" stroke-width="2"/>
+  <rect x="30" y="30" width="6" height="7" rx="2" fill="none" stroke="#00E676" stroke-width="2"/>
+</svg>
+<div class="scanline"></div>
+<div class="glowBlob b1"></div>
+<div class="glowBlob b2"></div>
+<div class="glowBlob b3"></div>
 
-<!-- BACKGROUND EFFECTS -->
+<div class="page">
 
-<div class="scan-background"></div>
-
-<div class="light-orb one"></div>
-<div class="light-orb two"></div>
-
-
-<!-- =====================================================
-     LOGIN
-===================================================== -->
-
-<div id="login">
-
-    <div class="login-grid"></div>
-    <div class="login-scan"></div>
-
-    <div class="login-card">
-
-        <span class="corner tl"></span>
-        <span class="corner tr"></span>
-        <span class="corner bl"></span>
-        <span class="corner br"></span>
-
-        <div class="login-title">
-            JEFF TOOL
-        </div>
-
-        <div class="login-sub">
-            SECURE SYSTEM ACCESS
-        </div>
-
-        <div class="login-line"></div>
-
-        <div class="input-group">
-
-            <label>
-                ACCESS PASSWORD
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                placeholder="Masukkan password"
-                autocomplete="off"
-            >
-
-        </div>
-
-        <button
-            class="login-btn"
-            onclick="login()"
-        >
-            AKSES SISTEM
-        </button>
-
-        <div
-            class="login-error"
-            id="loginError"
-        ></div>
-
-    </div>
-
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="loginScreen" class="screen active">
+  <div class="loginCard">
+    <div class="logo">J</div>
+    <h2>JEFF TOOL <span class="betaBadge">VERSI BETA</span></h2>
+    <p class="tagline" style="margin:6px 0 20px">Tap tombol di bawah untuk masuk dan mulai memakai seluruh tool.</p>
+    <button class="act" onclick="doLogin()">Masuk</button>
+    <div class="copyright">© 2026 JEFF TOOL</div>
+  </div>
 </div>
 
-
-<!-- =====================================================
-     LOADING
-===================================================== -->
-
-<div id="loading">
-
-    <div class="loading-grid"></div>
-    <div class="loading-scan"></div>
-
-    <div class="loading-box">
-
-        <div class="loading-title">
-            JEFF TOOL
-        </div>
-
-        <div class="loading-sub">
-            SYSTEM INITIALIZING
-        </div>
-
-        <div
-            class="loading-status"
-            id="loadingStatus"
-        >
-            MENYIAPKAN SISTEM...
-        </div>
-
-        <div class="loading-track">
-
-            <div
-                class="loading-progress"
-                id="loadingProgress"
-            ></div>
-
-        </div>
-
-    </div>
-
+<!-- ===== LOADING SCREEN ===== -->
+<div id="loadingScreen" class="screen">
+  <div class="loadWrap">
+    <h1 class="welcomeText" id="welcomeText">Login Berhasil, Selamat Datang</h1>
+    <div class="loadPercentRing"><div class="loadPercent" id="loadPercent">0%</div></div>
+    <div class="loadText">Menyiapkan JEFF TOOL untukmu<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+    <div class="loadBarOuter"><div class="loadBarInner" id="loadBar"></div></div>
+    <div class="copyright">© 2026 JEFF TOOL</div>
+  </div>
 </div>
 
+<!-- ===== APP SCREEN ===== -->
+<div id="appScreen" class="screen">
 
-<!-- =====================================================
-     APP
-===================================================== -->
+<div class="statusbar">
+  <div><span id="sbTime" class="mono"></span> &middot; <span id="sbDate"></span></div>
+  <div class="sbRight">
+    <span id="sbFps">FPS: --</span>
+    <span id="sbBattery">Baterai: --%</span>
+    <span><span class="onlineDot" id="sbOnlineDot"></span><span id="sbOnlineText">Online</span></span>
+  </div>
+</div>
 
-<div id="app">
-
-<header class="topbar">
-
-    <div class="brand">
-        JEFF TOOL
-    </div>
-
-    <div class="system-info">
-
-        <div class="clock-box">
-
-            <div id="clock">
-                00:00:00
-            </div>
-
-            <div id="date">
-                00/00/0000
-            </div>
-
-        </div>
-
-        <div class="battery">
-
-            <div class="battery-icon">
-
-                <div id="batteryFill"></div>
-
-            </div>
-
-            <span id="batteryText">
-                --%
-            </span>
-
-        </div>
-
-    </div>
-
+<!-- ===== BERANDA ===== -->
+<div id="homeView">
+<header>
+  <div class="logo">J</div>
+  <div class="brand">JEFF TOOL <span class="betaBadge">VERSI BETA</span></div>
+  <p class="tagline">Kumpulan tool digital untuk berhitung, bermain, belajar, referensi kitab suci, jam Indonesia, hingga unduh file — semua berjalan langsung di browser.</p>
+  <p class="tagline" style="margin-top:6px">Total <b id="jumlahTool" style="color:var(--cy)">-</b> tool siap digunakan.</p>
 </header>
 
-
-<!-- TOOL COUNT -->
-
-<div class="tool-counter">
-
-    <span>
-        TOTAL TOOLS
-    </span>
-
-    <span id="toolCount">
-        0
-    </span>
-
+<div class="homeWrap">
+<div class="devbox devbox-big">
+  <div class="devbox-inner">
+    <div class="devTop">
+      <div class="av2">JY</div>
+      <div><span class="dn2">Jefferson Yesay <span class="verif"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5L9.5 18L20 6" stroke="white" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+      <span class="role2">Developer JEFF TOOL</span></div>
+    </div>
+    <div class="devContact">
+      <a href="https://wa.me/6285177541020" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://instagram.com/personnnil" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </div>
 </div>
 
+<div class="about">
+  <h4>Tentang JEFF TOOL</h4>
+  <p>JEFF TOOL adalah situs kumpulan perkakas digital serba guna yang dirancang untuk menemani tiga jenis kebutuhan sekaligus: pendidikan, dunia bisnis, dan hiburan bagi para gamers, seluruhnya berjalan langsung di peramban tanpa perlu instalasi aplikasi dan tanpa mengirim data pribadi ke server mana pun. Pada kategori Perhitungan tersedia enam alat bantu harian mulai dari kalkulator dasar, penghitung BMI, diskon belanja, bunga sederhana, konversi suhu, hingga kalkulator PPN. Kategori Games menghadirkan hiburan ringan lewat dadu, koin, batu-gunting-kertas, tebak angka, roda keputusan, kartu acak, serta tiga permainan klasik yang lebih menantang yaitu Tic Tac Toe, Ular Tangga dua pemain lengkap dengan tangga dan ular, dan Ludo Mini dengan mekanik lebih nyata. Kategori Edukasi membantu proses belajar lewat tabel perkalian, konversi panjang dan berat, stopwatch, kalkulator nilai rata-rata, flashcard hafalan, hingga fitur terjemahan ke puluhan bahasa dunia. Kategori Kitab Suci menyajikan ringkasan informasi enam kitab suci agama yang diakui di Indonesia sebagai referensi wawasan lintas kepercayaan yang saling menghormati. Kategori Jam Indonesia menampilkan waktu langsung tiga zona resmi WIB, WITA, dan WIT beserta kalkulator perkiraan indeks panas cuaca. Terakhir, kategori Downloader menyediakan generator file nyata yang bisa langsung diunduh yaitu kode QR, catatan teks, data CSV, dan kartu ucapan bergambar. Seluruh perhitungan dan logika permainan diproses sepenuhnya di perangkat pengguna sendiri sehingga cepat, ringan, dan bisa dipakai kapan saja. JEFF TOOL dikembangkan dan terus disempurnakan oleh Jefferson Yesay sebagai proyek pribadi untuk membantu pelajar, pembisnis, dan gamers memiliki satu tempat serbaguna yang praktis, cepat diakses, dan enak dipandang.</p>
+</div>
 
-<!-- =====================================================
-     NAVIGATION
-===================================================== -->
+<button class="act" onclick="showTools()" style="max-width:660px;margin:6px auto 6px;display:block">ALL TOOLS</button>
+<div class="copyright" style="margin-bottom:30px">© 2026 JEFF TOOL</div>
+</div>
+</div><!-- /homeView -->
 
-<nav class="nav">
-
-    <button
-        class="active"
-        onclick="showCategory('beranda',this)"
-    >
-        BERANDA
-    </button>
-
-    <button
-        onclick="showCategory('perhitungan',this)"
-    >
-        PERHITUNGAN
-    </button>
-
-    <button
-        onclick="showCategory('games',this)"
-    >
-        GAMES
-    </button>
-
-    <button
-        onclick="showCategory('edukasi',this)"
-    >
-        EDUKASI
-    </button>
-
-    <button
-        onclick="showCategory('ai',this)"
-    >
-        AI
-    </button>
-
-    <button
-        onclick="showCategory('sosmed',this)"
-    >
-        SOSIAL MEDIA
-    </button>
-
-    <button
-        onclick="showCategory('media',this)"
-    >
-        MEDIA
-    </button>
-
-    <button
-        onclick="showCategory('cuaca',this)"
-    >
-        CUACA
-    </button>
-
+<!-- ===== TOOLS VIEW ===== -->
+<div id="toolsView" style="display:none">
+<nav>
+  <button class="tab active" data-tab="hit">Perhitungan</button>
+  <button class="tab" data-tab="game">Games</button>
+  <button class="tab" data-tab="edu">Edukasi</button>
+  <button class="tab" data-tab="kitab">Kitab Suci</button>
+  <button class="tab" data-tab="dunia">Jam Indonesia</button>
+  <button class="tab" data-tab="dl">Downloader</button>
 </nav>
-
 
 <main>
 
-
-<!-- =====================================================
-     BERANDA
-===================================================== -->
-
-<section
-    id="beranda"
-    class="category active"
->
-
-    <div class="section-title">
-        BERANDA
-    </div>
-
-    <div class="section-desc">
-        Pusat utama JEFF TOOL yang berisi informasi,
-        developer, tujuan aplikasi, fungsi sistem,
-        serta dukungan pengembangan.
-    </div>
-
-
-    <!-- HISTORY -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                SEJARAH JEFF TOOL
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="panel-text">
-
-                JEFF TOOL dibuat sebagai sebuah dashboard
-                digital yang menggabungkan berbagai alat
-                sederhana dalam satu sistem.
-
-                <br><br>
-
-                Konsep ini dibuat agar pengguna dapat
-                menggunakan berbagai fungsi tanpa perlu
-                berpindah-pindah halaman.
-
-                <br><br>
-
-                Pengembangan JEFF TOOL dilakukan secara
-                bertahap dengan menambahkan permainan,
-                perhitungan, edukasi, alat teks, media,
-                sosial media, serta informasi cuaca.
-
-                <br><br>
-
-                Tampilan dibuat dengan konsep futuristik
-                modern menggunakan efek cahaya, grid,
-                scanline, glass panel, dan animasi
-                background.
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- FUNCTION -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                FUNGSI JEFF TOOL
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="panel-text">
-
-                JEFF TOOL berfungsi sebagai pusat berbagai
-                utilitas digital.
-
-                <br><br>
-
-                Pengguna dapat melakukan perhitungan,
-                memainkan game sederhana, menerjemahkan
-                teks, mengolah tulisan, mencari ide,
-                mengakses sosial media, memeriksa file,
-                memperbesar gambar, serta melihat informasi
-                cuaca.
-
-                <br><br>
-
-                Sistem dibuat modular sehingga setiap
-                fitur dapat dibuka hanya ketika dibutuhkan.
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- PURPOSE -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                TUJUAN PEMBUATAN
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="panel-text">
-
-                Tujuan JEFF TOOL adalah membuat sebuah
-                dashboard digital yang praktis, modern,
-                sederhana, dan dapat dikembangkan.
-
-                <br><br>
-
-                Setiap fitur dapat terus diperbarui
-                sehingga sistem dapat berkembang sesuai
-                kebutuhan pengguna.
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- DEVELOPER -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                DEVELOPER
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="developer-card">
-
-                <div class="dev-name">
-
-                    JEFFERSON YESAY
-
-                    <span
-                        class="verified"
-                        title="Custom developer badge"
-                    >
-                        ✓
-                    </span>
-
-                </div>
-
-                <div class="dev-label">
-                    DEVELOPER JEFF TOOL
-                </div>
-
-                <div class="dev-note">
-
-                    Tanda centang merupakan tanda
-                    Meta Verified resmi dari Meta. 
-                    untuk developer yang profesional. 
-
-                </div>
-
-
-                <div class="social-grid">
-
-                    <a
-                        class="social-btn"
-                        href="https://instagram.com/personnnil"
-                        target="_blank"
-                    >
-                        INSTAGRAM<br>
-                        @personnnil
-                    </a>
-
-                    <a
-                        class="social-btn"
-                        href="https://t.me/jeff_developer"
-                        target="_blank"
-                    >
-                        TELEGRAM<br>
-                        @jeff_developer
-                    </a>
-
-                    <a
-                        class="social-btn"
-                        href="https://wa.me/6285177541020"
-                        target="_blank"
-                    >
-                        WHATSAPP<br>
-                        085177541020
-                    </a>
-
-                    <div class="social-btn">
-                        TIKTOK<br>
-                        COMING SOON
-                    </div>
-
-                </div>
-
-
-                <!-- DONATION -->
-
-                <div class="donation">
-
-                    <h3>
-                        DONASI KE DEVELOPER
-                    </h3>
-
-                    <p>
-
-                        Jika kamu ingin mendukung
-                        pengembangan JEFF TOOL,
-                        kamu dapat memberikan donasi
-                        secara sukarela melalui DANA.
-
-                    </p>
-
-
-                    <div class="payment-box">
-
-                        <div class="payment-item">
-
-                            <div class="payment-label">
-                                PAYMENT DANA
-                            </div>
-
-                            <div class="payment-value">
-                                085194427487
-                            </div>
-
-                        </div>
-
-                        <div class="payment-item">
-
-                            <div class="payment-label">
-                                ATAS NAMA
-                            </div>
-
-                            <div class="payment-value">
-                                ERNxxx
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="tool-btn"
-                        onclick="copyDonation()"
-                    >
-                        SALIN NOMOR DANA
-                    </button>
-
-
-                    <div
-                        class="result"
-                        id="donationResult"
-                        style="display:none"
-                    ></div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
+<!-- ===== PERHITUNGAN ===== -->
+<section id="hit" class="active">
+  <div class="card"><h3>Kalkulator Dasar</h3><p class="desc">+ − × ÷</p>
+    <div class="row2"><input id="h1a" type="number" placeholder="Angka 1"><select id="h1op"><option>+</option><option>-</option><option>*</option><option>/</option></select></div>
+    <input id="h1b" type="number" placeholder="Angka 2" style="margin-top:9px">
+    <button class="act" onclick="hBasic()">Hitung</button><div class="result" id="rBasic"></div>
+  </div>
+  <div class="card"><h3>BMI (Indeks Massa Tubuh)</h3>
+    <div class="row2"><input id="hBB" type="number" placeholder="Berat (kg)"><input id="hTB" type="number" placeholder="Tinggi (cm)"></div>
+    <button class="act" onclick="hBMI()">Hitung BMI</button><div class="result" id="rBMI"></div>
+  </div>
+  <div class="card"><h3>Diskon Belanja</h3>
+    <div class="row2"><input id="hHarga" type="number" placeholder="Harga (Rp)"><input id="hDisk" type="number" placeholder="Diskon (%)"></div>
+    <button class="act" onclick="hDiskon()">Hitung</button><div class="result" id="rDiskon"></div>
+  </div>
+  <div class="card"><h3>Bunga Sederhana</h3>
+    <div class="row2"><input id="hPokok" type="number" placeholder="Pokok (Rp)"><input id="hBunga" type="number" placeholder="Bunga (%/thn)"></div>
+    <input id="hTahun" type="number" placeholder="Lama (tahun)" style="margin-top:9px">
+    <button class="act" onclick="hBungaCalc()">Hitung</button><div class="result" id="rBunga"></div>
+  </div>
+  <div class="card"><h3>Konversi Suhu</h3>
+    <div class="row2"><input id="hSuhu" type="number" placeholder="Nilai suhu"><select id="hSuhuUnit"><option value="C">Celsius</option><option value="F">Fahrenheit</option><option value="K">Kelvin</option></select></div>
+    <button class="act" onclick="hSuhuCalc()">Konversi</button><div class="result" id="rSuhu"></div>
+  </div>
+  <div class="card"><h3>Kalkulator PPN</h3>
+    <div class="row2"><input id="hDPP" type="number" placeholder="Harga (DPP)"><input id="hPPN" type="number" placeholder="PPN (%)" value="11"></div>
+    <button class="act" onclick="hPPNCalc()">Hitung</button><div class="result" id="rPPN"></div>
+  </div>
+  <div class="card"><h3>Luas &amp; Keliling Persegi Panjang</h3>
+    <div class="row2"><input id="hPjg" type="number" placeholder="Panjang"><input id="hLbr" type="number" placeholder="Lebar"></div>
+    <button class="act" onclick="hPersegiCalc()">Hitung</button><div class="result" id="rPersegi"></div>
+  </div>
+  <div class="card"><h3>Luas &amp; Keliling Lingkaran</h3>
+    <input id="hJari" type="number" placeholder="Jari-jari">
+    <button class="act" onclick="hLingkaranCalc()">Hitung</button><div class="result" id="rLingkaran"></div>
+  </div>
+  <div class="card"><h3>Split Bill (Patungan)</h3>
+    <div class="row2"><input id="hTotalBill" type="number" placeholder="Total tagihan (Rp)"><input id="hJmlOrang" type="number" placeholder="Jumlah orang"></div>
+    <input id="hTipPersen" type="number" placeholder="Tip (%) — opsional" style="margin-top:9px">
+    <button class="act" onclick="hSplitBillCalc()">Hitung</button><div class="result" id="rSplitBill"></div>
+  </div>
+  <div class="card"><h3>Kalkulator Cicilan Flat</h3>
+    <div class="row2"><input id="hPinjaman" type="number" placeholder="Pokok pinjaman (Rp)"><input id="hBungaCicil" type="number" placeholder="Bunga (%/thn)"></div>
+    <input id="hTenor" type="number" placeholder="Tenor (bulan)" style="margin-top:9px">
+    <button class="act" onclick="hCicilanCalc()">Hitung</button><div class="result" id="rCicilan"></div>
+  </div>
+  <div class="card"><h3>Kalkulator Persentase</h3><p class="desc">Nilai adalah berapa persen dari total.</p>
+    <div class="row2"><input id="hNilaiP" type="number" placeholder="Nilai"><input id="hTotalP" type="number" placeholder="Total"></div>
+    <button class="act" onclick="hPersenCalc()">Hitung</button><div class="result" id="rPersen"></div>
+  </div>
 </section>
 
+<!-- ===== GAMES ===== -->
+<section id="game">
+  <div class="card"><h3>Lempar Dadu</h3><button class="act" onclick="gDadu()">Kocok Dadu</button><div class="big" id="rDadu">-</div></div>
+  <div class="card"><h3>Lempar Koin</h3><button class="act" onclick="gKoin()">Lempar</button><div class="big" id="rKoin">-</div></div>
+  <div class="card"><h3>Batu Gunting Kertas</h3>
+    <div class="btnrow"><button class="ghost act" onclick="gBGK('Batu')">Batu</button><button class="ghost act" onclick="gBGK('Gunting')">Gunting</button><button class="ghost act" onclick="gBGK('Kertas')">Kertas</button></div>
+    <div class="result" id="rBGK">Pilih salah satu.</div>
+  </div>
+  <div class="card"><h3>Tebak Angka (1-50)</h3><input id="gTebak" type="number" placeholder="Tebakanmu"><button class="act" onclick="gTebakCek()">Cek</button><div class="result" id="rTebak">Angka rahasia sudah disiapkan!</div></div>
+  <div class="card"><h3>Roda Keputusan</h3><p class="desc">Pisahkan pilihan dengan koma.</p><input id="gRoda" placeholder="Main, Belajar, Tidur"><button class="act" onclick="gRodaSpin()">Putar</button><div class="result" id="rRoda"></div></div>
+  <div class="card"><h3>Kartu Acak</h3><button class="act" onclick="gKartu()">Kocok Kartu</button><div class="big" id="rKartu">-</div></div>
 
-<!-- =====================================================
-     PERHITUNGAN
-===================================================== -->
+  <div class="card"><h3>Tic Tac Toe</h3><p class="desc">2 pemain bergantian, X mulai duluan.</p>
+    <div class="tttGrid" id="tttGrid"></div>
+    <div class="result" id="rTTT">Giliran: X</div>
+    <button class="act ghost" onclick="tttReset()">Ulangi</button>
+  </div>
 
-<section
-    id="perhitungan"
-    class="category"
->
+  <div class="card"><h3>Ular Tangga</h3><p class="desc">2 pemain, kocok dadu bergantian, pertama sampai 100 menang. Kotak bertanda ↑ tangga naik, ↓ ular turun.</p>
+    <div class="result" id="rSnake">Giliran: Pemain 1 (Merah)</div>
+    <button class="act" onclick="snakeRoll()">Kocok Dadu</button>
+    <div class="snakeBoard" id="snakeBoard"></div>
+    <button class="act ghost" onclick="snakeReset()" style="margin-top:8px">Reset Permainan</button>
+  </div>
 
-    <div class="section-title">
-        PERHITUNGAN
+  <div class="card"><h3>Ludo Mini</h3><p class="desc">2 token per pemain, jalur 52 kotak. Perlu angka 6 untuk keluar markas, dapat 6 = kocok lagi. Menginjak kotak token lawan (di luar kotak bertanda aman) akan mengirim token itu kembali ke markas. Semua token sampai finish = menang.</p>
+    <div class="result" id="rLudo">Giliran: Pemain 1 (Merah) — token di markas</div>
+    <button class="act" onclick="ludoRoll()">Kocok Dadu</button>
+    <div class="ludoTrack" id="ludoTrack"></div>
+    <button class="act ghost" onclick="ludoReset()" style="margin-top:8px">Reset Permainan</button>
+  </div>
+
+  <div class="card"><h3>Reaction Timer</h3><p class="desc">Tekan tombol secepat mungkin saat warna berubah jadi hijau.</p>
+    <button class="act" id="rtBtn" onclick="rtClick()">Mulai</button>
+    <div class="result" id="rRT">Tekan Mulai untuk memulai.</div>
+  </div>
+
+  <div class="card"><h3>Simon Says</h3><p class="desc">Hafalkan dan ulangi urutan warna yang makin panjang.</p>
+    <div class="btnrow">
+      <button class="ghost act" style="background:#3a0505" onclick="simonPick(0)">1</button>
+      <button class="ghost act" style="background:#3a2505" onclick="simonPick(1)">2</button>
+      <button class="ghost act" style="background:#052a3a" onclick="simonPick(2)">3</button>
+      <button class="ghost act" style="background:#0a3a10" onclick="simonPick(3)">4</button>
     </div>
+    <button class="act" onclick="simonStart()" style="margin-top:8px">Mulai / Ulang</button>
+    <div class="result" id="rSimon">Skor: 0</div>
+  </div>
 
-    <div class="section-desc">
-        Lima alat perhitungan sederhana untuk kebutuhan
-        sehari-hari.
-    </div>
+  <div class="card"><h3>Memory Card</h3><p class="desc">Cocokkan seluruh pasangan kartu.</p>
+    <div class="tttGrid" id="memGrid" style="grid-template-columns:repeat(4,1fr);max-width:260px;"></div>
+    <div class="result" id="rMemory">Tap kartu untuk membuka.</div>
+    <button class="act ghost" onclick="memInit()" style="margin-top:8px">Acak Ulang</button>
+  </div>
 
+  <div class="card"><h3>Tes Kecepatan Klik (5 detik)</h3>
+    <button class="act" id="cpsBtn" onclick="cpsClick()">Mulai / Klik</button>
+    <div class="result" id="rCps">Tekan Mulai lalu klik secepat mungkin.</div>
+  </div>
 
-    <div class="calc-grid">
-
-
-        <!-- 1 -->
-
-        <div class="calc-card">
-
-            <h3>
-                KALKULATOR
-            </h3>
-
-            <p>
-                Perhitungan angka menggunakan operator dasar.
-            </p>
-
-            <input
-                id="calcInput"
-                placeholder="Contoh: 100+25*2"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="calculate()"
-            >
-                HITUNG
-            </button>
-
-            <div
-                class="result"
-                id="calcResult"
-            >
-                Masukkan perhitungan.
-            </div>
-
-        </div>
-
-
-        <!-- 2 DISKON -->
-
-        <div class="calc-card">
-
-            <h3>
-                KALKULATOR DISKON
-            </h3>
-
-            <p>
-                Hitung harga setelah mendapatkan diskon.
-            </p>
-
-            <input
-                id="priceInput"
-                type="number"
-                placeholder="Harga awal"
-            >
-
-            <input
-                id="discountInput"
-                type="number"
-                placeholder="Diskon (%)"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="calculateDiscount()"
-            >
-                HITUNG DISKON
-            </button>
-
-            <div
-                class="result"
-                id="discountResult"
-            ></div>
-
-        </div>
-
-
-        <!-- 3 RATA RATA -->
-
-        <div class="calc-card">
-
-            <h3>
-                RATA-RATA
-            </h3>
-
-            <p>
-                Masukkan beberapa angka yang dipisahkan koma.
-            </p>
-
-            <input
-                id="averageInput"
-                placeholder="Contoh: 80,90,75,85"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="calculateAverage()"
-            >
-                HITUNG RATA-RATA
-            </button>
-
-            <div
-                class="result"
-                id="averageResult"
-            ></div>
-
-        </div>
-
-
-        <!-- 4 LUAS -->
-
-        <div class="calc-card">
-
-            <h3>
-                LUAS PERSEGI PANJANG
-            </h3>
-
-            <p>
-                Hitung luas berdasarkan panjang dan lebar.
-            </p>
-
-            <input
-                id="lengthInput"
-                type="number"
-                placeholder="Panjang"
-            >
-
-            <input
-                id="widthInput"
-                type="number"
-                placeholder="Lebar"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="calculateArea()"
-            >
-                HITUNG LUAS
-            </button>
-
-            <div
-                class="result"
-                id="areaResult"
-            ></div>
-
-        </div>
-
-
-        <!-- 5 SUHU -->
-
-        <div class="calc-card">
-
-            <h3>
-                KONVERSI SUHU
-            </h3>
-
-            <p>
-                Konversi Celsius, Fahrenheit, dan Kelvin.
-            </p>
-
-            <input
-                id="temperatureInput"
-                type="number"
-                placeholder="Masukkan suhu Celsius"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="convertTemperature()"
-            >
-                KONVERSI
-            </button>
-
-            <div
-                class="result"
-                id="temperatureResult"
-            ></div>
-
-        </div>
-
-
-    </div>
-
+  <div class="card"><h3>Tebak Kata Acak</h3><p class="desc">Susun ulang huruf menjadi kata yang benar.</p>
+    <div class="big" id="rAcakKata" style="font-size:26px;">-</div>
+    <input id="wordGuess" placeholder="Jawabanmu">
+    <div class="btnrow" style="margin-top:8px"><button class="act" onclick="wordCheck()">Cek</button><button class="act ghost" onclick="wordNew()">Soal Baru</button></div>
+    <div class="result" id="rWord"></div>
+  </div>
 </section>
 
-
-<!-- =====================================================
-     GAMES
-===================================================== -->
-
-<section
-    id="games"
-    class="category"
->
-
-    <div class="section-title">
-        GAMES
+<!-- ===== EDUKASI ===== -->
+<section id="edu">
+  <div class="card"><h3>Tabel Perkalian</h3><input id="eTP" type="number" placeholder="Angka (1-20)"><button class="act" onclick="eTabel()">Tampilkan</button><div class="result" id="rTP"></div></div>
+  <div class="card"><h3>Konversi Panjang</h3>
+    <div class="row2"><input id="eLen" type="number" placeholder="Nilai"><select id="eLenU"><option value="m">Meter</option><option value="km">Kilometer</option><option value="cm">Centimeter</option><option value="mi">Mil</option><option value="ft">Kaki</option></select></div>
+    <button class="act" onclick="eLenCalc()">Konversi ke Meter</button><div class="result" id="rLen"></div>
+  </div>
+  <div class="card"><h3>Konversi Berat</h3>
+    <div class="row2"><input id="eBer" type="number" placeholder="Nilai"><select id="eBerU"><option value="kg">Kilogram</option><option value="g">Gram</option><option value="lb">Pon</option><option value="ton">Ton</option></select></div>
+    <button class="act" onclick="eBerCalc()">Konversi ke Kg</button><div class="result" id="rBer"></div>
+  </div>
+  <div class="card"><h3>Stopwatch Belajar</h3><div class="big mono" id="eSW">00:00.0</div>
+    <div class="btnrow"><button class="act" id="eSWbtn" onclick="eSWToggle()">Mulai</button><button class="act ghost" onclick="eSWReset()">Reset</button></div>
+  </div>
+  <div class="card"><h3>Kalkulator Nilai Rata-rata</h3><p class="desc">Pisahkan nilai dengan koma.</p><input id="eNilai" placeholder="80, 90, 75"><button class="act" onclick="eRataCalc()">Hitung</button><div class="result" id="rRata"></div></div>
+  <div class="card"><h3>Flashcard Hafalan</h3><p class="desc">Format: pertanyaan=jawaban per baris.</p>
+    <textarea id="eFCin" placeholder="Ibu kota Indonesia=Jakarta
+5x5=25"></textarea>
+    <button class="act" onclick="eFCStart()">Mulai Flashcard</button>
+    <div class="result" id="rFC" style="display:none">
+      <div id="fcQ" style="font-size:15px;margin-bottom:8px"></div>
+      <button class="ghost act" onclick="eFCFlip()">Balik Kartu</button>
+      <button class="act" onclick="eFCNext()" style="margin-top:8px">Kartu Berikutnya</button>
     </div>
-
-    <div class="section-desc">
-        Permainan sederhana yang dapat dimainkan
-        langsung di JEFF TOOL.
-    </div>
-
-
-    <!-- TEBAK ANGKA -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                TEBAK ANGKA
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="question">
-                Tebak angka dari 1 sampai 100.
-            </div>
-
-            <input
-                id="guessInput"
-                type="number"
-                min="1"
-                max="100"
-                placeholder="Masukkan angka"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="guessNumber()"
-            >
-                TEBAK
-            </button>
-
-            <button
-                class="tool-btn"
-                onclick="newGuessGame()"
-            >
-                GAME BARU
-            </button>
-
-            <div
-                class="result"
-                id="guessResult"
-            >
-                Game siap dimainkan.
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- RPS -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                BATU GUNTING KERTAS
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="choice-row">
-
-                <button
-                    class="tool-btn"
-                    onclick="rps('batu')"
-                >
-                    BATU
-                </button>
-
-                <button
-                    class="tool-btn"
-                    onclick="rps('gunting')"
-                >
-                    GUNTING
-                </button>
-
-                <button
-                    class="tool-btn"
-                    onclick="rps('kertas')"
-                >
-                    KERTAS
-                </button>
-
-            </div>
-
-            <div
-                class="result"
-                id="rpsResult"
-            >
-                Pilih permainan.
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- TIC TAC TOE -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                TIC TAC TOE
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div
-                class="question"
-                id="tttStatus"
-            >
-                Giliran X
-            </div>
-
-            <div
-                class="ttt"
-                id="tttBoard"
-            ></div>
-
-            <button
-                class="tool-btn"
-                onclick="resetTTT()"
-            >
-                RESET
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- HEWAN -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                TEBAK HEWAN
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="question">
-
-                Hewan apakah yang memiliki belalai
-                panjang dan tubuh besar?
-
-            </div>
-
-            <input
-                id="animalInput"
-                placeholder="Jawaban"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="checkAnimal()"
-            >
-                JAWAB
-            </button>
-
-            <div
-                class="result"
-                id="animalResult"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <!-- BUNGA -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                TEBAK BUNGA
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="question">
-
-                Aku dikenal memiliki duri dan sering
-                diasosiasikan dengan bunga cinta.
-                Bunga apakah aku?
-
-            </div>
-
-            <input
-                id="flowerInput"
-                placeholder="Jawaban"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="checkFlower()"
-            >
-                JAWAB
-            </button>
-
-            <div
-                class="result"
-                id="flowerResult"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <!-- DADU -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                DADU ACAK
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="game-area">
-
-                <div
-                    class="big-number"
-                    id="diceResult"
-                >
-                    ?
-                </div>
-
-                <button
-                    class="tool-btn"
-                    onclick="rollDice()"
-                >
-                    LEMPAR DADU
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- KOIN -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                LEMPAR KOIN
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="game-area">
-
-                <div
-                    class="big-number"
-                    id="coinResult"
-                >
-                    ?
-                </div>
-
-                <button
-                    class="tool-btn"
-                    onclick="flipCoin()"
-                >
-                    LEMPAR KOIN
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
+  </div>
+  <div class="card"><h3>Terjemahan Bahasa Dunia</h3><p class="desc">Tulis teks, pilih bahasa tujuan, lalu buka hasil terjemahan resmi ke puluhan bahasa dunia.</p>
+    <textarea id="trText" placeholder="Tulis teks yang mau diterjemahkan..."></textarea>
+    <label>Bahasa Tujuan</label>
+    <select id="trLang">
+      <option value="en">Inggris</option><option value="ar">Arab</option><option value="zh-CN">Mandarin</option>
+      <option value="ja">Jepang</option><option value="ko">Korea</option><option value="fr">Prancis</option>
+      <option value="de">Jerman</option><option value="es">Spanyol</option><option value="pt">Portugis</option>
+      <option value="ru">Rusia</option><option value="hi">Hindi</option><option value="th">Thailand</option>
+      <option value="vi">Vietnam</option><option value="nl">Belanda</option><option value="it">Italia</option>
+      <option value="tr">Turki</option><option value="ms">Melayu</option><option value="tl">Tagalog</option>
+      <option value="bn">Bengali</option><option value="ur">Urdu</option><option value="fa">Persia</option>
+      <option value="sw">Swahili</option><option value="pl">Polandia</option><option value="uk">Ukraina</option>
+      <option value="id">Indonesia</option>
+    </select>
+    <button class="act" onclick="trOpen()">Terjemahkan</button>
+  </div>
+  <div class="card"><h3>Cek Bilangan Prima</h3><input id="ePrimaN" type="number" placeholder="Masukkan angka"><button class="act" onclick="ePrimaCek()">Cek</button><div class="result" id="rPrima"></div></div>
+  <div class="card"><h3>FPB &amp; KPK</h3>
+    <div class="row2"><input id="eFpkA" type="number" placeholder="Angka 1"><input id="eFpkB" type="number" placeholder="Angka 2"></div>
+    <button class="act" onclick="eFpkKalc()">Hitung</button><div class="result" id="rFpk"></div>
+  </div>
+  <div class="card"><h3>Konversi Waktu</h3>
+    <div class="row2"><input id="eWaktuN" type="number" placeholder="Nilai"><select id="eWaktuU"><option value="dtk">Detik</option><option value="mnt">Menit</option><option value="jam">Jam</option><option value="hr">Hari</option></select></div>
+    <button class="act" onclick="eWaktuCalc()">Konversi ke Detik</button><div class="result" id="rWaktu"></div>
+  </div>
+  <div class="card"><h3>Kalkulator Pythagoras</h3><p class="desc">Cari sisi miring dari dua sisi siku-siku.</p>
+    <div class="row2"><input id="ePytA" type="number" placeholder="Sisi A"><input id="ePytB" type="number" placeholder="Sisi B"></div>
+    <button class="act" onclick="ePytCalc()">Hitung</button><div class="result" id="rPyt"></div>
+  </div>
+  <div class="card"><h3>Penghitung Kata &amp; Karakter</h3><textarea id="eWCText" placeholder="Tempel atau tulis teks di sini..."></textarea><button class="act" onclick="eWCCalc()">Hitung</button><div class="result" id="rWC"></div></div>
 </section>
 
-
-<!-- =====================================================
-     EDUKASI
-===================================================== -->
-
-<section
-    id="edukasi"
-    class="category"
->
-
-    <div class="section-title">
-        EDUKASI
-    </div>
-
-    <div class="section-desc">
-        Alat bantu pembelajaran dan sumber informasi.
-    </div>
-
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                TERJEMAHAN
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <textarea
-                id="translateText"
-                placeholder="Masukkan teks bahasa Inggris..."
-            ></textarea>
-
-            <button
-                class="tool-btn"
-                onclick="translateText()"
-            >
-                TERJEMAHKAN
-            </button>
-
-            <div
-                class="result"
-                id="translateResult"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                UNDANG-UNDANG INDONESIA
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="panel-text">
-
-                Untuk membaca peraturan perundang-undangan
-                Indonesia, gunakan sumber resmi Database
-                Peraturan BPK.
-
-            </div>
-
-            <a
-                class="social-btn"
-                href="https://peraturan.bpk.go.id/"
-                target="_blank"
-                style="margin-top:15px"
-            >
-                BUKA DATABASE PERATURAN
-            </a>
-
-        </div>
-
-    </div>
-
+<!-- ===== KITAB SUCI ===== -->
+<section id="kitab">
+  <div class="card"><h3>Kitab Suci 6 Agama di Indonesia</h3><p class="desc">Pilih agama untuk melihat informasi lengkap kitab sucinya.</p>
+    <select id="kAgama" onchange="kTampil()">
+      <option value="islam">Islam</option><option value="kristen">Kristen Protestan</option><option value="katolik">Katolik</option><option value="hindu">Hindu</option><option value="buddha">Buddha</option><option value="konghucu">Konghucu</option>
+    </select>
+    <div class="result" id="rKitab"></div>
+  </div>
+  <div class="card"><h3>Perbandingan Ringkas 6 Kitab</h3><button class="act" onclick="kBandingTampil()">Tampilkan Perbandingan</button><div class="result" id="rBanding"></div></div>
+  <div class="card"><h3>Ayat Harian Acak</h3><p class="desc">Ambil satu contoh ayat/kutipan secara acak dari keenam kitab.</p><button class="act" onclick="kAyatAcak()">Ambil Ayat Hari Ini</button><div class="result" id="rAyatAcak"></div></div>
+  <div class="card"><h3>Harapan Damai Lintas Agama</h3><p class="desc">Pilih agama untuk melihat ungkapan harapan damai singkat.</p>
+    <select id="kDamaiAgama" onchange="kDamaiTampil()">
+      <option value="islam">Islam</option><option value="kristen">Kristen Protestan</option><option value="katolik">Katolik</option><option value="hindu">Hindu</option><option value="buddha">Buddha</option><option value="konghucu">Konghucu</option>
+    </select>
+    <div class="result" id="rDamai"></div>
+  </div>
+  <div class="card"><h3>Istilah Penting</h3><p class="desc">Pilih agama untuk melihat beberapa istilah penting dalam ajarannya.</p>
+    <select id="kIstilahAgama" onchange="kIstilahTampil()">
+      <option value="islam">Islam</option><option value="kristen">Kristen Protestan</option><option value="katolik">Katolik</option><option value="hindu">Hindu</option><option value="buddha">Buddha</option><option value="konghucu">Konghucu</option>
+    </select>
+    <div class="result" id="rIstilah"></div>
+  </div>
+  <div class="card"><h3>Statistik Singkat Kitab</h3><p class="desc">Pilih agama untuk melihat jumlah kitab/bagian secara singkat.</p>
+    <select id="kStatAgama" onchange="kStatTampil()">
+      <option value="islam">Islam</option><option value="kristen">Kristen Protestan</option><option value="katolik">Katolik</option><option value="hindu">Hindu</option><option value="buddha">Buddha</option><option value="konghucu">Konghucu</option>
+    </select>
+    <div class="result" id="rStat"></div>
+  </div>
 </section>
 
-
-<!-- =====================================================
-     AI
-===================================================== -->
-
-<section
-    id="ai"
-    class="category"
->
-
-    <div class="section-title">
-        AI
-    </div>
-
-    <div class="section-desc">
-        Empat alat bantu pengolahan teks dan ide.
-    </div>
-
-
-    <!-- CHAT -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                JEFF AI CHAT
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <input
-                id="aiQuestion"
-                placeholder="Tulis pertanyaan..."
-            >
-
-            <button
-                class="tool-btn"
-                onclick="aiChat()"
-            >
-                KIRIM
-            </button>
-
-            <div
-                class="result"
-                id="aiResult"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                AI RINGKAS TEKS
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <textarea
-                id="summaryText"
-                placeholder="Masukkan teks panjang..."
-            ></textarea>
-
-            <button
-                class="tool-btn"
-                onclick="summarizeText()"
-            >
-                RINGKAS
-            </button>
-
-            <div
-                class="result"
-                id="summaryResult"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <!-- IDE -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                AI GENERATOR IDE
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <input
-                id="ideaTopic"
-                placeholder="Contoh: bisnis digital"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="generateIdea()"
-            >
-                GENERATE IDE
-            </button>
-
-            <div
-                class="result"
-                id="ideaResult"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <!-- FIX -->
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                AI PERBAIKI TEKS
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <textarea
-                id="fixText"
-                placeholder="Masukkan teks..."
-            ></textarea>
-
-            <button
-                class="tool-btn"
-                onclick="fixText()"
-            >
-                PERBAIKI
-            </button>
-
-            <div
-                class="result"
-                id="fixResult"
-            ></div>
-
-        </div>
-
-    </div>
-
+<!-- ===== JAM INDONESIA ===== -->
+<section id="dunia">
+  <div class="card"><h3>Jam Seluruh Indonesia</h3><p class="desc">Waktu langsung tiga zona waktu Indonesia: WIB, WITA, dan WIT.</p>
+    <div class="grid2" id="wcGrid"></div>
+  </div>
+  <div class="card"><h3>Perkiraan Indeks Panas (Cuaca)</h3><p class="desc">Estimasi suhu terasa dari suhu udara &amp; kelembapan (formula heat index).</p>
+    <div class="row2"><input id="wSuhu" type="number" placeholder="Suhu udara (°C)"><input id="wLembap" type="number" placeholder="Kelembapan (%)"></div>
+    <button class="act" onclick="wHitung()">Hitung Perkiraan</button><div class="result" id="rCuaca"></div>
+  </div>
+  <div class="card"><h3>Kalkulator Umur</h3><label>Tanggal Lahir</label><input id="jUmurTgl" type="date"><button class="act" onclick="jUmurCalc()">Hitung Umur</button><div class="result" id="rUmur"></div></div>
+  <div class="card"><h3>Selisih Dua Tanggal</h3>
+    <div class="row2"><div><label>Tanggal Awal</label><input id="jTgl1" type="date"></div><div><label>Tanggal Akhir</label><input id="jTgl2" type="date"></div></div>
+    <button class="act" onclick="jSelisihCalc()">Hitung Selisih</button><div class="result" id="rSelisih"></div>
+  </div>
+  <div class="card"><h3>Timer Mundur</h3>
+    <div class="row2"><input id="jTimerMnt" type="number" placeholder="Menit"><input id="jTimerDtk" type="number" placeholder="Detik"></div>
+    <div class="big mono" id="jTimerBig">00:00</div>
+    <div class="btnrow"><button class="act" onclick="jTimerStart()">Mulai</button><button class="act ghost" onclick="jTimerStop()">Berhenti</button></div>
+    <div class="result" id="rTimer"></div>
+  </div>
+  <div class="card"><h3>Cari Hari dari Tanggal</h3><input id="jHariTgl" type="date"><button class="act" onclick="jHariCalc()">Cari Hari</button><div class="result" id="rHari"></div></div>
+  <div class="card"><h3>Hari ke Berapa dalam Setahun</h3><input id="jUrutTgl" type="date"><button class="act" onclick="jUrutCalc()">Hitung</button><div class="result" id="rUrut"></div></div>
 </section>
 
-
-<!-- =====================================================
-     SOSMED
-===================================================== -->
-
-<section
-    id="sosmed"
-    class="category"
->
-
-    <div class="section-title">
-        SOSIAL MEDIA
-    </div>
-
-    <div class="section-desc">
-        Akses cepat berbagai platform sosial media.
-    </div>
-
-    <div class="social-grid">
-
-        <a
-            class="social-btn"
-            href="https://instagram.com/"
-            target="_blank"
-        >
-            INSTAGRAM
-        </a>
-
-        <a
-            class="social-btn"
-            href="https://www.tiktok.com/"
-            target="_blank"
-        >
-            TIKTOK
-        </a>
-
-        <a
-            class="social-btn"
-            href="https://telegram.org/"
-            target="_blank"
-        >
-            TELEGRAM
-        </a>
-
-        <a
-            class="social-btn"
-            href="https://youtube.com/"
-            target="_blank"
-        >
-            YOUTUBE
-        </a>
-
-        <a
-            class="social-btn"
-            href="https://web.whatsapp.com/"
-            target="_blank"
-        >
-            WHATSAPP
-        </a>
-
-    </div>
-
-
-    <div class="panel" style="margin-top:15px">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                CEK AKUN / TAUTAN
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <input
-                id="socialURL"
-                placeholder="Masukkan URL akun..."
-            >
-
-            <button
-                class="tool-btn"
-                onclick="openSocial()"
-            >
-                BUKA TAUTAN
-            </button>
-
-        </div>
-
-    </div>
-
+<!-- ===== DOWNLOADER ===== -->
+<section id="dl">
+  <div class="card"><h3>Downloader QR Code</h3><p class="desc">Buat kode QR dari teks/link lalu unduh sebagai gambar.</p>
+    <input id="dQR" placeholder="https://contoh.com">
+    <button class="act" onclick="dQRGen()">Buat QR</button>
+    <div id="qrCanvasWrap"></div>
+    <button class="act ghost" id="dQRdl" style="display:none;margin-top:8px" onclick="dQRDownload()">Unduh PNG</button>
+  </div>
+  <div class="card"><h3>Downloader Catatan Teks</h3><textarea id="dTxt" placeholder="Tulis catatanmu di sini..."></textarea><button class="act" onclick="dTxtDownload()">Unduh .txt</button></div>
+  <div class="card"><h3>Downloader Data CSV</h3><p class="desc">Satu baris = satu baris data. Pisahkan kolom dengan koma.</p>
+    <textarea id="dCSV" placeholder="Nama,Umur
+Andi,20
+Budi,22"></textarea>
+    <button class="act" onclick="dCSVDownload()">Unduh .csv</button>
+  </div>
+  <div class="card"><h3>Downloader Kartu Ucapan</h3>
+    <div class="row2"><input id="dKartuJudul" placeholder="Judul"><input id="dKartuNama" placeholder="Untuk siapa"></div>
+    <textarea id="dKartuPesan" placeholder="Isi pesan..." style="margin-top:9px"></textarea>
+    <button class="act" onclick="dKartuBuat()">Buat Kartu</button>
+    <div id="dKartuWrap" style="display:flex;justify-content:center;margin-top:10px"></div>
+    <button class="act ghost" id="dKartuDlBtn" style="display:none;margin-top:8px" onclick="dKartuDownload()">Unduh PNG</button>
+  </div>
+  <div class="card"><h3>Downloader Sertifikat</h3>
+    <div class="row2"><input id="dSertNama" placeholder="Nama penerima"><input id="dSertJudul" placeholder="Judul sertifikat"></div>
+    <input id="dSertTgl" placeholder="Tanggal" style="margin-top:9px">
+    <button class="act" onclick="dSertBuat()">Buat Sertifikat</button>
+    <div id="dSertWrap" style="display:flex;justify-content:center;margin-top:10px"></div>
+    <button class="act ghost" id="dSertDlBtn" style="display:none;margin-top:8px" onclick="dSertDownload()">Unduh PNG</button>
+  </div>
+  <div class="card"><h3>Downloader Password Acak</h3>
+    <div class="row2"><input id="dPassJml" type="number" placeholder="Jumlah password" value="10"><input id="dPassPanjang" type="number" placeholder="Panjang" value="12"></div>
+    <button class="act" onclick="dPassGenerate()">Buat &amp; Unduh .txt</button>
+    <div class="result" id="rPass"></div>
+  </div>
+  <div class="card"><h3>Downloader Palet Warna</h3><p class="desc">Buat palet warna acak dan unduh sebagai gambar.</p>
+    <button class="act" onclick="dPaletBuat()">Buat Palet</button>
+    <div id="dPaletWrap" style="display:flex;justify-content:center;margin-top:10px"></div>
+    <button class="act ghost" id="dPaletDlBtn" style="display:none;margin-top:8px" onclick="dPaletDownload()">Unduh PNG</button>
+  </div>
+  <div class="card"><h3>Downloader Watermark Gambar</h3><p class="desc">Unggah gambar, tambahkan teks watermark, lalu unduh.</p>
+    <input id="dWmFile" type="file" accept="image/*">
+    <input id="dWmText" placeholder="Teks watermark" style="margin-top:9px">
+    <button class="act" onclick="dWmBuat()">Tambahkan Watermark</button>
+    <div id="dWmWrap" style="display:flex;justify-content:center;margin-top:10px"></div>
+    <button class="act ghost" id="dWmDlBtn" style="display:none;margin-top:8px" onclick="dWmDownload()">Unduh PNG</button>
+  </div>
+  <div class="card"><h3>Downloader Data JSON</h3><p class="desc">Format: kunci=nilai per baris.</p>
+    <textarea id="dJsonIn" placeholder="nama=Andi
+umur=20"></textarea>
+    <button class="act" onclick="dJsonDownload()">Unduh .json</button>
+  </div>
 </section>
-
-
-<!-- =====================================================
-     MEDIA
-===================================================== -->
-
-<section
-    id="media"
-    class="category"
->
-
-    <div class="section-title">
-        MEDIA
-    </div>
-
-    <div class="section-desc">
-        Utilitas sederhana untuk file media dan gambar.
-    </div>
-
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                MP4 KE MP3
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <div class="panel-text">
-
-                Pilih file MP4 untuk memeriksa file media.
-                Fitur ini merupakan pemeriksaan file lokal
-                dan bukan converter server.
-
-            </div>
-
-            <input
-                type="file"
-                id="videoFile"
-                accept="video/mp4"
-                onchange="checkVideo()"
-            >
-
-            <div
-                class="result"
-                id="videoResult"
-            ></div>
-
-        </div>
-
-    </div>
-
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                DIRECT DOWNLOAD
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <input
-                id="downloadURL"
-                placeholder="Masukkan URL file..."
-            >
-
-            <button
-                class="tool-btn"
-                onclick="directDownload()"
-            >
-                BUKA FILE
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                HD IMAGE 2X
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <input
-                type="file"
-                id="imageFile"
-                accept="image/*"
-                onchange="upscaleImage()"
-            >
-
-            <div
-                class="result"
-                id="imageResult"
-            ></div>
-
-            <canvas
-                id="imageCanvas"
-                style="
-                    display:none;
-                    max-width:100%;
-                    margin-top:15px
-                "
-            ></canvas>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     CUACA
-===================================================== -->
-
-<section
-    id="cuaca"
-    class="category"
->
-
-    <div class="section-title">
-        CUACA
-    </div>
-
-    <div class="section-desc">
-        Periksa kondisi cuaca berdasarkan nama kota.
-    </div>
-
-
-    <div class="panel">
-
-        <div
-            class="panel-head"
-            onclick="togglePanel(this)"
-        >
-
-            <span class="panel-name">
-                CEK CUACA
-            </span>
-
-            <span class="panel-icon">
-                +
-            </span>
-
-        </div>
-
-        <div class="panel-body">
-
-            <input
-                id="cityInput"
-                placeholder="Contoh: Makassar"
-            >
-
-            <button
-                class="tool-btn"
-                onclick="getWeather()"
-            >
-                CEK CUACA
-            </button>
-
-            <div
-                class="result"
-                id="weatherResult"
-            >
-                Masukkan nama kota.
-            </div>
-
-        </div>
-
-    </div>
-
-</section>
-
 
 </main>
+</div><!-- /toolsView -->
 
+<footer>JEFF TOOL &middot; dibuat oleh Jefferson Yesay<div class="copyright">© 2026 JEFF TOOL — Versi Beta</div></footer>
 
-<footer>
-    JEFF TOOL — DEVELOPER: JEFFERSON YESAY
-</footer>
-
+<div class="jeffAiBtn" id="jeffAiBtn" onclick="toggleJeffAI()">AI</div>
+<div class="jeffAiPanel" id="jeffAiPanel">
+  <div class="jeffAiHeader">JEFF AI <span id="jeffAiClose" onclick="toggleJeffAI()">✕</span></div>
+  <div class="jeffAiMsgs" id="jeffAiMsgs"><div class="jeffMsg ai">Halo! Aku JEFF AI. Ada yang bisa dibantu seputar JEFF TOOL atau hal lainnya?</div></div>
+  <div class="jeffAiInputRow">
+    <input id="jeffAiInput" placeholder="Tanya JEFF AI..." onkeydown="if(event.key==='Enter')jeffAiSend()">
+    <button onclick="jeffAiSend()">Kirim</button>
+  </div>
 </div>
 
+</div><!-- /appScreen -->
+
+</div><!-- /page -->
 
 <script>
-
-/* =====================================================
-   LOGIN → LOADING → APP
-===================================================== */
-
-const PASSWORD = "301108";
-
-function login(){
-
-    const pass =
-        document.getElementById("password").value;
-
-    const error =
-        document.getElementById("loginError");
-
-    if(pass !== PASSWORD){
-
-        error.textContent =
-            "PASSWORD SALAH";
-
-        return;
-    }
-
-    error.textContent = "";
-
-    /* sembunyikan login */
-
-    document.getElementById("login").style.display =
-        "none";
-
-    /* tampilkan loading */
-
-    const loading =
-        document.getElementById("loading");
-
-    loading.style.display =
-        "flex";
-
-    /* reset progress */
-
-    const progress =
-        document.getElementById("loadingProgress");
-
-    progress.style.animation = "none";
-
-    void progress.offsetWidth;
-
-    progress.style.animation =
-        "load 3s linear forwards";
-
-
-    /* status loading */
-
-    const status =
-        document.getElementById("loadingStatus");
-
-    const messages = [
-        "MENYIAPKAN SISTEM...",
-        "MEMUAT TOOL...",
-        "MENYIAPKAN INTERFACE...",
-        "MENGAKTIFKAN SISTEM...",
-        "SELESAI..."
-    ];
-
-    let i = 0;
-
-    status.textContent =
-        messages[0];
-
-    const statusInterval =
-        setInterval(() => {
-
-            i++;
-
-            if(i < messages.length){
-
-                status.textContent =
-                    messages[i];
-
-            }
-
-        },600);
-
-
-    /* setelah loading selesai */
-
-    setTimeout(() => {
-
-        clearInterval(statusInterval);
-
-        loading.style.display =
-            "none";
-
-        document.getElementById("app").style.display =
-            "block";
-
-    },3000);
-
-}
-
-
-document
-    .getElementById("password")
-    .addEventListener(
-        "keydown",
-        function(e){
-
-            if(e.key === "Enter"){
-                login();
-            }
-
-        }
-    );
-
-
-/* =====================================================
-   CLOCK
-===================================================== */
-
-function updateClock(){
-
-    const now =
-        new Date();
-
-    const time =
-        now.toLocaleTimeString(
-            "id-ID",
-            {
-                hour:"2-digit",
-                minute:"2-digit",
-                second:"2-digit"
-            }
-        );
-
-    const date =
-        now.toLocaleDateString(
-            "id-ID",
-            {
-                day:"2-digit",
-                month:"2-digit",
-                year:"numeric"
-            }
-        );
-
-    document.getElementById("clock")
-        .textContent = time;
-
-    document.getElementById("date")
-        .textContent = date;
-
-}
-
-setInterval(updateClock,1000);
-updateClock();
-
-
-/* =====================================================
-   BATTERY
-===================================================== */
-
-async function updateBattery(){
-
-    if(!navigator.getBattery){
-
-        document.getElementById("batteryText")
-            .textContent = "--%";
-
-        return;
-    }
-
-    try{
-
-        const battery =
-            await navigator.getBattery();
-
-        function refresh(){
-
-            const percent =
-                Math.round(
-                    battery.level * 100
-                );
-
-            document.getElementById(
-                "batteryText"
-            ).textContent =
-                percent + "%";
-
-            document.getElementById(
-                "batteryFill"
-            ).style.width =
-                percent + "%";
-
-        }
-
-        refresh();
-
-        battery.addEventListener(
-            "levelchange",
-            refresh
-        );
-
-    }catch(e){
-
-        document.getElementById(
-            "batteryText"
-        ).textContent =
-            "--%";
-
-    }
-
-}
-
-updateBattery();
-
-
-/* =====================================================
-   CATEGORY
-===================================================== */
-
-function showCategory(id,button){
-
-    document
-        .querySelectorAll(".category")
-        .forEach(
-            x => x.classList.remove("active")
-        );
-
-    document
-        .getElementById(id)
-        .classList.add("active");
-
-    document
-        .querySelectorAll(".nav button")
-        .forEach(
-            x => x.classList.remove("active")
-        );
-
-    button.classList.add("active");
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
+// ---- Matrix Rain (gaya hacker) ----
+(function(){
+  const canvas=document.getElementById('matrixCanvas');
+  const ctx=canvas.getContext('2d');
+  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  resize(); window.addEventListener('resize',resize);
+  const chars='01アイウエオカキクケコサシスセソJEFF'.split('');
+  const fontSize=15;
+  let cols=Math.floor(canvas.width/fontSize);
+  let drops=Array.from({length:cols},()=>Math.random()*-40);
+  function draw(){
+    if(cols!==Math.floor(canvas.width/fontSize)){ cols=Math.floor(canvas.width/fontSize); drops=Array.from({length:cols},()=>Math.random()*-40); }
+    ctx.fillStyle='rgba(0,10,4,0.18)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#00E676'; ctx.font=fontSize+'px monospace';
+    drops.forEach((y,i)=>{
+      const ch=chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillText(ch, i*fontSize, y*fontSize);
+      if(y*fontSize>canvas.height && Math.random()>0.975) drops[i]=0;
+      drops[i]+=0.6;
     });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
+// ---- Particles ----
+(function(){
+  const canvas=document.getElementById('particleCanvas');
+  const ctx=canvas.getContext('2d');
+  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+  resize(); window.addEventListener('resize',resize);
+  const colors=[[0,230,118],[232,255,194],[10,90,40]];
+  const parts=Array.from({length:220},()=>{
+    const c=colors[Math.floor(Math.random()*colors.length)];
+    return {x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2.2+0.5,
+      s:Math.random()*0.5+0.1, vx:(Math.random()-0.5)*0.3, c:c,
+      baseO:Math.random()*0.5+0.25, tw:Math.random()*Math.PI*2, twS:Math.random()*0.03+0.01};
+  });
+  let t=0;
+  function tick(){
+    t+=1;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts.forEach(p=>{
+      p.y-=p.s; p.x+=p.vx; p.tw+=p.twS;
+      if(p.y<-5)p.y=canvas.height+5;
+      if(p.x<-5)p.x=canvas.width+5; if(p.x>canvas.width+5)p.x=-5;
+      const o=p.baseO*(0.55+0.45*Math.sin(p.tw));
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},${o})`;
+      ctx.shadowBlur=6; ctx.shadowColor=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},0.8)`;
+      ctx.fill();
+    });
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+// ---- Spark sentuhan (percikan api) ----
+document.addEventListener('pointerdown', function(e){
+  for(let i=0;i<8;i++){
+    const s=document.createElement('div'); s.className='spark';
+    const ang=Math.random()*2*Math.PI, dist=20+Math.random()*30;
+    s.style.setProperty('--dx',Math.cos(ang)*dist+'px');
+    s.style.setProperty('--dy',Math.sin(ang)*dist+'px');
+    s.style.left=e.clientX+'px'; s.style.top=e.clientY+'px';
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),650);
+  }
+});
+
+// ---- Huruf beranimasi teks Selamat Datang ----
+(function(){
+  const el=document.getElementById('welcomeText');
+  const txt=el.textContent; el.textContent='';
+  [...txt].forEach((ch,i)=>{
+    const s=document.createElement('span'); s.textContent=ch===' '?'\u00A0':ch;
+    s.style.animationDelay=(i*0.045)+'s'; s.className='wLetter';
+    el.appendChild(s);
+  });
+})();
+
+// ---- Login & Loading ----
+function doLogin(){
+  document.getElementById('loginScreen').classList.remove('active');
+  document.getElementById('loadingScreen').classList.add('active');
+  let pct=0; const bar=document.getElementById('loadBar'); const pctEl=document.getElementById('loadPercent');
+  const iv=setInterval(()=>{pct+=100/50; if(pct>100)pct=100; bar.style.width=pct+'%'; pctEl.textContent=Math.round(pct)+'%';},100);
+  setTimeout(()=>{
+    clearInterval(iv);
+    document.getElementById('loadingScreen').classList.remove('active');
+    document.getElementById('appScreen').classList.add('active');
+  },5000);
 }
 
+// ---- Status bar: jam, tanggal, baterai, online ----
+function sbClock(){
+  const now=new Date();
+  document.getElementById('sbTime').textContent=now.toLocaleTimeString('id-ID');
+  document.getElementById('sbDate').textContent=now.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+sbClock(); setInterval(sbClock,1000);
+function sbOnline(){
+  const dot=document.getElementById('sbOnlineDot'), txt=document.getElementById('sbOnlineText');
+  if(navigator.onLine){dot.classList.remove('off'); txt.textContent='Online';}
+  else{dot.classList.add('off'); txt.textContent='Offline';}
+}
+sbOnline(); window.addEventListener('online',sbOnline); window.addEventListener('offline',sbOnline);
+if(navigator.getBattery){
+  navigator.getBattery().then(bat=>{
+    function upd(){document.getElementById('sbBattery').textContent='Baterai: '+Math.round(bat.level*100)+'%';}
+    upd(); bat.addEventListener('levelchange',upd);
+  }).catch(()=>{document.getElementById('sbBattery').textContent='Baterai: N/A';});
+} else {document.getElementById('sbBattery').textContent='Baterai: N/A';}
 
-/* =====================================================
-   PANELS
-===================================================== */
+// ---- Navigasi Beranda <-> Tools, tombol BACK di tiap kategori ----
+document.querySelectorAll('main > section').forEach(s=>s.insertAdjacentHTML('beforeend', '<button class="act ghost" onclick="showHome()">BACK</button>'));
+function showTools(){ document.getElementById('homeView').style.display='none'; document.getElementById('toolsView').style.display='block'; window.scrollTo(0,0); }
+function showHome(){ document.getElementById('toolsView').style.display='none'; document.getElementById('homeView').style.display='block'; window.scrollTo(0,0); }
 
-function togglePanel(head){
+// ---- FPS ----
+let fpsLast=performance.now(), fpsFrames=0;
+function fpsLoop(now){
+  fpsFrames++;
+  if(now-fpsLast>=1000){ document.getElementById('sbFps').textContent='FPS: '+fpsFrames; fpsFrames=0; fpsLast=now; }
+  requestAnimationFrame(fpsLoop);
+}
+requestAnimationFrame(fpsLoop);
 
-    const panel =
-        head.parentElement;
+// ---- Tabs ----
+document.querySelectorAll('nav .tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('nav .tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
+    btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+const idr = n => 'Rp' + Math.round(n).toLocaleString('id-ID');
 
-    panel.classList.toggle("open");
-
+// ---- PERHITUNGAN ----
+function hBasic(){
+  const a=parseFloat(document.getElementById('h1a').value), b=parseFloat(document.getElementById('h1b').value), op=document.getElementById('h1op').value;
+  const box=document.getElementById('rBasic');
+  if(isNaN(a)||isNaN(b)){box.innerHTML='Isi kedua angka.';return;}
+  let r; if(op==='+')r=a+b; else if(op==='-')r=a-b; else if(op==='*')r=a*b; else { if(b===0){box.innerHTML='Tidak bisa membagi dengan 0.';return;} r=a/b; }
+  box.innerHTML=`Hasil: <b>${r}</b>`;
+}
+function hBMI(){
+  const bb=parseFloat(document.getElementById('hBB').value), tb=parseFloat(document.getElementById('hTB').value)/100;
+  const box=document.getElementById('rBMI');
+  if(!bb||!tb){box.innerHTML='Isi berat dan tinggi.';return;}
+  const bmi=bb/(tb*tb); let ket = bmi<18.5?'Kurus':bmi<25?'Normal':bmi<30?'Gemuk':'Obesitas';
+  box.innerHTML=`BMI: <b>${bmi.toFixed(1)}</b> — kategori <b>${ket}</b>`;
+}
+function hDiskon(){
+  const h=parseFloat(document.getElementById('hHarga').value), d=parseFloat(document.getElementById('hDisk').value);
+  const box=document.getElementById('rDiskon');
+  if(!h||isNaN(d)){box.innerHTML='Isi harga dan diskon.';return;}
+  const potongan=h*d/100, akhir=h-potongan;
+  box.innerHTML=`Potongan: <b>${idr(potongan)}</b><br>Harga akhir: <b>${idr(akhir)}</b>`;
+}
+function hBungaCalc(){
+  const p=parseFloat(document.getElementById('hPokok').value), r=parseFloat(document.getElementById('hBunga').value), t=parseFloat(document.getElementById('hTahun').value);
+  const box=document.getElementById('rBunga');
+  if(!p||isNaN(r)||!t){box.innerHTML='Lengkapi semua kolom.';return;}
+  const bunga=p*(r/100)*t;
+  box.innerHTML=`Total bunga: <b>${idr(bunga)}</b><br>Total akhir: <b>${idr(p+bunga)}</b>`;
+}
+function hSuhuCalc(){
+  const v=parseFloat(document.getElementById('hSuhu').value), u=document.getElementById('hSuhuUnit').value;
+  const box=document.getElementById('rSuhu'); if(isNaN(v)){box.innerHTML='Isi nilai suhu.';return;}
+  let c; if(u==='C')c=v; else if(u==='F')c=(v-32)*5/9; else c=v-273.15;
+  const f=c*9/5+32, k=c+273.15;
+  box.innerHTML=`Celsius: <b>${c.toFixed(1)}°C</b><br>Fahrenheit: <b>${f.toFixed(1)}°F</b><br>Kelvin: <b>${k.toFixed(1)}K</b>`;
+}
+function hPPNCalc(){
+  const dpp=parseFloat(document.getElementById('hDPP').value), pct=parseFloat(document.getElementById('hPPN').value);
+  const box=document.getElementById('rPPN'); if(!dpp||isNaN(pct)){box.innerHTML='Lengkapi kolom.';return;}
+  const ppn=dpp*pct/100;
+  box.innerHTML=`PPN: <b>${idr(ppn)}</b><br>Total bayar: <b>${idr(dpp+ppn)}</b>`;
 }
 
-
-/* =====================================================
-   TOOL COUNTER
-===================================================== */
-
-/*
-   Jumlah tool dihitung otomatis.
-
-   Setiap fungsi utama yang tersedia dihitung
-   sebagai satu tool.
-*/
-
-function updateToolCount(){
-
-    const totalTools = 32;
-
-    document.getElementById("toolCount")
-        .textContent = totalTools;
-
+// ---- GAMES sederhana ----
+function gDadu(){document.getElementById('rDadu').textContent='Mata dadu: '+(Math.floor(Math.random()*6)+1);}
+function gKoin(){document.getElementById('rKoin').textContent=Math.random()<0.5?'Koin: Kepala':'Koin: Ekor';}
+function gBGK(pilihan){
+  const opts=['Batu','Gunting','Kertas']; const cpu=opts[Math.floor(Math.random()*3)];
+  let hasil; if(pilihan===cpu)hasil='Seri'; else if((pilihan==='Batu'&&cpu==='Gunting')||(pilihan==='Gunting'&&cpu==='Kertas')||(pilihan==='Kertas'&&cpu==='Batu'))hasil='Kamu Menang!'; else hasil='Kamu Kalah';
+  document.getElementById('rBGK').innerHTML=`Kamu: <b>${pilihan}</b> vs Komputer: <b>${cpu}</b><br>${hasil}`;
+}
+let gRahasia=Math.floor(Math.random()*50)+1, gCoba=0;
+function gTebakCek(){
+  const t=parseInt(document.getElementById('gTebak').value); const box=document.getElementById('rTebak');
+  if(isNaN(t)){box.textContent='Masukkan angka 1-50.';return;} gCoba++;
+  if(t===gRahasia){box.innerHTML=`Benar! Angkanya <b>${gRahasia}</b> (${gCoba} percobaan). <span onclick="gRahasia=Math.floor(Math.random()*50)+1;gCoba=0;" style="text-decoration:underline;cursor:pointer">Main lagi</span>`;}
+  else box.innerHTML = t<gRahasia ? 'Terlalu kecil, coba lagi.' : 'Terlalu besar, coba lagi.';
+}
+function gRodaSpin(){
+  const opts=document.getElementById('gRoda').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const box=document.getElementById('rRoda'); if(opts.length<2){box.textContent='Isi minimal 2 pilihan.';return;}
+  box.innerHTML=`Hasil: <b>${opts[Math.floor(Math.random()*opts.length)]}</b>`;
+}
+function gKartu(){
+  const suit=['♠','♥','♦','♣'][Math.floor(Math.random()*4)], nilai=['A','2','3','4','5','6','7','8','9','10','J','Q','K'][Math.floor(Math.random()*13)];
+  document.getElementById('rKartu').textContent=`${nilai}${suit}`;
 }
 
-updateToolCount();
+// ---- Tic Tac Toe ----
+let tttBoard=Array(9).fill(''), tttTurn='X', tttOver=false;
+function tttRender(){
+  const g=document.getElementById('tttGrid'); g.innerHTML='';
+  tttBoard.forEach((v,i)=>{
+    const c=document.createElement('div'); c.className='tttCell'; c.textContent=v;
+    c.onclick=()=>tttClick(i); g.appendChild(c);
+  });
+}
+function tttClick(i){
+  if(tttOver||tttBoard[i])return;
+  tttBoard[i]=tttTurn;
+  const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  const win=wins.find(([a,b,c])=>tttBoard[a]&&tttBoard[a]===tttBoard[b]&&tttBoard[a]===tttBoard[c]);
+  if(win){document.getElementById('rTTT').innerHTML=`Pemain <b>${tttTurn}</b> menang!`; tttOver=true;}
+  else if(tttBoard.every(v=>v)){document.getElementById('rTTT').textContent='Seri!'; tttOver=true;}
+  else{tttTurn=tttTurn==='X'?'O':'X'; document.getElementById('rTTT').textContent='Giliran: '+tttTurn;}
+  tttRender();
+}
+function tttReset(){tttBoard=Array(9).fill('');tttTurn='X';tttOver=false;document.getElementById('rTTT').textContent='Giliran: X';tttRender();}
+tttRender();
 
-
-/* =====================================================
-   DONATION
-===================================================== */
-
-function copyDonation(){
-
-    const number =
-        "085194427487";
-
-    const result =
-        document.getElementById(
-            "donationResult"
-        );
-
-    if(navigator.clipboard){
-
-        navigator.clipboard
-            .writeText(number)
-            .then(() => {
-
-                result.style.display =
-                    "block";
-
-                result.textContent =
-                    "Nomor DANA berhasil disalin.";
-
-                setTimeout(() => {
-
-                    result.style.display =
-                        "none";
-
-                },2500);
-
-            });
-
-    }else{
-
-        result.style.display =
-            "block";
-
-        result.textContent =
-            "Nomor DANA: " + number;
-
+// ---- Ular Tangga (papan zigzag seperti aslinya) ----
+const ladders={4:14,9:31,20:38,28:84,40:59,51:67,63:81,71:91};
+const snakes={17:7,54:34,62:19,64:60,87:24,93:73,95:75,99:78};
+let snakeP1=0, snakeP2=0, snakeTurn=1, snakeOver=false;
+function snakeCellAt(r,c){
+  const rowFromBottom=9-r, base=rowFromBottom*10;
+  return rowFromBottom%2===0 ? base+c+1 : base+(10-c);
+}
+function snakeRender(){
+  const b=document.getElementById('snakeBoard'); b.innerHTML='';
+  for(let r=0;r<10;r++){
+    for(let c=0;c<10;c++){
+      const num=snakeCellAt(r,c);
+      const cell=document.createElement('div'); cell.className='snakeCell';
+      let label=num; if(ladders[num])label=num+'↑'; if(snakes[num])label=num+'↓';
+      cell.textContent=label;
+      if(snakeP1===num)cell.classList.add('p1'); if(snakeP2===num)cell.classList.add('p2');
+      b.appendChild(cell);
     }
+  }
+}
+function snakeRoll(){
+  if(snakeOver)return;
+  const dice=Math.floor(Math.random()*6)+1;
+  let pos = snakeTurn===1?snakeP1+dice:snakeP2+dice;
+  if(pos>100)pos = snakeTurn===1?snakeP1:snakeP2;
+  else{ if(ladders[pos])pos=ladders[pos]; else if(snakes[pos])pos=snakes[pos]; }
+  if(snakeTurn===1)snakeP1=pos; else snakeP2=pos;
+  const box=document.getElementById('rSnake');
+  if(pos===100){box.innerHTML=`Pemain ${snakeTurn} (${snakeTurn===1?'Merah':'Kuning'}) menang di kotak 100!`; snakeOver=true;}
+  else{
+    snakeTurn = snakeTurn===1?2:1;
+    box.innerHTML=`Dadu: <b>${dice}</b> — Giliran: Pemain ${snakeTurn} (${snakeTurn===1?'Merah':'Kuning'}) — Posisi P1:${snakeP1}, P2:${snakeP2}`;
+  }
+  snakeRender();
+}
+function snakeReset(){snakeP1=0;snakeP2=0;snakeTurn=1;snakeOver=false;document.getElementById('rSnake').textContent='Giliran: Pemain 1 (Merah)';snakeRender();}
+snakeRender();
 
+// ---- Ludo Mini (mekanik lebih nyata: jalur 52 kotak, 2 token/pemain, sel aman, bisa menangkap lawan) ----
+const LUDO_TRACK=52, LUDO_SAFE=[1,14,27,40];
+const ludoStart={1:1,2:27};
+let ludoTokens={1:[{d:0},{d:0}],2:[{d:0},{d:0}]}, ludoTurn=1, ludoOver=false;
+function ludoGlobalCell(player,d){ const s=ludoStart[player]; return ((s-1+d-1)%LUDO_TRACK)+1; }
+function ludoStatusText(player){
+  return ludoTokens[player].map((t,i)=>{
+    if(t.d===0)return 'T'+(i+1)+':markas';
+    if(t.d<=51)return 'T'+(i+1)+':jalan '+t.d;
+    if(t.d<57)return 'T'+(i+1)+':jalur rumah '+(t.d-51)+'/6';
+    return 'T'+(i+1)+':selesai';
+  }).join(', ');
+}
+function ludoRender(){
+  const t=document.getElementById('ludoTrack'); t.innerHTML='';
+  for(let i=1;i<=LUDO_TRACK;i++){
+    const c=document.createElement('div'); c.className='ludoCell'; c.textContent=i;
+    if(LUDO_SAFE.includes(i))c.style.borderColor='var(--vi)';
+    [1,2].forEach(p=>{ ludoTokens[p].forEach(tok=>{ if(tok.d>=1&&tok.d<=51 && ludoGlobalCell(p,tok.d)===i) c.classList.add('p'+p); }); });
+    t.appendChild(c);
+  }
+}
+function ludoMovableIndex(player,dice){
+  const toks=ludoTokens[player];
+  const movable=toks.map(t=> t.d===0 ? dice===6 : t.d+dice<=57);
+  let best=-1,bestD=-1;
+  toks.forEach((t,i)=>{ if(movable[i] && t.d>0 && t.d>bestD){bestD=t.d;best=i;} });
+  if(best>=0)return best;
+  const yi=toks.findIndex((t,i)=>movable[i]&&t.d===0);
+  return yi;
+}
+function ludoRoll(){
+  if(ludoOver)return;
+  const dice=Math.floor(Math.random()*6)+1;
+  const box=document.getElementById('rLudo');
+  const idx=ludoMovableIndex(ludoTurn,dice);
+  let msg='';
+  if(idx===-1){
+    msg='Tidak ada token yang bisa jalan.';
+  } else {
+    const tok=ludoTokens[ludoTurn][idx];
+    if(tok.d===0){ tok.d=1; msg='Token keluar dari markas!'; }
+    else{
+      tok.d+=dice;
+      if(tok.d>=1 && tok.d<=51){
+        const cell=ludoGlobalCell(ludoTurn,tok.d);
+        if(!LUDO_SAFE.includes(cell)){
+          const opp=ludoTurn===1?2:1;
+          ludoTokens[opp].forEach(ot=>{
+            if(ot.d>=1 && ot.d<=51 && ludoGlobalCell(opp,ot.d)===cell){ ot.d=0; msg+=' Token lawan tertangkap, kembali ke markas!'; }
+          });
+        }
+      }
+      if(tok.d>=57){ tok.d=57; msg+=' Token sampai finish!'; }
+    }
+  }
+  ludoRender();
+  const done=ludoTokens[ludoTurn].every(t=>t.d===57);
+  if(done){ box.innerHTML=`Pemain ${ludoTurn} (${ludoTurn===1?'Merah':'Kuning'}) menang, semua token sampai finish!`; ludoOver=true; return; }
+  if(dice===6 && idx!==-1){
+    box.innerHTML=`Dadu: <b>6</b> — ${msg} Kocok lagi (giliran tetap Pemain ${ludoTurn}). [${ludoStatusText(ludoTurn)}]`;
+    return;
+  }
+  ludoTurn = ludoTurn===1?2:1;
+  box.innerHTML=`Dadu: <b>${dice}</b> — ${msg} Giliran: Pemain ${ludoTurn} (${ludoTurn===1?'Merah':'Kuning'}) [${ludoStatusText(ludoTurn)}]`;
+}
+function ludoReset(){ludoTokens={1:[{d:0},{d:0}],2:[{d:0},{d:0}]};ludoTurn=1;ludoOver=false;document.getElementById('rLudo').textContent='Giliran: Pemain 1 (Merah) — token di markas';ludoRender();}
+ludoRender();
+
+// ---- EDUKASI ----
+function eTabel(){
+  const n=parseInt(document.getElementById('eTP').value); const box=document.getElementById('rTP');
+  if(!n){box.textContent='Isi angka 1-20.';return;}
+  let s=''; for(let i=1;i<=10;i++)s+=`${n} × ${i} = ${n*i}<br>`; box.innerHTML=s;
+}
+const lenM={m:1,km:1000,cm:0.01,mi:1609.34,ft:0.3048};
+function eLenCalc(){
+  const v=parseFloat(document.getElementById('eLen').value), u=document.getElementById('eLenU').value;
+  const box=document.getElementById('rLen'); if(isNaN(v)){box.textContent='Isi nilai.';return;}
+  box.innerHTML=`= <b>${(v*lenM[u]).toLocaleString('id-ID',{maximumFractionDigits:4})} meter</b>`;
+}
+const berKg={kg:1,g:0.001,lb:0.4536,ton:1000};
+function eBerCalc(){
+  const v=parseFloat(document.getElementById('eBer').value), u=document.getElementById('eBerU').value;
+  const box=document.getElementById('rBer'); if(isNaN(v)){box.textContent='Isi nilai.';return;}
+  box.innerHTML=`= <b>${(v*berKg[u]).toLocaleString('id-ID',{maximumFractionDigits:4})} kg</b>`;
+}
+let swMs=0, swRun=false, swTimer=null;
+function eSWRender(){const m=swMs/1000; document.getElementById('eSW').textContent=m.toFixed(1).padStart(6,'0');}
+function eSWToggle(){
+  const btn=document.getElementById('eSWbtn');
+  if(swRun){clearInterval(swTimer);swRun=false;btn.textContent='Mulai';}
+  else{swRun=true;btn.textContent='Jeda';swTimer=setInterval(()=>{swMs+=100;eSWRender();},100);}
+}
+function eSWReset(){clearInterval(swTimer);swRun=false;swMs=0;document.getElementById('eSWbtn').textContent='Mulai';eSWRender();}
+function eRataCalc(){
+  const nums=document.getElementById('eNilai').value.split(',').map(s=>parseFloat(s.trim())).filter(n=>!isNaN(n));
+  const box=document.getElementById('rRata'); if(!nums.length){box.textContent='Isi nilai yang valid.';return;}
+  const avg=nums.reduce((a,b)=>a+b,0)/nums.length;
+  box.innerHTML=`Rata-rata: <b>${avg.toFixed(2)}</b> dari ${nums.length} nilai`;
+}
+let fcCards=[], fcIdx=0, fcFlipped=false;
+function eFCStart(){
+  fcCards=document.getElementById('eFCin').value.split('\n').map(l=>l.split('=')).filter(p=>p.length===2);
+  if(!fcCards.length)return; fcIdx=0; fcFlipped=false;
+  document.getElementById('rFC').style.display='block'; eFCRender();
+}
+function eFCRender(){document.getElementById('fcQ').textContent=fcFlipped?fcCards[fcIdx][1].trim():fcCards[fcIdx][0].trim();}
+function eFCFlip(){fcFlipped=!fcFlipped; eFCRender();}
+function eFCNext(){fcIdx=(fcIdx+1)%fcCards.length; fcFlipped=false; eFCRender();}
+function trOpen(){
+  const txt=document.getElementById('trText').value.trim();
+  const lang=document.getElementById('trLang').value;
+  if(!txt)return;
+  const url='https://translate.google.com/?sl=auto&tl='+lang+'&text='+encodeURIComponent(txt)+'&op=translate';
+  window.open(url,'_blank');
 }
 
-
-/* =====================================================
-   CALCULATOR
-===================================================== */
-
-function calculate(){
-
-    const input =
-        document
-        .getElementById("calcInput")
-        .value;
-
-    const result =
-        document
-        .getElementById("calcResult");
-
-    if(!input.trim()){
-
-        result.textContent =
-            "Masukkan perhitungan.";
-
-        return;
-    }
-
-    if(!/^[0-9+\-*/().%\s]+$/.test(input)){
-
-        result.textContent =
-            "Input tidak valid.";
-
-        return;
-    }
-
-    try{
-
-        const answer =
-            Function(
-                '"use strict";return (' +
-                input +
-                ')'
-            )();
-
-        result.textContent =
-            "Hasil: " + answer;
-
-    }catch(e){
-
-        result.textContent =
-            "Perhitungan tidak valid.";
-
-    }
-
+// ---- KITAB SUCI (lengkap) ----
+const kitabData={
+  islam:{nama:"Al-Qur'an",info:"Kitab suci umat Islam yang diyakini sebagai wahyu Allah SWT yang diturunkan kepada Nabi Muhammad SAW melalui perantara Malaikat Jibril secara berangsur-angsur selama kurang lebih 23 tahun. Terdiri dari 114 surah, 30 juz, dan sekitar 6.236 ayat, ditulis dalam bahasa Arab. Berisi tuntunan akidah, ibadah, akhlak, hukum (syariat), serta kisah-kisah para nabi terdahulu. Dua kota suci utama dalam sejarah turunnya adalah Mekah dan Madinah, sehingga surah-surahnya dibedakan sebagai Makkiyah dan Madaniyah.<br><br><i>Contoh ayat (QS. Al-Ikhlas 112:1-4):</i><br>\"Katakanlah: Dialah Allah, Yang Maha Esa. Allah adalah Tuhan yang bergantung kepada-Nya segala sesuatu. Dia tiada beranak dan tidak pula diperanakkan. Dan tidak ada seorang pun yang setara dengan Dia.\""},
+  kristen:{nama:'Alkitab (Perjanjian Lama &amp; Perjanjian Baru)',info:'Kitab suci umat Kristen Protestan, terdiri dari 66 kitab: 39 kitab Perjanjian Lama yang ditulis dalam bahasa Ibrani dan sebagian Aram, serta 27 kitab Perjanjian Baru yang ditulis dalam bahasa Yunani. Perjanjian Lama memuat penciptaan, sejarah bangsa Israel, hukum Taurat, kitab puisi/hikmah, dan nubuat para nabi. Perjanjian Baru berpusat pada kehidupan, ajaran, kematian, dan kebangkitan Yesus Kristus lewat empat Injil (Matius, Markus, Lukas, Yohanes), Kisah Para Rasul, surat-surat rasuli, dan kitab Wahyu. Alkitab ditulis oleh puluhan penulis selama sekitar 1.500 tahun.<br><br><i>Contoh ayat (Yohanes 3:16):</i><br>"Karena begitu besar kasih Allah akan dunia ini, sehingga Ia telah mengaruniakan Anak-Nya yang tunggal, supaya setiap orang yang percaya kepada-Nya tidak binasa, melainkan beroleh hidup yang kekal."'},
+  katolik:{nama:'Alkitab (termasuk Deuterokanonika)',info:'Kitab suci umat Katolik, terdiri dari 73 kitab: 46 kitab Perjanjian Lama (termasuk 7 kitab Deuterokanonika seperti Tobit, Yudit, Kebijaksanaan, Sirakh, Barukh, serta tambahan pada Ester dan Daniel) dan 27 kitab Perjanjian Baru yang sama dengan kanon Protestan. Gereja Katolik memandang Alkitab sebagai firman Allah yang diwariskan bersama Tradisi Suci dan Magisterium Gereja. Struktur isinya mencakup Taurat, kitab sejarah, kitab kebijaksanaan, kitab para nabi, Injil, dan surat-surat para rasul.<br><br><i>Contoh ayat (Matius 5:9):</i><br>"Berbahagialah orang yang membawa damai, karena mereka akan disebut anak-anak Allah."'},
+  hindu:{nama:'Weda',info:'Kitab suci umat Hindu yang dipercaya sebagai wahyu abadi (shruti) dan merupakan kitab tertua di dunia yang masih digunakan. Terdiri dari 4 himpunan utama: Rgveda (kumpulan pujian/mantra tertua), Samaveda (nyanyian pujian untuk upacara), Yajurveda (mantra dan tata cara ritual kurban), dan Atharvaveda (mantra untuk kehidupan sehari-hari dan pengobatan). Ditulis dalam bahasa Sanskerta kuno. Selain Weda, ajaran Hindu juga bersumber dari kitab Upanishad, Bhagavad Gita, dan wiracarita Mahabharata serta Ramayana sebagai kitab pelengkap (smrti).<br><br><i>Contoh mantra (Gayatri Mantra, Rgveda 3.62.10):</i><br>"Om bhur bhuvah svah, tat savitur varenyam, bhargo devasya dhimahi, dhiyo yo nah pracodayat" — memohon terang ilahi untuk menerangi pikiran dan budi.'},
+  buddha:{nama:'Tripitaka',info:'Kitab suci umat Buddha yang berarti "tiga keranjang", ditulis dalam bahasa Pali. Terdiri dari Vinaya Pitaka (peraturan disiplin bagi para bhikkhu dan bhikkhuni), Sutta Pitaka (kumpulan khotbah dan ajaran Sang Buddha Gautama), dan Abhidhamma Pitaka (uraian filosofis dan analisis mendalam tentang fenomena batin dan jasmani). Tripitaka disusun berdasarkan hasil konsili para bhikkhu setelah wafatnya Sang Buddha dan menjadi rujukan utama ajaran Empat Kebenaran Mulia serta Jalan Mulia Berunsur Delapan.<br><br><i>Contoh syair (Dhammapada, ayat 1):</i><br>"Pikiran adalah pelopor segala sesuatu, pikiran adalah pemimpin, pikiran adalah pembentuk. Jika seseorang berbicara atau berbuat dengan pikiran jahat, penderitaan akan mengikutinya bagaikan roda pedati mengikuti kaki yang menariknya."'},
+  konghucu:{nama:'Sishu Wujing (Kitab Yang Empat &amp; Kitab Yang Lima)',info:'Kitab suci umat Konghucu terdiri dari dua kelompok utama. Sishu (Kitab Yang Empat) meliputi Lun Yu (kumpulan ajaran dan percakapan Nabi Kongzi/Konfusius), Daxue (Ajaran Besar), Zhongyong (Tengah Sempurna), dan Mengzi (ajaran Mengzi). Wujing (Kitab Yang Lima) meliputi Yijing (Kitab Perubahan), Shujing (Kitab Dokumentasi Sejarah), Shijing (Kitab Sajak/Puisi), Liji (Kitab Kesusilaan), dan Chunqiu (Kitab Musim Semi dan Musim Gugur). Kitab-kitab ini memuat ajaran moral, etika, tata krama, dan kebajikan yang menjadi pedoman hidup umat Konghucu di Indonesia.<br><br><i>Contoh ayat (Lun Yu I:4):</i><br>"Tsengsi berkata: Setiap hari aku memeriksa diri dalam tiga hal: sudahkah aku setia mengerjakan tugas untuk orang lain, sudahkah aku dapat dipercaya terhadap kawan, dan sudahkah aku mengulang pelajaran yang diterima dari guru."'}
+};
+function kTampil(){
+  const a=document.getElementById('kAgama').value, d=kitabData[a];
+  document.getElementById('rKitab').innerHTML=`Nama kitab: <b>${d.nama}</b><br><br>${d.info}`;
 }
-
-
-/* =====================================================
-   DISCOUNT
-===================================================== */
-
-function calculateDiscount(){
-
-    const price =
-        Number(
-            document
-            .getElementById("priceInput")
-            .value
-        );
-
-    const discount =
-        Number(
-            document
-            .getElementById("discountInput")
-            .value
-        );
-
-    const result =
-        document
-        .getElementById("discountResult");
-
-    if(
-        !Number.isFinite(price) ||
-        !Number.isFinite(discount) ||
-        price < 0 ||
-        discount < 0 ||
-        discount > 100
-    ){
-
-        result.textContent =
-            "Masukkan harga dan diskon yang valid.";
-
-        return;
-    }
-
-    const saved =
-        price * discount / 100;
-
-    const finalPrice =
-        price - saved;
-
-    result.innerHTML =
-        "Potongan: " +
-        formatNumber(saved) +
-        "<br>Harga akhir: " +
-        formatNumber(finalPrice);
-
-}
-
-
-/* =====================================================
-   AVERAGE
-===================================================== */
-
-function calculateAverage(){
-
-    const input =
-        document
-        .getElementById("averageInput")
-        .value;
-
-    const result =
-        document
-        .getElementById("averageResult");
-
-    const numbers =
-        input
-        .split(",")
-        .map(x => Number(x.trim()))
-        .filter(x => Number.isFinite(x));
-
-    if(!numbers.length){
-
-        result.textContent =
-            "Masukkan angka yang valid.";
-
-        return;
-    }
-
-    const total =
-        numbers.reduce(
-            (sum,num) => sum + num,
-            0
-        );
-
-    const average =
-        total / numbers.length;
-
-    result.textContent =
-        "Rata-rata: " +
-        average.toFixed(2);
-
-}
-
-
-/* =====================================================
-   AREA
-===================================================== */
-
-function calculateArea(){
-
-    const length =
-        Number(
-            document
-            .getElementById("lengthInput")
-            .value
-        );
-
-    const width =
-        Number(
-            document
-            .getElementById("widthInput")
-            .value
-        );
-
-    const result =
-        document
-        .getElementById("areaResult");
-
-    if(
-        !Number.isFinite(length) ||
-        !Number.isFinite(width) ||
-        length < 0 ||
-        width < 0
-    ){
-
-        result.textContent =
-            "Masukkan panjang dan lebar.";
-
-        return;
-    }
-
-    result.textContent =
-        "Luas: " +
-        (length * width);
-
-}
-
-
-/* =====================================================
-   TEMPERATURE
-===================================================== */
-
-function convertTemperature(){
-
-    const c =
-        Number(
-            document
-            .getElementById("temperatureInput")
-            .value
-        );
-
-    const result =
-        document
-        .getElementById("temperatureResult");
-
-    if(!Number.isFinite(c)){
-
-        result.textContent =
-            "Masukkan suhu.";
-
-        return;
-    }
-
-    const f =
-        (c * 9/5) + 32;
-
-    const k =
-        c + 273.15;
-
-    result.innerHTML =
-        "Celsius: " +
-        c.toFixed(2) +
-        " °C<br>" +
-
-        "Fahrenheit: " +
-        f.toFixed(2) +
-        " °F<br>" +
-
-        "Kelvin: " +
-        k.toFixed(2) +
-        " K";
-
-}
-
-
-/* =====================================================
-   FORMAT NUMBER
-===================================================== */
-
-function formatNumber(number){
-
-    return new Intl.NumberFormat(
-        "id-ID"
-    ).format(
-        Math.round(number)
-    );
-
-}
-
-
-/* =====================================================
-   TEBAK ANGKA
-===================================================== */
-
-let secretNumber =
-    Math.floor(Math.random()*100)+1;
-
-function newGuessGame(){
-
-    secretNumber =
-        Math.floor(Math.random()*100)+1;
-
-    document
-        .getElementById("guessResult")
-        .textContent =
-        "Angka baru telah dibuat.";
-
-}
-
-function guessNumber(){
-
-    const guess =
-        Number(
-            document
-            .getElementById("guessInput")
-            .value
-        );
-
-    const result =
-        document
-        .getElementById("guessResult");
-
-    if(
-        !guess ||
-        guess < 1 ||
-        guess > 100
-    ){
-
-        result.textContent =
-            "Masukkan angka 1 sampai 100.";
-
-        return;
-    }
-
-    if(guess === secretNumber){
-
-        result.textContent =
-            "Benar. Kamu menemukan angkanya.";
-
-    }else if(guess < secretNumber){
-
-        result.textContent =
-            "Terlalu kecil.";
-
-    }else{
-
-        result.textContent =
-            "Terlalu besar.";
-
-    }
-
-}
-
-
-/* =====================================================
-   RPS
-===================================================== */
-
-function rps(player){
-
-    const choices = [
-        "batu",
-        "gunting",
-        "kertas"
-    ];
-
-    const computer =
-        choices[
-            Math.floor(
-                Math.random()*3
-            )
-        ];
-
-    let result;
-
-    if(player === computer){
-
-        result = "Seri.";
-
-    }else if(
-
-        (player==="batu" &&
-         computer==="gunting") ||
-
-        (player==="gunting" &&
-         computer==="kertas") ||
-
-        (player==="kertas" &&
-         computer==="batu")
-
-    ){
-
-        result = "Kamu menang.";
-
-    }else{
-
-        result = "Komputer menang.";
-
-    }
-
-    document
-        .getElementById("rpsResult")
-        .textContent =
-        "Kamu: " +
-        player +
-        " | Komputer: " +
-        computer +
-        " | " +
-        result;
-
-}
-
-
-/* =====================================================
-   TIC TAC TOE
-===================================================== */
-
-let board = [
-    "","","",
-    "","","",
-    "","",""
+kTampil();
+
+// ---- JAM INDONESIA & CUACA ----
+const zonaIndonesia=[
+  {kota:'Jakarta (WIB)',tz:'Asia/Jakarta'},{kota:'Medan (WIB)',tz:'Asia/Jakarta'},
+  {kota:'Surabaya (WIB)',tz:'Asia/Jakarta'},{kota:'Denpasar (WITA)',tz:'Asia/Makassar'},
+  {kota:'Makassar (WITA)',tz:'Asia/Makassar'},{kota:'Manado (WITA)',tz:'Asia/Makassar'},
+  {kota:'Jayapura (WIT)',tz:'Asia/Jayapura'},{kota:'Ambon (WIT)',tz:'Asia/Jayapura'}
 ];
-
-let currentPlayer = "X";
-let gameOver = false;
-
-function createTTT(){
-
-    const boardElement =
-        document
-        .getElementById("tttBoard");
-
-    boardElement.innerHTML = "";
-
-    board.forEach(
-        (value,index) => {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-            button.className =
-                "tool-btn";
-
-            button.textContent =
-                value;
-
-            button.onclick =
-                () => playTTT(index);
-
-            boardElement.appendChild(
-                button
-            );
-
-        }
-    );
-
+function wcRender(){
+  document.getElementById('wcGrid').innerHTML=zonaIndonesia.map(z=>{
+    const t=new Date().toLocaleTimeString('id-ID',{timeZone:z.tz,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    return `<div class="wc-box"><div class="city">${z.kota}</div><div class="time">${t}</div></div>`;
+  }).join('');
+}
+wcRender(); setInterval(wcRender,1000);
+function wHitung(){
+  const t=parseFloat(document.getElementById('wSuhu').value), rh=parseFloat(document.getElementById('wLembap').value);
+  const box=document.getElementById('rCuaca'); if(isNaN(t)||isNaN(rh)){box.textContent='Isi suhu dan kelembapan.';return;}
+  const tf=t*9/5+32;
+  let hi=-42.379+2.04901523*tf+10.14333127*rh-0.22475541*tf*rh-0.00683783*tf*tf-0.05481717*rh*rh+0.00122874*tf*tf*rh+0.00085282*tf*rh*rh-0.00000199*tf*tf*rh*rh;
+  const hiC=(hi-32)*5/9;
+  let ket = hiC<27?'Nyaman':hiC<32?'Waspada, mulai terasa panas':hiC<41?'Perhatian, cukup panas':'Bahaya, sangat panas';
+  box.innerHTML=`Suhu terasa (perkiraan): <b>${hiC.toFixed(1)}°C</b><br>Kategori: <b>${ket}</b><br><span style="color:var(--muted);font-size:11.5px">Estimasi formula heat index, bukan data cuaca langsung.</span>`;
 }
 
-function checkWinner(){
+// ---- DOWNLOADER ----
+function dQRGen(){
+  const v=document.getElementById('dQR').value.trim(); if(!v)return;
+  const wrap=document.getElementById('qrCanvasWrap'); wrap.innerHTML='';
+  new QRCode(wrap,{text:v,width:200,height:200,colorDark:'#01190c',colorLight:'#ffffff'});
+  document.getElementById('dQRdl').style.display='block';
+}
+function dQRDownload(){
+  const img=document.querySelector('#qrCanvasWrap img')||document.querySelector('#qrCanvasWrap canvas');
+  const a=document.createElement('a'); a.download='jefftool-qrcode.png';
+  a.href = img.tagName==='CANVAS'?img.toDataURL('image/png'):img.src; a.click();
+}
+function dTxtDownload(){
+  const txt=document.getElementById('dTxt').value; if(!txt.trim())return;
+  const blob=new Blob([txt],{type:'text/plain'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='catatan-jefftool.txt'; a.click();
+}
+function dCSVDownload(){
+  const txt=document.getElementById('dCSV').value; if(!txt.trim())return;
+  const blob=new Blob([txt],{type:'text/csv'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='data-jefftool.csv'; a.click();
+}
+function dKartuBuat(){
+  const judul=document.getElementById('dKartuJudul').value||'Kartu Ucapan';
+  const nama=document.getElementById('dKartuNama').value||'';
+  const pesan=document.getElementById('dKartuPesan').value||'';
+  const c=document.createElement('canvas'); c.className='card-canvas'; c.width=500; c.height=320;
+  const ctx=c.getContext('2d');
+  const grad=ctx.createLinearGradient(0,0,500,320); grad.addColorStop(0,'#04150c'); grad.addColorStop(1,'#0a2a16');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,500,320);
+  ctx.strokeStyle='#E8FFC2'; ctx.lineWidth=3; ctx.strokeRect(10,10,480,300);
+  ctx.fillStyle='#FF2D46'; ctx.font='bold 26px sans-serif'; ctx.fillText(judul,30,60);
+  ctx.fillStyle='#F3E9E9'; ctx.font='16px sans-serif'; ctx.fillText('Untuk: '+nama,30,95);
+  ctx.font='15px sans-serif'; wrapText(ctx,pesan,30,140,440,24);
+  ctx.fillStyle='#B08787'; ctx.font='12px sans-serif'; ctx.fillText('dibuat dengan JEFF TOOL',30,300);
+  document.getElementById('dKartuWrap').innerHTML=''; document.getElementById('dKartuWrap').appendChild(c);
+  document.getElementById('dKartuDlBtn').style.display='block';
+  window._jeffCardCanvas=c;
+}
+function wrapText(ctx,text,x,y,maxW,lh){
+  const words=text.split(' '); let line=''; for(let w of words){const test=line+w+' '; if(ctx.measureText(test).width>maxW){ctx.fillText(line,x,y);line=w+' ';y+=lh;}else line=test;} ctx.fillText(line,x,y);
+}
+function dKartuDownload(){
+  const a=document.createElement('a'); a.download='kartu-ucapan-jefftool.png'; a.href=window._jeffCardCanvas.toDataURL('image/png'); a.click();
+}
 
-    const combinations = [
+// ---- JEFF AI ----
+let jeffSample=null, jeffHistory=[], jeffBusy=false;
+(async function(){
+  try{
+    if(window.claude && window.claude.use){ jeffSample = await window.claude.use('sample'); }
+  }catch(e){ jeffSample=null; }
+})();
+function toggleJeffAI(){
+  document.getElementById('jeffAiPanel').classList.toggle('open');
+}
+function jeffAddMsg(who,txt){
+  const wrap=document.getElementById('jeffAiMsgs');
+  const d=document.createElement('div'); d.className='jeffMsg '+who; d.textContent=txt;
+  wrap.appendChild(d); wrap.scrollTop=wrap.scrollHeight; return d;
+}
+function jeffBuildPrompt(){
+  let p="Kamu adalah JEFF AI, asisten virtual ramah di dalam aplikasi JEFF TOOL milik Jefferson Yesay. Jawab singkat, jelas, sopan, dan dalam bahasa Indonesia kecuali diminta bahasa lain.\n\nRiwayat percakapan:\n";
+  jeffHistory.slice(-8).forEach(m=>{p+=(m.role==='user'?'Pengguna: ':'JEFF AI: ')+m.content+'\n';});
+  return p;
+}
+async function jeffAiSend(){
+  if(jeffBusy)return;
+  const inp=document.getElementById('jeffAiInput'); const txt=inp.value.trim(); if(!txt)return;
+  inp.value=''; jeffAddMsg('user',txt); jeffHistory.push({role:'user',content:txt});
+  const bubble=jeffAddMsg('ai','Sedang berpikir...');
+  if(!jeffSample){ bubble.textContent='Maaf, fitur JEFF AI belum tersedia di tampilan ini.'; return; }
+  jeffBusy=true;
+  try{
+    const {text}=await jeffSample(jeffBuildPrompt(),{onText:({text})=>{bubble.textContent=text; document.getElementById('jeffAiMsgs').scrollTop=9e9;},modelTier:'quick'});
+    jeffHistory.push({role:'assistant',content:text});
+  }catch(e){
+    const map={not_granted:'Izin JEFF AI belum diberikan.',rate_limited:'Terlalu banyak permintaan, coba lagi sebentar lagi.',sampling_disabled:'JEFF AI belum aktif untuk akun ini.'};
+    bubble.textContent = e && e.text ? e.text : (map[e && e.code] || 'Maaf, JEFF AI sedang tidak bisa menjawab. Coba lagi nanti.');
+  }
+  jeffBusy=false;
+}
 
-        [0,1,2],
-        [3,4,5],
-        [6,7,8],
+// ================= TOOL TAMBAHAN =================
 
-        [0,3,6],
-        [1,4,7],
-        [2,5,8],
+// --- Perhitungan tambahan ---
+function hPersegiCalc(){
+  const p=parseFloat(document.getElementById('hPjg').value), l=parseFloat(document.getElementById('hLbr').value);
+  const box=document.getElementById('rPersegi'); if(!p||!l){box.textContent='Isi panjang dan lebar.';return;}
+  box.innerHTML=`Luas: <b>${(p*l).toLocaleString('id-ID')}</b><br>Keliling: <b>${(2*(p+l)).toLocaleString('id-ID')}</b>`;
+}
+function hLingkaranCalc(){
+  const r=parseFloat(document.getElementById('hJari').value);
+  const box=document.getElementById('rLingkaran'); if(!r){box.textContent='Isi jari-jari.';return;}
+  box.innerHTML=`Luas: <b>${(Math.PI*r*r).toFixed(2)}</b><br>Keliling: <b>${(2*Math.PI*r).toFixed(2)}</b>`;
+}
+function hSplitBillCalc(){
+  const total=parseFloat(document.getElementById('hTotalBill').value), org=parseFloat(document.getElementById('hJmlOrang').value), tip=parseFloat(document.getElementById('hTipPersen').value)||0;
+  const box=document.getElementById('rSplitBill'); if(!total||!org){box.textContent='Isi total tagihan dan jumlah orang.';return;}
+  const withTip=total*(1+tip/100);
+  box.innerHTML=`Total + tip: <b>${idr(withTip)}</b><br>Per orang: <b>${idr(withTip/org)}</b>`;
+}
+function hCicilanCalc(){
+  const p=parseFloat(document.getElementById('hPinjaman').value), r=parseFloat(document.getElementById('hBungaCicil').value), n=parseFloat(document.getElementById('hTenor').value);
+  const box=document.getElementById('rCicilan'); if(!p||isNaN(r)||!n){box.textContent='Lengkapi semua kolom.';return;}
+  const bungaTotal=p*(r/100)*(n/12);
+  const totalBayar=p+bungaTotal;
+  box.innerHTML=`Cicilan per bulan: <b>${idr(totalBayar/n)}</b><br>Total bunga: <b>${idr(bungaTotal)}</b><br>Total dibayar: <b>${idr(totalBayar)}</b>`;
+}
+function hPersenCalc(){
+  const v=parseFloat(document.getElementById('hNilaiP').value), t=parseFloat(document.getElementById('hTotalP').value);
+  const box=document.getElementById('rPersen'); if(!v||!t){box.textContent='Isi nilai dan total.';return;}
+  box.innerHTML=`${v} adalah <b>${((v/t)*100).toFixed(2)}%</b> dari ${t}`;
+}
 
-        [0,4,8],
-        [2,4,6]
-
-    ];
-
-    for(
-        const combo of combinations
-    ){
-
-        const [a,b,c] =
-            combo;
-
-        if(
-            board[a] &&
-            board[a] === board[b] &&
-            board[a] === board[c]
-        ){
-
-            return board[a];
-
-        }
-
+// --- Games tambahan ---
+let rtWaiting=false, rtStart=0;
+function rtClick(){
+  const btn=document.getElementById('rtBtn'), box=document.getElementById('rRT');
+  if(!rtWaiting){
+    rtWaiting=true; btn.textContent='Tunggu...'; btn.style.background='#04120a';
+    const delay=1000+Math.random()*2500;
+    setTimeout(()=>{ btn.textContent='KLIK SEKARANG'; btn.style.background='linear-gradient(90deg,var(--cy),var(--vi))'; rtStart=performance.now(); rtWaiting='go'; },delay);
+    box.textContent='Bersiap...';
+  } else if(rtWaiting==='go'){
+    const ms=Math.round(performance.now()-rtStart);
+    box.innerHTML=`Waktu reaksimu: <b>${ms} ms</b>`;
+    btn.textContent='Mulai'; rtWaiting=false;
+  }
+}
+let simonSeq=[], simonUser=[], simonScore=0, simonBusy=false;
+function simonStart(){ simonSeq=[]; simonScore=0; simonNext(); }
+function simonNext(){
+  simonUser=[]; simonSeq.push(Math.floor(Math.random()*4));
+  document.getElementById('rSimon').textContent='Perhatikan urutannya...';
+  simonBusy=true;
+  let i=0;
+  const iv=setInterval(()=>{
+    if(i>=simonSeq.length){ clearInterval(iv); simonBusy=false; document.getElementById('rSimon').textContent='Giliranmu! Skor: '+simonScore; return; }
+    i++;
+  },600);
+}
+function simonPick(n){
+  if(simonBusy||!simonSeq.length)return;
+  simonUser.push(n);
+  const idx=simonUser.length-1;
+  if(simonUser[idx]!==simonSeq[idx]){ document.getElementById('rSimon').innerHTML=`Salah! Skor akhir: <b>${simonScore}</b>. Tekan Mulai / Ulang.`; simonSeq=[]; return; }
+  if(simonUser.length===simonSeq.length){ simonScore++; document.getElementById('rSimon').textContent='Benar! Skor: '+simonScore; setTimeout(simonNext,700); }
+}
+let memCards=[], memFlipped=[], memMatched=[], memBusy=false;
+function memInit(){
+  const symbols=['A','B','C','D','E','F'];
+  memCards=[...symbols,...symbols].sort(()=>Math.random()-0.5);
+  memFlipped=[]; memMatched=[]; memBusy=false;
+  memRender();
+  document.getElementById('rMemory').textContent='Tap kartu untuk membuka.';
+}
+function memRender(){
+  const g=document.getElementById('memGrid'); g.innerHTML='';
+  memCards.forEach((val,i)=>{
+    const c=document.createElement('div'); c.className='tttCell';
+    c.textContent=(memFlipped.includes(i)||memMatched.includes(i))?val:'?';
+    c.onclick=()=>memClick(i);
+    g.appendChild(c);
+  });
+}
+function memClick(i){
+  if(memBusy||memFlipped.includes(i)||memMatched.includes(i))return;
+  memFlipped.push(i); memRender();
+  if(memFlipped.length===2){
+    memBusy=true;
+    const [a,b]=memFlipped;
+    if(memCards[a]===memCards[b]){
+      memMatched.push(a,b); memFlipped=[]; memBusy=false; memRender();
+      if(memMatched.length===memCards.length) document.getElementById('rMemory').textContent='Selesai! Semua pasangan ditemukan.';
+    } else {
+      setTimeout(()=>{ memFlipped=[]; memBusy=false; memRender(); },700);
     }
+  }
+}
+memInit();
+let cpsCount=0, cpsActive=false;
+function cpsClick(){
+  if(!cpsActive){
+    cpsActive=true; cpsCount=0;
+    document.getElementById('rCps').textContent='Klik terus selama 5 detik!';
+    setTimeout(()=>{ cpsActive=false; document.getElementById('rCps').innerHTML=`Hasil: <b>${cpsCount}</b> klik dalam 5 detik (${(cpsCount/5).toFixed(1)} klik/detik)`; },5000);
+  } else { cpsCount++; }
+}
+const wordList=['SEKOLAH','INDONESIA','KOMPUTER','MATAHARI','PELANGI','JENDELA','PERPUSTAKAAN','KEMERDEKAAN'];
+let wordAnswer='';
+function wordNew(){
+  wordAnswer=wordList[Math.floor(Math.random()*wordList.length)];
+  let scrambled=wordAnswer.split('').sort(()=>Math.random()-0.5).join('');
+  if(scrambled===wordAnswer) scrambled=scrambled.split('').reverse().join('');
+  document.getElementById('rAcakKata').textContent=scrambled;
+  document.getElementById('rWord').textContent='';
+  document.getElementById('wordGuess').value='';
+}
+function wordCheck(){
+  const g=document.getElementById('wordGuess').value.trim().toUpperCase();
+  document.getElementById('rWord').innerHTML = g===wordAnswer ? 'Benar!' : 'Belum tepat, coba lagi.';
+}
+wordNew();
 
-    if(
-        board.every(
-            x => x !== ""
-        )
-    ){
-
-        return "draw";
-
-    }
-
-    return null;
-
+// --- Edukasi tambahan ---
+function ePrimaCek(){
+  const n=parseInt(document.getElementById('ePrimaN').value); const box=document.getElementById('rPrima');
+  if(!n||n<1){box.textContent='Isi angka lebih dari 1.';return;}
+  let prima = n>1; for(let i=2;i*i<=n;i++){ if(n%i===0){prima=false;break;} }
+  box.innerHTML = n+' adalah <b>'+(prima?'bilangan prima':'bukan bilangan prima')+'</b>';
+}
+function eFpkKalc(){
+  const a=parseInt(document.getElementById('eFpkA').value), b=parseInt(document.getElementById('eFpkB').value);
+  const box=document.getElementById('rFpk'); if(!a||!b){box.textContent='Isi kedua angka.';return;}
+  const fpb=(x,y)=>y===0?x:fpb(y,x%y);
+  const f=fpb(a,b), k=(a*b)/f;
+  box.innerHTML=`FPB: <b>${f}</b><br>KPK: <b>${k}</b>`;
+}
+const waktuDtk={dtk:1,mnt:60,jam:3600,hr:86400};
+function eWaktuCalc(){
+  const v=parseFloat(document.getElementById('eWaktuN').value), u=document.getElementById('eWaktuU').value;
+  const box=document.getElementById('rWaktu'); if(isNaN(v)){box.textContent='Isi nilai.';return;}
+  const dtk=v*waktuDtk[u];
+  box.innerHTML=`= <b>${dtk.toLocaleString('id-ID')} detik</b> (≈ ${(dtk/60).toFixed(2)} menit, ${(dtk/3600).toFixed(2)} jam)`;
+}
+function ePytCalc(){
+  const a=parseFloat(document.getElementById('ePytA').value), b=parseFloat(document.getElementById('ePytB').value);
+  const box=document.getElementById('rPyt'); if(!a||!b){box.textContent='Isi kedua sisi.';return;}
+  box.innerHTML=`Sisi miring (c): <b>${Math.sqrt(a*a+b*b).toFixed(2)}</b>`;
+}
+function eWCCalc(){
+  const t=document.getElementById('eWCText').value;
+  const kata=t.trim()?t.trim().split(/\s+/).length:0;
+  document.getElementById('rWC').innerHTML=`Kata: <b>${kata}</b><br>Karakter (dengan spasi): <b>${t.length}</b><br>Karakter (tanpa spasi): <b>${t.replace(/\s/g,'').length}</b>`;
 }
 
-function playTTT(index){
+// --- Kitab Suci tambahan ---
+function kBandingTampil(){
+  let s='<table style="width:100%;border-collapse:collapse;font-size:12px;">';
+  s+='<tr style="color:var(--vi)"><td><b>Agama</b></td><td><b>Kitab</b></td></tr>';
+  const nama={islam:'Islam',kristen:'Kristen',katolik:'Katolik',hindu:'Hindu',buddha:'Buddha',konghucu:'Konghucu'};
+  Object.keys(kitabData).forEach(k=>{ s+=`<tr><td style="padding:4px 0">${nama[k]}</td><td style="padding:4px 0">${kitabData[k].nama}</td></tr>`; });
+  s+='</table>';
+  document.getElementById('rBanding').innerHTML=s;
+}
+function kAyatAcak(){
+  const keys=Object.keys(kitabData); const pick=keys[Math.floor(Math.random()*keys.length)];
+  const d=kitabData[pick];
+  const idx=d.info.indexOf('Contoh');
+  document.getElementById('rAyatAcak').innerHTML = idx>-1 ? d.info.slice(idx) : d.info;
+}
+const kDamaiData={
+  islam:'"Assalamu\'alaikum warahmatullahi wabarakatuh" — semoga keselamatan, rahmat, dan berkah Allah senantiasa menyertai.',
+  kristen:'"Damai sejahtera bagimu" — semoga kasih dan damai Tuhan selalu menyertai setiap langkah.',
+  katolik:'"Damai Kristus besertamu" — semoga kedamaian dan kasih Kristus memenuhi hati.',
+  hindu:'"Om Shanti Shanti Shanti Om" — semoga damai di pikiran, damai di ucapan, dan damai di perbuatan.',
+  buddha:'"Sabbe satta bhavantu sukhitatta" — semoga semua makhluk berbahagia.',
+  konghucu:'"Wei De Dong Tian" — hanya kebajikan yang menggerakkan langit, semoga kebajikan menyertai semua.'
+};
+function kDamaiTampil(){ document.getElementById('rDamai').innerHTML=kDamaiData[document.getElementById('kDamaiAgama').value]; }
+kDamaiTampil();
+const kIstilahData={
+  islam:'Iman (keyakinan), Ibadah (penyembahan kepada Allah), Akhlak (budi pekerti).',
+  kristen:'Anugerah (kasih karunia Allah), Iman (percaya pada Kristus), Kasih (mengasihi sesama).',
+  katolik:'Sakramen (tanda kasih Allah), Ekaristi (perjamuan kudus), Tradisi Suci (ajaran turun-temurun).',
+  hindu:'Dharma (kewajiban/kebenaran), Karma (hukum sebab-akibat), Moksa (pembebasan jiwa).',
+  buddha:'Dukkha (penderitaan), Nirwana (pembebasan sempurna), Karma (hukum sebab-akibat).',
+  konghucu:'Ren (cinta kasih), Li (kesusilaan), Xiao (bakti kepada orang tua).'
+};
+function kIstilahTampil(){ document.getElementById('rIstilah').innerHTML=kIstilahData[document.getElementById('kIstilahAgama').value]; }
+kIstilahTampil();
+const kStatData={
+  islam:'114 surah, 30 juz, ±6.236 ayat.',
+  kristen:'66 kitab (39 Perjanjian Lama, 27 Perjanjian Baru).',
+  katolik:'73 kitab (46 Perjanjian Lama termasuk Deuterokanonika, 27 Perjanjian Baru).',
+  hindu:'4 himpunan utama Weda: Rgveda, Samaveda, Yajurveda, Atharvaveda.',
+  buddha:'3 bagian (Tripitaka): Vinaya, Sutta, Abhidhamma Pitaka.',
+  konghucu:'9 kitab: Sishu (4 kitab) dan Wujing (5 kitab).'
+};
+function kStatTampil(){ document.getElementById('rStat').innerHTML=kStatData[document.getElementById('kStatAgama').value]; }
+kStatTampil();
 
-    if(
-        board[index] !== "" ||
-        gameOver
-    ) return;
-
-    board[index] =
-        currentPlayer;
-
-    const winner =
-        checkWinner();
-
-    if(winner){
-
-        gameOver = true;
-
-        if(winner === "draw"){
-
-            document
-                .getElementById(
-                    "tttStatus"
-                )
-                .textContent =
-                "Permainan seri.";
-
-        }else{
-
-            document
-                .getElementById(
-                    "tttStatus"
-                )
-                .textContent =
-                "Pemenang: " +
-                winner;
-
-        }
-
-    }else{
-
-        currentPlayer =
-            currentPlayer === "X"
-            ? "O"
-            : "X";
-
-        document
-            .getElementById(
-                "tttStatus"
-            )
-            .textContent =
-            "Giliran " +
-            currentPlayer;
-
-    }
-
-    createTTT();
-
+// --- Jam & Tanggal tambahan ---
+function jUmurCalc(){
+  const v=document.getElementById('jUmurTgl').value; const box=document.getElementById('rUmur');
+  if(!v){box.textContent='Pilih tanggal lahir.';return;}
+  const lahir=new Date(v), now=new Date();
+  let th=now.getFullYear()-lahir.getFullYear(), bl=now.getMonth()-lahir.getMonth(), hr=now.getDate()-lahir.getDate();
+  if(hr<0){bl--; hr+=new Date(now.getFullYear(),now.getMonth(),0).getDate();}
+  if(bl<0){th--; bl+=12;}
+  box.innerHTML=`Umurmu: <b>${th} tahun, ${bl} bulan, ${hr} hari</b>`;
+}
+function jSelisihCalc(){
+  const a=document.getElementById('jTgl1').value, b=document.getElementById('jTgl2').value;
+  const box=document.getElementById('rSelisih'); if(!a||!b){box.textContent='Isi kedua tanggal.';return;}
+  const d1=new Date(a), d2=new Date(b);
+  const hari=Math.round(Math.abs(d2-d1)/86400000);
+  box.innerHTML=`Selisih: <b>${hari} hari</b> (≈ ${(hari/7).toFixed(1)} minggu, ${(hari/30).toFixed(1)} bulan)`;
+}
+let jTimerIv=null;
+function jTimerStart(){
+  clearInterval(jTimerIv);
+  let sisa=(parseInt(document.getElementById('jTimerMnt').value)||0)*60 + (parseInt(document.getElementById('jTimerDtk').value)||0);
+  const big=document.getElementById('jTimerBig'), box=document.getElementById('rTimer');
+  if(sisa<=0){box.textContent='Isi durasi timer.';return;}
+  function render(){ const m=String(Math.floor(sisa/60)).padStart(2,'0'), s=String(sisa%60).padStart(2,'0'); big.textContent=m+':'+s; }
+  render(); box.textContent='Timer berjalan...';
+  jTimerIv=setInterval(()=>{
+    sisa--; render();
+    if(sisa<=0){ clearInterval(jTimerIv); box.textContent='Waktu habis!'; }
+  },1000);
+}
+function jTimerStop(){ clearInterval(jTimerIv); document.getElementById('rTimer').textContent='Timer dihentikan.'; }
+function jHariCalc(){
+  const v=document.getElementById('jHariTgl').value; const box=document.getElementById('rHari');
+  if(!v){box.textContent='Pilih tanggal.';return;}
+  const d=new Date(v);
+  box.innerHTML=`Hari: <b>${d.toLocaleDateString('id-ID',{weekday:'long',timeZone:'UTC'})}</b>`;
+}
+function jUrutCalc(){
+  const v=document.getElementById('jUrutTgl').value; const box=document.getElementById('rUrut');
+  if(!v){box.textContent='Pilih tanggal.';return;}
+  const d=new Date(v), start=new Date(d.getFullYear(),0,0);
+  const diff=Math.floor((d-start)/86400000);
+  box.innerHTML=`Tanggal itu adalah hari ke-<b>${diff}</b> dalam tahun ${d.getFullYear()}`;
 }
 
-function resetTTT(){
-
-    board = [
-        "","","",
-        "","","",
-        "","",""
-    ];
-
-    currentPlayer =
-        "X";
-
-    gameOver =
-        false;
-
-    document
-        .getElementById(
-            "tttStatus"
-        )
-        .textContent =
-        "Giliran X";
-
-    createTTT();
-
+// --- Downloader tambahan ---
+function dSertBuat(){
+  const nama=document.getElementById('dSertNama').value||'Nama Penerima';
+  const judul=document.getElementById('dSertJudul').value||'Sertifikat Penghargaan';
+  const tgl=document.getElementById('dSertTgl').value||'';
+  const c=document.createElement('canvas'); c.className='card-canvas'; c.width=560; c.height=360;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#0a0000'; ctx.fillRect(0,0,560,360);
+  ctx.strokeStyle='#E8FFC2'; ctx.lineWidth=4; ctx.strokeRect(14,14,532,332);
+  ctx.strokeStyle='#00E676'; ctx.lineWidth=1.5; ctx.strokeRect(24,24,512,312);
+  ctx.textAlign='center';
+  ctx.fillStyle='#E8FFC2'; ctx.font='bold 24px Roboto,sans-serif'; ctx.fillText(judul,280,110);
+  ctx.fillStyle='#F5E5E5'; ctx.font='16px Roboto,sans-serif'; ctx.fillText('Diberikan kepada',280,160);
+  ctx.font='bold 30px Roboto,sans-serif'; ctx.fillStyle='#00E676'; ctx.fillText(nama,280,205);
+  ctx.font='13px Roboto,sans-serif'; ctx.fillStyle='#9C6A6A'; ctx.fillText(tgl,280,250);
+  ctx.font='11px Roboto,sans-serif'; ctx.fillText('dibuat dengan JEFF TOOL',280,330);
+  ctx.textAlign='left';
+  document.getElementById('dSertWrap').innerHTML=''; document.getElementById('dSertWrap').appendChild(c);
+  document.getElementById('dSertDlBtn').style.display='block'; window._jeffSertCanvas=c;
+}
+function dSertDownload(){ const a=document.createElement('a'); a.download='sertifikat-jefftool.png'; a.href=window._jeffSertCanvas.toDataURL('image/png'); a.click(); }
+function dPassGenerate(){
+  const jml=parseInt(document.getElementById('dPassJml').value)||10, panjang=parseInt(document.getElementById('dPassPanjang').value)||12;
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+  let list=[];
+  for(let i=0;i<jml;i++){ let p=''; for(let j=0;j<panjang;j++) p+=chars[Math.floor(Math.random()*chars.length)]; list.push(p); }
+  document.getElementById('rPass').innerHTML='Contoh: <b>'+list[0]+'</b>';
+  const blob=new Blob([list.join('\n')],{type:'text/plain'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='password-jefftool.txt'; a.click();
+}
+function dPaletBuat(){
+  const c=document.createElement('canvas'); c.className='card-canvas'; c.width=500; c.height=140;
+  const ctx=c.getContext('2d');
+  const w=100;
+  for(let i=0;i<5;i++){
+    const hue=Math.floor(Math.random()*360);
+    ctx.fillStyle=`hsl(${hue},70%,50%)`; ctx.fillRect(i*w,0,w,110);
+    ctx.fillStyle='#F5E5E5'; ctx.font='11px Roboto,sans-serif'; ctx.fillText('hsl('+hue+',70%,50%)',i*w+6,128);
+  }
+  document.getElementById('dPaletWrap').innerHTML=''; document.getElementById('dPaletWrap').appendChild(c);
+  document.getElementById('dPaletDlBtn').style.display='block'; window._jeffPaletCanvas=c;
+}
+function dPaletDownload(){ const a=document.createElement('a'); a.download='palet-jefftool.png'; a.href=window._jeffPaletCanvas.toDataURL('image/png'); a.click(); }
+function dWmBuat(){
+  const file=document.getElementById('dWmFile').files[0]; const text=document.getElementById('dWmText').value||'JEFF TOOL';
+  if(!file)return;
+  const img=new Image();
+  img.onload=function(){
+    const c=document.createElement('canvas'); c.className='card-canvas';
+    c.width=img.width; c.height=img.height;
+    const ctx=c.getContext('2d');
+    ctx.drawImage(img,0,0);
+    ctx.font=Math.max(16,img.width*0.04)+'px Roboto,sans-serif';
+    ctx.fillStyle='rgba(0,230,118,0.75)'; ctx.textAlign='right';
+    ctx.fillText(text, img.width-20, img.height-20);
+    document.getElementById('dWmWrap').innerHTML=''; document.getElementById('dWmWrap').appendChild(c);
+    document.getElementById('dWmDlBtn').style.display='block'; window._jeffWmCanvas=c;
+  };
+  img.src=URL.createObjectURL(file);
+}
+function dWmDownload(){ const a=document.createElement('a'); a.download='watermark-jefftool.png'; a.href=window._jeffWmCanvas.toDataURL('image/png'); a.click(); }
+function dJsonDownload(){
+  const lines=document.getElementById('dJsonIn').value.split('\n').map(l=>l.split('=')).filter(p=>p.length===2);
+  const obj={}; lines.forEach(([k,v])=>{ obj[k.trim()]=v.trim(); });
+  const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='data-jefftool.json'; a.click();
 }
 
-createTTT();
-
-
-/* =====================================================
-   ANIMAL
-===================================================== */
-
-function checkAnimal(){
-
-    const answer =
-        document
-        .getElementById("animalInput")
-        .value
-        .trim()
-        .toLowerCase();
-
-    const result =
-        document
-        .getElementById("animalResult");
-
-    if(answer === "gajah"){
-
-        result.textContent =
-            "Benar. Jawabannya adalah gajah.";
-
-    }else{
-
-        result.textContent =
-            "Belum tepat. Coba lagi.";
-
-    }
-
-}
-
-
-/* =====================================================
-   FLOWER
-===================================================== */
-
-function checkFlower(){
-
-    const answer =
-        document
-        .getElementById("flowerInput")
-        .value
-        .trim()
-        .toLowerCase();
-
-    const result =
-        document
-        .getElementById("flowerResult");
-
-    if(answer === "mawar"){
-
-        result.textContent =
-            "Benar. Jawabannya adalah mawar.";
-
-    }else{
-
-        result.textContent =
-            "Belum tepat. Coba lagi.";
-
-    }
-
-}
-
-
-/* =====================================================
-   DICE
-===================================================== */
-
-function rollDice(){
-
-    const number =
-        Math.floor(
-            Math.random()*6
-        ) + 1;
-
-    document
-        .getElementById("diceResult")
-        .textContent =
-        number;
-
-}
-
-
-/* =====================================================
-   COIN
-===================================================== */
-
-function flipCoin(){
-
-    const result =
-        Math.random() < .5
-        ? "DEPAN"
-        : "BELAKANG";
-
-    document
-        .getElementById("coinResult")
-        .textContent =
-        result;
-
-}
-
-
-/* =====================================================
-   TRANSLATION
-===================================================== */
-
-async function translateText(){
-
-    const text =
-        document
-        .getElementById("translateText")
-        .value
-        .trim();
-
-    const result =
-        document
-        .getElementById("translateResult");
-
-    if(!text){
-
-        result.textContent =
-            "Masukkan teks terlebih dahulu.";
-
-        return;
-    }
-
-    result.textContent =
-        "Sedang menerjemahkan...";
-
-    try{
-
-        const url =
-            "https://api.mymemory.translated.net/get?q=" +
-            encodeURIComponent(text) +
-            "&langpair=en|id";
-
-        const response =
-            await fetch(url);
-
-        const data =
-            await response.json();
-
-        result.textContent =
-            data.responseData.translatedText ||
-            "Terjemahan tidak tersedia.";
-
-    }catch(e){
-
-        result.textContent =
-            "Terjemahan gagal. Periksa koneksi internet.";
-
-    }
-
-}
-
-
-/* =====================================================
-   AI CHAT
-===================================================== */
-
-function aiChat(){
-
-    const q =
-        document
-        .getElementById("aiQuestion")
-        .value
-        .trim()
-        .toLowerCase();
-
-    const result =
-        document
-        .getElementById("aiResult");
-
-    if(!q){
-
-        result.textContent =
-            "Masukkan pertanyaan.";
-
-        return;
-    }
-
-    if(
-        q.includes("halo") ||
-        q.includes("hai")
-    ){
-
-        result.textContent =
-            "Halo. Saya JEFF AI. Silakan tuliskan pertanyaan atau topik yang ingin dibahas.";
-
-    }else if(
-        q.includes("jeff tool")
-    ){
-
-        result.textContent =
-            "JEFF TOOL adalah dashboard digital yang menggabungkan berbagai utilitas, game, edukasi, AI, media, sosial media, dan informasi cuaca.";
-
-    }else if(
-        q.includes("bisnis")
-    ){
-
-        result.textContent =
-            "Bisnis digital dapat dimulai dengan menentukan masalah, target pengguna, produk atau layanan, kemudian memasarkannya melalui internet.";
-
-    }else{
-
-        result.textContent =
-            "JEFF AI DEMO: Coba gunakan pertanyaan atau kata kunci yang lebih jelas.";
-
-    }
-
-}
-
-
-/* =====================================================
-   SUMMARY
-===================================================== */
-
-function summarizeText(){
-
-    const text =
-        document
-        .getElementById("summaryText")
-        .value
-        .trim();
-
-    const result =
-        document
-        .getElementById("summaryResult");
-
-    if(!text){
-
-        result.textContent =
-            "Masukkan teks.";
-
-        return;
-    }
-
-    const sentences =
-        text.match(
-            /[^.!?]+[.!?]+/g
-        );
-
-    if(!sentences){
-
-        result.textContent =
-            text.slice(0,250);
-
-        return;
-    }
-
-    const summary =
-        sentences
-        .slice(
-            0,
-            Math.max(
-                1,
-                Math.ceil(
-                    sentences.length / 3
-                )
-            )
-        )
-        .join(" ");
-
-    result.textContent =
-        summary;
-
-}
-
-
-/* =====================================================
-   IDEA GENERATOR
-===================================================== */
-
-function generateIdea(){
-
-    const topic =
-        document
-        .getElementById("ideaTopic")
-        .value
-        .trim();
-
-    const result =
-        document
-        .getElementById("ideaResult");
-
-    if(!topic){
-
-        result.textContent =
-            "Masukkan topik.";
-
-        return;
-    }
-
-    const ideas = [
-
-        "Buat konten edukasi tentang " +
-        topic + ".",
-
-        "Buat produk digital sederhana bertema " +
-        topic + ".",
-
-        "Buat website informasi yang membahas " +
-        topic + ".",
-
-        "Buat seri video pendek dengan topik " +
-        topic + ".",
-
-        "Buat panduan pemula mengenai " +
-        topic + "."
-
-    ];
-
-    result.textContent =
-        ideas[
-            Math.floor(
-                Math.random()*ideas.length
-            )
-        ];
-
-}
-
-
-/* =====================================================
-   FIX TEXT
-===================================================== */
-
-function fixText(){
-
-    const text =
-        document
-        .getElementById("fixText")
-        .value
-        .trim();
-
-    const result =
-        document
-        .getElementById("fixResult");
-
-    if(!text){
-
-        result.textContent =
-            "Masukkan teks.";
-
-        return;
-    }
-
-    let fixed =
-        text
-        .replace(/\s+/g," ")
-        .trim();
-
-    fixed =
-        fixed.charAt(0).toUpperCase() +
-        fixed.slice(1);
-
-    result.textContent =
-        fixed;
-
-}
-
-
-/* =====================================================
-   SOCIAL URL
-===================================================== */
-
-function openSocial(){
-
-    const url =
-        document
-        .getElementById("socialURL")
-        .value
-        .trim();
-
-    if(!url) return;
-
-    let finalURL =
-        url;
-
-    if(
-        !/^https?:\/\//i.test(
-            finalURL
-        )
-    ){
-
-        finalURL =
-            "https://" +
-            finalURL;
-
-    }
-
-    window.open(
-        finalURL,
-        "_blank",
-        "noopener,noreferrer"
-    );
-
-}
-
-
-/* =====================================================
-   VIDEO
-===================================================== */
-
-function checkVideo(){
-
-    const file =
-        document
-        .getElementById("videoFile")
-        .files[0];
-
-    const result =
-        document
-        .getElementById("videoResult");
-
-    if(!file) return;
-
-    const size =
-        (
-            file.size /
-            1024 /
-            1024
-        ).toFixed(2);
-
-    result.textContent =
-        "File: " +
-        file.name +
-        " | Ukuran: " +
-        size +
-        " MB";
-
-}
-
-
-/* =====================================================
-   DOWNLOAD
-===================================================== */
-
-function directDownload(){
-
-    const url =
-        document
-        .getElementById("downloadURL")
-        .value
-        .trim();
-
-    if(!url) return;
-
-    let finalURL =
-        url;
-
-    if(
-        !/^https?:\/\//i.test(
-            finalURL
-        )
-    ){
-
-        finalURL =
-            "https://" +
-            finalURL;
-
-    }
-
-    window.open(
-        finalURL,
-        "_blank",
-        "noopener,noreferrer"
-    );
-
-}
-
-
-/* =====================================================
-   IMAGE 2X
-===================================================== */
-
-function upscaleImage(){
-
-    const file =
-        document
-        .getElementById("imageFile")
-        .files[0];
-
-    const result =
-        document
-        .getElementById("imageResult");
-
-    const canvas =
-        document
-        .getElementById("imageCanvas");
-
-    if(!file) return;
-
-    const img =
-        new Image();
-
-    img.onload =
-        function(){
-
-            canvas.width =
-                img.width * 2;
-
-            canvas.height =
-                img.height * 2;
-
-            const ctx =
-                canvas.getContext("2d");
-
-            ctx.imageSmoothingEnabled =
-                true;
-
-            ctx.imageSmoothingQuality =
-                "high";
-
-            ctx.drawImage(
-                img,
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
-
-            canvas.style.display =
-                "block";
-
-            result.textContent =
-                "Gambar diperbesar 2x.";
-
-        };
-
-    img.src =
-        URL.createObjectURL(file);
-
-}
-
-
-/* =====================================================
-   WEATHER
-===================================================== */
-
-async function getWeather(){
-
-    const city =
-        document
-        .getElementById("cityInput")
-        .value
-        .trim();
-
-    const result =
-        document
-        .getElementById("weatherResult");
-
-    if(!city){
-
-        result.textContent =
-            "Masukkan nama kota.";
-
-        return;
-    }
-
-    result.textContent =
-        "Mencari lokasi...";
-
-    try{
-
-        const geoURL =
-            "https://geocoding-api.open-meteo.com/v1/search?name=" +
-            encodeURIComponent(city) +
-            "&count=1&language=id&format=json";
-
-        const geoResponse =
-            await fetch(geoURL);
-
-        const geoData =
-            await geoResponse.json();
-
-        if(
-            !geoData.results ||
-            !geoData.results.length
-        ){
-
-            result.textContent =
-                "Kota tidak ditemukan.";
-
-            return;
-        }
-
-        const location =
-            geoData.results[0];
-
-        const weatherURL =
-            "https://api.open-meteo.com/v1/forecast?" +
-            "latitude=" +
-            location.latitude +
-            "&longitude=" +
-            location.longitude +
-            "&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
-
-        const weatherResponse =
-            await fetch(weatherURL);
-
-        const weather =
-            await weatherResponse.json();
-
-        const current =
-            weather.current;
-
-        result.innerHTML =
-
-            "<strong>" +
-            location.name +
-            "</strong><br><br>" +
-
-            "Suhu: " +
-            current.temperature_2m +
-            " °C<br>" +
-
-            "Kelembapan: " +
-            current.relative_humidity_2m +
-            " %<br>" +
-
-            "Kecepatan angin: " +
-            current.wind_speed_10m +
-            " km/jam";
-
-    }catch(e){
-
-        result.textContent =
-            "Gagal mengambil data cuaca. Periksa koneksi internet.";
-
-    }
-
-}
-
+// --- Hitung total tool & tampilkan di Beranda ---
+document.getElementById('jumlahTool').textContent = document.querySelectorAll('#toolsView main .card').length;
 </script>
-
 </body>
-    </html>
+</html>
